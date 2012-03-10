@@ -28,6 +28,7 @@ function love.load()
 	
 	require "hatconfigs"
 	require "bighatconfigs"
+	
 	loadconfig()
 	saveconfig()
 	width = 25
@@ -36,7 +37,7 @@ function love.load()
 	changescale(scale, fullscreen)
 	love.graphics.setCaption( "Mari0" )
 	
-	--version check
+	--version check by checking for a const that was added in 0.8.0
 	if love._version_major == nil then error("You have an outdated version of Love! Get 0.8.0 or higher and retry.") end
 	
 	iconimg = love.graphics.newImage("graphics/icon.gif")
