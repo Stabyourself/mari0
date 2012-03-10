@@ -28,7 +28,6 @@ function love.load()
 	
 	require "hatconfigs"
 	require "bighatconfigs"
-	
 	loadconfig()
 	saveconfig()
 	width = 25
