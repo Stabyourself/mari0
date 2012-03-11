@@ -26,8 +26,7 @@ function love.load()
 	currentshaderi1 = 1
 	currentshaderi2 = 1
 	
-	require "hatconfigs"
-	require "bighatconfigs"
+	hatcount = #love.filesystem.enumerate("graphics/SMB/hats")
 	
 	loadconfig()
 	saveconfig()
@@ -85,6 +84,8 @@ function love.load()
 	require "koopa"
 	require "cheepcheep"
 	require "mushroom"
+	require "hatconfigs"
+	require "bighatconfigs"
 	require "flower"
 	require "star"
 	require "oneup"
@@ -955,8 +956,8 @@ function loadconfig()
 			s3 = s2[3]:split(",")
 			for i = 1, #s3 do
 				local hatno = tonumber(s3[i])
-				if hatno > #hat then
-					hatno = #hat
+				if hatno > hatcount then
+					hatno = hatcount
 				end
 				mariohats[tonumber(s2[2])][i] = hatno
 			end

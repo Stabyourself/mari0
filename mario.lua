@@ -277,7 +277,7 @@ function mario:update(dt)
 				end
 			end
 			
-			if not starstill then
+			if not starstill and not levelfinished then
 				playmusic()
 				music:stop("starmusic")
 			end
@@ -1576,7 +1576,9 @@ function mario:jump()
 				self:setquad()
 			end
 		else
-			self.duck(false)
+			if self.ducking then
+				self:duck(false)
+			end
 			playsound(swimsound)
 			
 			self.speedy = -uwjumpforce - (math.abs(self.speedx) / maxrunspeed)*uwjumpforceadd

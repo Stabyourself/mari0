@@ -59,12 +59,12 @@ function menu_update(dt)
 	if mappackscroll then
 		--smooth the scroll
 		if mappackscrollsmooth > mappackscroll then
-			mappackscrollsmooth = mappackscrollsmooth - scrollsmoothrate*dt
+			mappackscrollsmooth = mappackscrollsmooth - (mappackscrollsmooth-mappackscroll)*dt*5-0.1*dt
 			if mappackscrollsmooth < mappackscroll then
 				mappackscrollsmooth = mappackscroll
 			end
 		elseif mappackscrollsmooth < mappackscroll then
-			mappackscrollsmooth = mappackscrollsmooth + scrollsmoothrate*dt
+			mappackscrollsmooth = mappackscrollsmooth - (mappackscrollsmooth-mappackscroll)*dt*5+0.1*dt
 			if mappackscrollsmooth > mappackscroll then
 				mappackscrollsmooth = mappackscroll
 			end
@@ -74,12 +74,12 @@ function menu_update(dt)
 	if onlinemappackscroll then
 		--smooth the scroll
 		if onlinemappackscrollsmooth > onlinemappackscroll then
-			onlinemappackscrollsmooth = onlinemappackscrollsmooth - scrollsmoothrate*dt
+			onlinemappackscrollsmooth = onlinemappackscrollsmooth - (onlinemappackscrollsmooth-onlinemappackscroll)*dt*5-0.1*dt
 			if onlinemappackscrollsmooth < onlinemappackscroll then
 				onlinemappackscrollsmooth = onlinemappackscroll
 			end
 		elseif onlinemappackscrollsmooth < onlinemappackscroll then
-			onlinemappackscrollsmooth = onlinemappackscrollsmooth + scrollsmoothrate*dt
+			onlinemappackscrollsmooth = onlinemappackscrollsmooth - (onlinemappackscrollsmooth-onlinemappackscroll)*dt*5+0.1*dt
 			if onlinemappackscrollsmooth > onlinemappackscroll then
 				onlinemappackscrollsmooth = onlinemappackscroll
 			end
@@ -88,12 +88,12 @@ function menu_update(dt)
 	
 	if mappackhorscroll then
 		if mappackhorscrollsmooth > mappackhorscroll then
-			mappackhorscrollsmooth = mappackhorscrollsmooth - scrollsmoothrate*dt
+			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5-0.1*dt
 			if mappackhorscrollsmooth < mappackhorscroll then
 				mappackhorscrollsmooth = mappackhorscroll
 			end
 		elseif mappackhorscrollsmooth < mappackhorscroll then
-			mappackhorscrollsmooth = mappackhorscrollsmooth + scrollsmoothrate*dt
+			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5+0.1*dt
 			if mappackhorscrollsmooth > mappackhorscroll then
 				mappackhorscrollsmooth = mappackhorscroll
 			end

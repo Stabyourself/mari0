@@ -2465,7 +2465,7 @@ function loadmap(filename)
 		end
 	end
 	
-	scrollfactor = 10
+	scrollfactor = 1
 	
 	--MORE STUFF
 	for i = 2, #s2 do
