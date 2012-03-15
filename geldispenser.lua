@@ -47,5 +47,7 @@ function geldispenser:draw()
 		love.graphics.draw(geldispenserimg, math.floor((self.cox-xscroll-1)*16*scale), (self.coy-1.5)*16*scale, 0, scale, scale, 0, 0)
 	elseif self.dir == "right" then
 		love.graphics.draw(geldispenserimg, math.floor((self.cox-xscroll-1)*16*scale), (self.coy+.5)*16*scale, math.pi*1.5, scale, scale, 0, 0)
+	elseif self.dir == "left" then
+		love.graphics.draw(geldispenserimg, math.floor((self.cox-xscroll+1)*16*scale), (self.coy-1.5)*16*scale, math.pi*0.5, scale, scale, 0, 0)
 	end
 end

@@ -1,18 +1,6 @@
 music = {
 	thread = love.thread.newThread("musicthread", "musicloader_thread.lua"),
-	toload = {
-		"overworld",
-		"overworld-fast",
-		"underground",
-		"underground-fast",
-		"castle",
-		"castle-fast",
-		"underwater",
-		"underwater-fast",
-		"starmusic",
-		"starmusic-fast",
-		"princessmusic",
-	},
+	toload = {},
 	loaded = {},
 	list = {},
 	list_fast = {},
@@ -21,12 +9,26 @@ music = {
 
 music.stringlist = table.concat(music.toload, ";")
 
-for i,v in ipairs(music.toload) do
-	music.loaded[v] = false
-	if v:match("fast") then
-		table.insert(music.list_fast, v)
-	elseif not v:match("princessmusic") then
-		table.insert(music.list, v)
+function music:init()
+	self.thread:start()
+end
+
+function music:load(musicfile) -- can take a single file string or an array of file strings
+	if type(musicfile) == "table" then
+		for i,v in ipairs(musicfile) do
+			self:preload(v)
+		end
+	else
+		self:preload(musicfile)
+	end
+	self.stringlist = table.concat(self.toload, ";")
+	self.thread:set("musiclist", self.stringlist)
+end
+
+function music:preload(musicfile)
+	if self.loaded[musicfile] == nil then
+		self.loaded[musicfile] = false
+		table.insert(self.toload, musicfile)
 	end
 end
 
@@ -79,6 +81,28 @@ function music:onLoad(name, source)
 end
 
 
-music.thread:start()
-music.thread:set("musiclist", music.stringlist)
+music:load{
+	"overworld",
+	"overworld-fast",
+	"underground",
+	"underground-fast",
+	"castle",
+	"castle-fast",
+	"underwater",
+	"underwater-fast",
+	"starmusic",
+	"starmusic-fast",
+	"princessmusic",
+}
+
+-- the original/default music needs to be put in the correct lists
+for i,v in ipairs(music.toload) do
+	if v:match("fast") then
+		table.insert(music.list_fast, v)
+	elseif not v:match("princessmusic") then
+		table.insert(music.list, v)
+	end
+end
+
+music:init()
 

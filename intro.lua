@@ -21,6 +21,7 @@ function intro_update(dt)
 		
 		if introprogress > 0.5 and playedwilhelm == nil then
 			playsound(stabsound)
+			
 			playedwilhelm = true
 		end
 		

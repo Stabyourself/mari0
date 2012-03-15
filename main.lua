@@ -8,8 +8,8 @@
 ]]
 
 function love.load()
-	marioversion = 1004
-	versionstring = "version 1.4"
+	marioversion = 1005
+	versionstring = "version 1.5"
 	shaderlist = love.filesystem.enumerate( "shaders/" )
 	
 	local rem
@@ -733,8 +733,9 @@ function love.load()
 end
 
 function love.update(dt)
-	music:update()
-	
+	if music then
+		music:update()
+	end
 	dt = math.min(0.01666667, dt)
 	
 	--speed
@@ -1469,10 +1470,11 @@ function openSaveFolder(subfolder) --By Slime
 end
 
 function getupdate()
-	local onlinedata = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
+	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
 	
-	if not onlinedata then
-		print("server down!")
+	if code ~= 200 then
+		return false
+	elseif not onlinedata then
 		return false
 	end
 	
@@ -1502,5 +1504,39 @@ function properprint(s, x, y)
 		elseif fontquads[char] then
 			love.graphics.drawq(fontimage, fontquads[char], x+((i-1)*8)*scale, y, 0, scale, scale)
 		end
+	end
+end
+
+function loadcustombackground()
+	local i = 1
+	custombackgroundimg = {}
+	custombackgroundwidth = {}
+	custombackgroundheight = {}
+	--try to load map specific background first
+	local levelstring = marioworld .. "-" .. mariolevel
+	if mariosublevel ~= 0 then
+		levelstring = levelstring .. "_" .. mariosublevel
+	end
+	
+	while love.filesystem.exists("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png") do
+		custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png")
+		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
+		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
+		i = i +1
+	end
+	
+	if #custombackgroundimg == 0 then
+		while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
+			custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
+			custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
+			custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
+			i = i +1
+		end
+	end
+	
+	if #custombackgroundimg == 0 then
+		custombackgroundimg[i] = love.graphics.newImage("graphics/SMB/portalbackground.png")
+		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
+		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
 	end
 end

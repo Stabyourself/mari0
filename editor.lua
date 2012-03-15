@@ -26,13 +26,13 @@ function editor_load()
 	--MAIN
 	guielements["autoscrollcheckbox"] = guielement:new("checkbox", 291, 65, toggleautoscroll, autoscroll)
 	guielements["backgrounddropdown"] = guielement:new("dropdown", 17, 85, 6, changebackground, background, "blue", "black", "water")
-	guielements["musicdropdown"] = guielement:new("dropdown", 17, 110, 11, changemusic, musici, "none", "overworld", "underground", "castle", "underwater", "star")
+	guielements["musicdropdown"] = guielement:new("dropdown", 17, 110, 11, changemusic, musici, "none", "overworld", "underground", "castle", "underwater", "star", "custom")
 	guielements["spritesetdropdown"] = guielement:new("dropdown", 17, 135, 11, changespriteset, spriteset, "overworld", "underground", "castle", "underwater")
 	guielements["timelimitdecrease"] = guielement:new("button", 17, 160, "{", decreasetimelimit, 0)
 	guielements["timelimitincrease"] = guielement:new("button", 31 + string.len(mariotimelimit)*8, 160, "}", increasetimelimit, 0)
-	guielements["mapwidthdecrease"] = guielement:new("button", 268, 163, "{", nil, 0)
-	guielements["mapwidthincrease"] = guielement:new("button", 264, 163, "}", nil, 0)
-	guielements["mapwidthapply"] = guielement:new("button", 320, 163, "apply", applymapwidth, 0)
+	guielements["mapwidthdecrease"] = guielement:new("button", 268, 178, "{", nil, 0)
+	guielements["mapwidthincrease"] = guielement:new("button", 264, 178, "}", nil, 0)
+	guielements["mapwidthapply"] = guielement:new("button", 320, 178, "apply", applymapwidth, 0)
 	guielements["savebutton"] = guielement:new("button", 10, 200, "save", savelevel, 2)
 	guielements["menubutton"] = guielement:new("button", 54, 200, "return to menu", menu_load, 2)
 	guielements["testbutton"] = guielement:new("button", 178, 200, "test level", test_level, 2)
@@ -45,6 +45,8 @@ function editor_load()
 	guielements["bonusstagecheckbox"] = guielement:new("checkbox", 200, 125, togglebonusstage, bonusstage)
 	guielements["custombackgroundcheckbox"] = guielement:new("checkbox", 200, 140, togglecustombackground, custombackground)
 	
+	guielements["scrollfactorscrollbar"] = guielement:new("scrollbar", 298, 154, 100, 35, 11, reversescrollfactor(), "hor")
+	
 	--TILES
 	guielements["tilesall"] = guielement:new("button", 70, 20, "all", tilesall, 2)
 	guielements["tilessmb"] = guielement:new("button", 103, 20, "smb", tilessmb, 2)
@@ -52,7 +54,7 @@ function editor_load()
 	guielements["tilescustom"] = guielement:new("button", 193, 20, "custom", tilescustom, 2)
 	guielements["tilesentities"] = guielement:new("button", 268, 20, "entities", tilesentities, 2)
 	
-	guielements["tilesscrollbar"] = guielement:new("scrollbar", 381, 37, 167, 15, 40)
+	guielements["tilesscrollbar"] = guielement:new("scrollbar", 381, 37, 167, 15, 40, 0, "ver")
 	
 	--TOOLS
 	guielements["linkbutton"] = guielement:new("button", 5, 22, "link tool|to link testing equipment, drag a line from the|red devices to a yellow activator to turn them|green and connected. insert zelda joke here.", linkbutton, 2, false, 4, 383)
@@ -195,6 +197,7 @@ function editor_update(dt)
 				end
 			end
 		end
+		updatescrollfactor()
 	elseif editorstate == "tiles" then
 		tilesoffset = guielements["tilesscrollbar"].value * tilescrollbarheight * scale
 	end
@@ -364,11 +367,7 @@ function editor_draw()
 			love.graphics.setColor(255, 255, 255)
 			properprint("minimap", 3*scale, 21*scale)
 			love.graphics.rectangle("fill", minimapx*scale, minimapy*scale, 394*scale, 34*scale)
-			if custombackground then
-				love.graphics.setColor(240, 240, 240)
-			else
-				love.graphics.setColor(unpack(backgroundcolor[background]))
-			end
+			love.graphics.setColor(unpack(backgroundcolor[background]))
 			love.graphics.rectangle("fill", (minimapx+2)*scale, (minimapy+2)*scale, 390*scale, 30*scale)
 			
 			local lmap = map
@@ -401,8 +400,8 @@ function editor_draw()
 				guielements["mapwidthdecrease"]:draw()
 				guielements["mapwidthincrease"]:draw()
 				guielements["mapwidthapply"]:draw()
-				properprint("current mapwidth: " .. mapwidth, 160*scale, 155*scale)
-				properprint("new mapwidth:  " .. targetmapwidth, 160*scale, 165*scale)
+				properprint("current mapwidth: " .. mapwidth, 160*scale, 170*scale)
+				properprint("new mapwidth:  " .. targetmapwidth, 160*scale, 180*scale)
 				guielements["savebutton"]:draw()
 				guielements["menubutton"]:draw()
 				guielements["testbutton"]:draw()
@@ -423,11 +422,28 @@ function editor_draw()
 				guielements["bonusstagecheckbox"]:draw()
 				guielements["custombackgroundcheckbox"]:draw()
 				
+				if custombackground then
+					love.graphics.setColor(255, 255, 255, 255)
+				else
+					love.graphics.setColor(150, 150, 150, 255)
+				end
+				properprint("scrollfactor", 199*scale, 156*scale)
+				
+				guielements["scrollfactorscrollbar"]:draw()
+				if custombackground then
+					love.graphics.setColor(255, 255, 255, 255)
+				else
+					love.graphics.setColor(150, 150, 150, 255)
+				end
+				properprint(formatscrollnumber(scrollfactor), (guielements["scrollfactorscrollbar"].x+1+guielements["scrollfactorscrollbar"].xrange*guielements["scrollfactorscrollbar"].value)*scale, 156*scale)
+				
+				love.graphics.setColor(255, 255, 255, 255)
+					
 				properprint("intermission", 210*scale, 81*scale)
 				properprint("has warpzone", 210*scale, 96*scale)
 				properprint("underwater", 210*scale, 111*scale)
 				properprint("bonusstage", 210*scale, 126*scale)
-				properprint("portal background", 210*scale, 141*scale)
+				properprint("custom background", 210*scale, 141*scale)
 			end
 		elseif editorstate == "maps" then
 			for i = 1, 8 do
@@ -497,6 +513,7 @@ function maintab()
 	guielements["underwatercheckbox"].active = true
 	guielements["bonusstagecheckbox"].active = true
 	guielements["custombackgroundcheckbox"].active = true
+	guielements["scrollfactorscrollbar"].active = true
 end
 
 function tilestab()
@@ -850,18 +867,24 @@ function editor_mousepressed(x, y, button)
 		currenttile = map[cox][coy][1]
 		
 	elseif button == "wu" then
-		if currenttile > 1 then
-			currenttile = currenttile - 1
+		if editormenuopen then
+		else
+			if currenttile > 1 then
+				currenttile = currenttile - 1
+			end
 		end
 		
 	elseif button == "wd" then
-		if editentities then
-			if currenttile < #entitylist then
-				currenttile = currenttile + 1
-			end
+		if editormenuopen then
 		else
-			if currenttile < smbtilecount+portaltilecount+customtilecount then
-				currenttile = currenttile + 1
+			if editentities then
+				if currenttile < #entitylist then
+					currenttile = currenttile + 1
+				end
+			else
+				if currenttile < smbtilecount+portaltilecount+customtilecount then
+					currenttile = currenttile + 1
+				end
 			end
 		end
 		
@@ -1049,19 +1072,7 @@ function togglecustombackground(var)
 	end
 	
 	if custombackground then
-		local i = 1
-		custombackgroundimg = {}
-		custombackgroundwidth = {}
-		custombackgroundheight = {}
-		while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
-			custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
-			custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-			custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
-		end
-		
-		if #custombackgroundimg == 0 then
-			custombackground = false
-		end
+		loadcustombackground()
 	end
 	
 	guielements["custombackgroundcheckbox"].var = custombackground
@@ -1074,11 +1085,15 @@ function changebackground(var)
 end
 
 function changemusic(var)
-	if musici ~= 1 then
+	if musici == 7 and custommusic then
+		music:stop(custommusic)
+	elseif musici ~= 1 then
 		music:stopIndex(musici-1)
 	end
 	musici = var
-	if musici ~= 1 then
+	if musici == 7 and custommusic then
+		music:play(custommusic)
+	elseif musici ~= 1 then
 		music:playIndex(musici-1)
 	end
 	guielements["musicdropdown"].var = var
@@ -1188,4 +1203,22 @@ function livesincrease()
 		mariolivecount = mariolivecount + 1
 	end
 	guielements["livesincrease"].x = 212 + string.len(mariolivecount)*8
+end
+
+function updatescrollfactor()
+	scrollfactor = round((guielements["scrollfactorscrollbar"].value*3)^2, 2)
+end
+
+function reversescrollfactor()
+	return math.sqrt(scrollfactor)/3
+end
+
+function formatscrollnumber(i)
+	if string.len(i) == 1 then
+		return i .. ".00"
+	elseif string.len(i) == 3 then
+		return i .. "0"
+	else
+		return i
+	end
 end

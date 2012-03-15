@@ -68,12 +68,17 @@ function guielement:init(...)
 		self.type = arg[1]
 		self.x = arg[2]
 		self.y = arg[3]
-		self.yrange = arg[4]
+		self.range = arg[4]
 		self.width = arg[5]
 		self.height = arg[6]
 		self.value = arg[7] or 0
+		self.dir = arg[8] or "ver"
 		
-		self.yrange = self.yrange - self.height
+		if self.dir == "ver" then
+			self.yrange = self.range - self.height
+		else
+			self.xrange = self.range - self.width
+		end	
 		
 		self.backgroundcolor = {127, 127, 127}
 		self.bordercolorhigh = {255, 255, 255}
@@ -108,11 +113,19 @@ function guielement:update(dt)
 	if self.active then
 		if self.type == "scrollbar" then
 			if self.dragging then
-				local y = (love.mouse.getY()-self.draggingy) - self.y*scale
-				local actualyrange = self.yrange*scale
-				
-				self.value = y / actualyrange
-				self.value = math.min(math.max(self.value, 0), 1) --clamp
+				if self.dir == "ver" then
+					local y = (love.mouse.getY()-self.draggingy) - self.y*scale
+					local actualyrange = self.yrange*scale
+					
+					self.value = y / actualyrange
+					self.value = math.min(math.max(self.value, 0), 1) --clamp
+				else
+					local x = (love.mouse.getX()-self.draggingx) - self.x*scale
+					local actualxrange = self.xrange*scale
+					
+					self.value = x / actualxrange
+					self.value = math.min(math.max(self.value, 0), 1) --clamp
+				end
 			end
 		elseif self.type == "input" then
 			self.timer = self.timer + dt
@@ -252,21 +265,37 @@ function guielement:draw()
 		properprint(self.text, (self.x+1+self.space)*scale, (self.y+2+self.space)*scale)
 		
 	elseif self.type == "scrollbar" then
-		local high = self:inhighlight(love.mouse.getPosition())
+		if self.dir == "ver" then
+			local high = self:inhighlight(love.mouse.getPosition())
+			
+			love.graphics.setColor(self.backgroundcolor)
+			love.graphics.rectangle("fill", self.x*scale, self.y*scale, self.width*scale, (self.yrange+self.height)*scale)
 		
-		love.graphics.setColor(self.backgroundcolor)
-		love.graphics.rectangle("fill", self.x*scale, self.y*scale, self.width*scale, (self.yrange+self.height)*scale)
-	
-		love.graphics.setColor(self.bordercolor)
-		if self.dragging or high then
-			love.graphics.setColor(self.bordercolorhigh)
+			love.graphics.setColor(self.bordercolor)
+			if self.dragging or high then
+				love.graphics.setColor(self.bordercolorhigh)
+			end
+			
+			love.graphics.rectangle("fill", self.x*scale, (self.y+self.yrange*self.value)*scale, (self.width)*scale, (self.height)*scale)
+			
+			love.graphics.setColor(self.fillcolor)
+			love.graphics.rectangle("fill", (self.x+1)*scale, (self.y+1+self.yrange*self.value)*scale, (self.width-2)*scale, (self.height-2)*scale)
+		else
+			local high = self:inhighlight(love.mouse.getPosition())
+			
+			love.graphics.setColor(self.backgroundcolor)
+			love.graphics.rectangle("fill", self.x*scale, self.y*scale, (self.xrange+self.width)*scale, self.height*scale)
+		
+			love.graphics.setColor(self.bordercolor)
+			if self.dragging or high then
+				love.graphics.setColor(self.bordercolorhigh)
+			end
+			
+			love.graphics.rectangle("fill", (self.x+self.xrange*self.value)*scale, self.y*scale, (self.width)*scale, (self.height)*scale)
+			
+			love.graphics.setColor(self.fillcolor)
+			love.graphics.rectangle("fill", (self.x+1+self.xrange*self.value)*scale, (self.y+1)*scale, (self.width-2)*scale, (self.height-2)*scale)
 		end
-		
-		love.graphics.rectangle("fill", self.x*scale, (self.y+self.yrange*self.value)*scale, (self.width)*scale, (self.height)*scale)
-		
-		love.graphics.setColor(self.fillcolor)
-		love.graphics.rectangle("fill", (self.x+1)*scale, (self.y+1+self.yrange*self.value)*scale, (self.width-2)*scale, (self.height-2)*scale)
-		
 	elseif self.type == "input" then
 		local high = self:inhighlight(love.mouse.getPosition())
 	
@@ -343,9 +372,16 @@ function guielement:click(x, y, button)
 				self.func(unpack(self.arguments))
 			end
 		elseif self.type == "scrollbar" then
-			if self:inhighlight(x, y) then
-				self.dragging = true
-				self.draggingy = y-(self.y+self.yrange*self.value)*scale
+			if self.dir == "ver" then
+				if self:inhighlight(x, y) then
+					self.dragging = true
+					self.draggingy = y-(self.y+self.yrange*self.value)*scale
+				end
+			else
+				if self:inhighlight(x, y) then
+					self.dragging = true
+					self.draggingx = x-(self.x+self.xrange*self.value)*scale
+				end
 			end
 			if button == "wd" then
 				self.value = math.min(1, self.value+0.2)
@@ -456,8 +492,14 @@ function guielement:inhighlight(x, y)
 			return true
 		end
 	elseif self.type == "scrollbar" then
-		if x >= self.x*scale and x < (self.x+self.width)*scale and y >= (self.y+self.yrange*self.value)*scale and y < (self.height+self.y+self.yrange*self.value)*scale then
-			return true
+		if self.dir == "ver" then
+			if x >= self.x*scale and x < (self.x+self.width)*scale and y >= (self.y+self.yrange*self.value)*scale and y < (self.height+self.y+self.yrange*self.value)*scale then
+				return true
+			end
+		else
+			if x >= (self.x+self.xrange*self.value)*scale and x < (self.x+self.width+self.xrange*self.value)*scale and y >= self.y*scale and y < (self.height+self.y)*scale then
+				return true
+			end
 		end
 	elseif self.type == "input" then
 		if x >= self.x*scale and x < (self.x+3+self.width*8+2)*scale and y >= self.y*scale and y < (self.y+1+self.height*10+2)*scale then

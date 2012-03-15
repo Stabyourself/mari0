@@ -113,6 +113,15 @@ function game_load(suspended)
 		spritebatchX[i] = 0
 	end
 	
+	custommusic = false
+	if love.filesystem.exists("mappacks/" .. mappack .. "/music.ogg") then
+		custommusic = "mappacks/" .. mappack .. "/music.ogg"
+		music:load(custommusic)
+	elseif love.filesystem.exists("mappacks/" .. mappack .. "/music.mp3") then
+		custommusic = "mappacks/" .. mappack .. "/music.mp3"
+		music:load(custommusic)
+	end
+	
 	--FINALLY LOAD THE DAMN LEVEL
 	levelscreen_load("initial")
 end
@@ -565,11 +574,16 @@ function game_update(dt)
 					end
 				end
 				
-				
 				--check if maze was solved!
 				for i = 1, players do
 					if objects["player"][i].mazevar == mazegates[mazei] then
-						mazesolved[mazei] = true
+						local actualmaze = 0
+						for j = 1, #mazestarts do
+							if objects["player"][i].x > mazestarts[j] then
+								actualmaze = j
+							end
+						end
+						mazesolved[actualmaze] = true
 						for j = 1, players do
 							objects["player"][j].mazevar = 0
 						end
@@ -887,6 +901,9 @@ function game_draw()
 		if custombackground then
 			for i = #custombackgroundimg, 1, -1  do
 				local xscroll = xscroll / (i * scrollfactor + 1)
+				if reversescrollfactor() == 1 then
+					xscroll = 0
+				end
 				for y = 1, math.ceil(15/custombackgroundheight[i]) do
 					for x = 1, math.ceil(width/custombackgroundwidth[i])+1 do
 						love.graphics.draw(custombackgroundimg[i], math.floor(((x-1)*custombackgroundwidth[i])*16*scale) - math.floor(math.mod(xscroll, custombackgroundwidth[i])*16*scale), (y-1)*custombackgroundheight[i]*16*scale, 0, scale, scale)
@@ -2125,7 +2142,6 @@ function startlevel(level)
 	--set startx to checkpoint
 	if checkpointx and checkcheckpoint then
 		startx = checkpointx
-		print_r(checkpointpoints)
 		starty = checkpointpoints[checkpointx] or 13
 		
 		--clear enemies from spawning near
@@ -2465,7 +2481,7 @@ function loadmap(filename)
 		end
 	end
 	
-	scrollfactor = 1
+	scrollfactor = 0
 	
 	--MORE STUFF
 	for i = 2, #s2 do
@@ -2484,7 +2500,7 @@ function loadmap(filename)
 			musici = tonumber(s3[2])
 		elseif s3[1] == "bonusstage" then
 			bonusstage = true
-		elseif s3[1] == "custombackground" then
+		elseif s3[1] == "custombackground" or s3[1] == "portalbackground" then
 			custombackground = true
 		elseif s3[1] == "timelimit" then
 			mariotimelimit = tonumber(s3[2])
@@ -2494,20 +2510,7 @@ function loadmap(filename)
 	end
 	
 	if custombackground then
-		local i = 1
-		custombackgroundimg = {}
-		custombackgroundwidth = {}
-		custombackgroundheight = {}
-		while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
-			custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
-			custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-			custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
-			i = i +1
-		end
-		
-		if #custombackgroundimg == 0 then
-			custombackground = false
-		end
+		loadcustombackground()
 	end
 	
 	return true
@@ -3911,7 +3914,7 @@ function game_joystickpressed( joystick, button )
 	end
 	
 	for i = 1, players do
-		if not noupdate and objects["player"][i].controlsenabled and not objects["player"][i].vine and mouseowner ~= i then
+		if not noupdate and objects["player"][i].controlsenabled and not objects["player"][i].vine then
 			local s1 = controls[i]["jump"]
 			local s2 = controls[i]["run"]
 			local s3 = controls[i]["reload"]
@@ -4039,7 +4042,9 @@ function inmap(x, y)
 end
 
 function playmusic()
-	if musici ~= 1 then
+	if musici == 7 and custommusic then
+		music:play(custommusic)
+	elseif musici ~= 1 then
 		if mariotime < 100 and mariotime > 0 then
 			music:playIndex(musici-1, true)
 		else

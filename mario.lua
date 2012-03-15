@@ -1391,7 +1391,7 @@ function mario:underwatermovement(dt)
 					self.speedx = uwmaxairwalkspeed
 				end
 			end
-		else --ON GROUND
+		elseif self.ducking == false then --ON GROUND
 			if self.speedx < uwmaxwalkspeed then
 				if self.speedx < 0 then
 					if self.speedx < -uwmaxrunspeed then
@@ -1431,7 +1431,7 @@ function mario:underwatermovement(dt)
 					self.speedx = -uwmaxairwalkspeed
 				end
 			end
-		else --ON GROUND
+		elseif self.ducking == false then --ON GROUND
 			if self.speedx > -uwmaxwalkspeed then
 				if self.speedx > 0 then
 					if self.speedx > uwmaxrunspeed then
@@ -2599,7 +2599,7 @@ function mario:die(how)
 			self:shrink()
 			return
 		end
-	else
+	elseif how ~= "time" then
 		if bonusstage then
 			levelscreen_load("sublevel", 0)
 			return
@@ -3161,6 +3161,7 @@ function mario:respawn()
 		end
 	end
 	
+	self.colors = mariocolors[self.playernumber]
 	self.speedy = 0
 	self.speedx = 0
 	self.dead = false

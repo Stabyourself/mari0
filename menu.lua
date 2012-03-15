@@ -43,6 +43,10 @@ function menu_load()
 		continueavailable = true
 	end
 	
+	mariolevel = 1
+	marioworld = 1
+	mariosublevel = 0
+	
 	--load 1-1 as background
 	loadbackground("1-1.txt")
 	
@@ -88,12 +92,12 @@ function menu_update(dt)
 	
 	if mappackhorscroll then
 		if mappackhorscrollsmooth > mappackhorscroll then
-			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5-0.1*dt
+			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5-0.03*dt
 			if mappackhorscrollsmooth < mappackhorscroll then
 				mappackhorscrollsmooth = mappackhorscroll
 			end
 		elseif mappackhorscrollsmooth < mappackhorscroll then
-			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5+0.1*dt
+			mappackhorscrollsmooth = mappackhorscrollsmooth - (mappackhorscrollsmooth-mappackhorscroll)*dt*5+0.03*dt
 			if mappackhorscrollsmooth > mappackhorscroll then
 				mappackhorscrollsmooth = mappackhorscroll
 			end
@@ -288,7 +292,7 @@ function menu_draw()
 		end
 		
 		local start = 9
-		if portalbackground then
+		if custombackground then
 			start = 1
 		end
 		
@@ -380,12 +384,12 @@ function menu_draw()
 			love.graphics.setColor(255, 255, 255, 255)
 			properprint("a little patience..|downloading " .. currentdownload .. " of " .. downloadcount, 50*scale, 30*scale)
 		else
-			love.graphics.translate(- mappackhorscrollsmooth*scale*mappackhorscrollrange, 0)
+			love.graphics.translate(-round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 			
 			if mappackhorscrollsmooth < 1 then
 				--draw each butten (even if all you do, is press ONE. BUTTEN.)
 				--scrollbar offset
-				love.graphics.translate(0, -mappackscrollsmooth*60*scale)
+				love.graphics.translate(0, -round(mappackscrollsmooth*60*scale))
 				
 				love.graphics.setScissor(240*scale, 16*scale, 200*scale, 200*scale)
 				love.graphics.setColor(0, 0, 0, 200)
@@ -456,7 +460,7 @@ function menu_draw()
 					end
 				end
 			
-				love.graphics.translate(0, mappackscrollsmooth*60*scale)
+				love.graphics.translate(0, round(mappackscrollsmooth*60*scale))
 			
 				local i = mappackscrollsmooth / (#mappacklist-3.233)
 			
@@ -464,16 +468,16 @@ function menu_draw()
 			
 			end
 			
-			love.graphics.translate(- (- mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+			love.graphics.translate(round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 			----------
 			--ONLINE--
 			----------
 			
-			love.graphics.translate(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange, 0)
+			love.graphics.translate(round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 			
 			if mappackhorscrollsmooth > 0 then
 				if #onlinemappacklist == 0 then
-					properprint(" no dlc yet, sorry..| come back later for| more mari0 content!||  you can also send|us your own mappacks!", 40*scale, 80*scale)
+					properprint("something went wrong||      sorry d:||maybe your internet|does not work right?", 40*scale, 80*scale)
 				end
 				
 				love.graphics.setScissor()
@@ -489,7 +493,7 @@ function menu_draw()
 				love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
 				
 				--scrollbar offset
-				love.graphics.translate(0, -onlinemappackscrollsmooth*60*scale)
+				love.graphics.translate(0, -round(onlinemappackscrollsmooth*60*scale))
 				for i = 1, #onlinemappacklist do
 					--back
 					love.graphics.draw(mappackback, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
@@ -546,14 +550,14 @@ function menu_draw()
 					end
 				end
 			
-				love.graphics.translate(0, onlinemappackscrollsmooth*60*scale)
+				love.graphics.translate(0, round(onlinemappackscrollsmooth*60*scale))
 			
 				local i = onlinemappackscrollsmooth / (#onlinemappacklist-3.233)
 			
 				love.graphics.draw(mappackscrollbar, 227*scale, (20+i*160)*scale, 0, scale, scale)
 			end
 			
-			love.graphics.translate(- (mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+			love.graphics.translate(- round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 		end
 		
 		love.graphics.setScissor()
@@ -868,7 +872,7 @@ function menu_draw()
 			
 			love.graphics.setColor(255, 255, 255, alpha)
 			
-			properprint("portal 1 color:", 31*scale, 150*scale)
+			properprint("coop portal 1 color:", 31*scale, 150*scale)
 			
 			love.graphics.draw(huebarimg, 32*scale, 170*scale, 0, scale, scale)
 			
@@ -885,7 +889,7 @@ function menu_draw()
 			
 			love.graphics.setColor(255, 255, 255, alpha)
 			
-			properprint("portal 2 color:", 31*scale, 180*scale)
+			properprint("coop portal 2 color:", 31*scale, 180*scale)
 			
 			love.graphics.draw(huebarimg, 32*scale, 200*scale, 0, scale, scale)
 			
@@ -1122,7 +1126,7 @@ function loadbackground(background)
 		end
 		startx = 3
 		starty = 13
-		portalbackground = false
+		custombackground = false
 		backgroundi = 1
 		love.graphics.setBackgroundColor(backgroundcolor[backgroundi])
 	else
@@ -1210,26 +1214,13 @@ function loadbackground(background)
 				love.graphics.setBackgroundColor(backgroundcolor[backgroundi])
 			elseif s3[1] == "spriteset" then
 				spriteset = tonumber(s3[2])
-			elseif s3[1] == "custombackground" then
+			elseif s3[1] == "custombackground" or s3[1] == "portalbackground" then
 				custombackground = true
 			end
 		end
 		
 		if custombackground then
-			local i = 1
-			custombackgroundimg = {}
-			custombackgroundwidth = {}
-			custombackgroundheight = {}
-			while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
-				custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
-				custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-				custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
-				i = i +1
-			end
-			
-			if #custombackgroundimg == 0 then
-				custombackground = false
-			end
+			loadcustombackground()
 		end
 	end
 end
@@ -1425,15 +1416,17 @@ function loadonlinemappacks()
 end
 
 function downloadmappacks()	
-	local onlinedata = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
+	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
 	
-	if not onlinedata then
-		print("server down!")
-		return
+	if code ~= 200 then
+		return false
+	elseif not onlinedata then
+		return false
 	end
 	
 	local maplist = {}
 	local versionlist = {}
+	local latestversion = marioversion
 	
 	local split1 = onlinedata:split("<")
 	for i = 2, #split1 do
@@ -1449,7 +1442,7 @@ function downloadmappacks()
 	
 	if latestversion > marioversion then
 		outdated = true
-		return
+		return false
 	end
 	
 	--download all mappacks
@@ -1480,7 +1473,12 @@ function downloadmappacks()
 			end
 			
 			love.filesystem.mkdir("mappacks/" .. maplist[i])
-			local onlinedata = http.request("http://server.stabyourself.net/mari0/?mode=getmap&get=" .. maplist[i])
+			local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=getmap&get=" .. maplist[i])
+			
+			if code ~= 200 then
+				return false
+			end
+			
 			local split1 = onlinedata:split("<")
 			for j = 2, #split1 do
 				local split2 = split1[j]:split(">")
@@ -1492,6 +1490,8 @@ function downloadmappacks()
 			love.filesystem.write( "mappacks/" .. maplist[i] .. "/version.txt", versionlist[i])
 		end
 	end
+	
+	return true
 end
 
 function menu_keypressed(key, unicode)
@@ -2070,7 +2070,12 @@ function keypromptstart()
 end
 
 function downloadfile(url, target)
-	local data = http.request(url)
+	local data, code = http.request(url)
+	
+	if code ~= 200 then
+		return false
+	end
+	
 	if data then
 		love.filesystem.write(target, data)
 		return true
