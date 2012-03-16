@@ -199,7 +199,7 @@ function checkcollision(v, t, h, g, j, i, dt, passed) --v: b1table | t: b2table 
 	local hadhorcollision = false
 	local hadvercollision = false
 	
-	if true then --math.abs(v.x-t.x)+math.abs(v.y-t.y) < 5 then
+	if math.abs(v.x-t.x) < math.max(v.width, t.width)+1 and math.abs(v.y-t.y) < math.max(v.height, t.height)+1 then
 		--check if it's a passive collision (Object is colliding anyway)
 		if not passed and aabb(v.x, v.y, v.width, v.height, t.x, t.y, t.width, t.height) then --passive collision! (oh noes!)
 			if passivecollision(v, t, h, g, j, i, dt) then

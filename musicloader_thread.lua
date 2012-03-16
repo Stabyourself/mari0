@@ -3,6 +3,7 @@ local this = love.thread.getThread()
 require("love.filesystem")
 require("love.sound")
 require("love.audio")
+require("love.timer")
 
 love.filesystem.setIdentity("mari0")
 
@@ -49,4 +50,5 @@ end
 while true do
 	getmusiclist()
 	loadmusic()
+	love.timer.sleep(1/60)
 end

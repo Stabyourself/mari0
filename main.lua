@@ -8,9 +8,10 @@
 ]]
 
 function love.load()
-	marioversion = 1005
-	versionstring = "version 1.5"
+	marioversion = 1006
+	versionstring = "version 1.6"
 	shaderlist = love.filesystem.enumerate( "shaders/" )
+	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
 	
 	local rem
 	for i, v in pairs(shaderlist) do
@@ -28,7 +29,11 @@ function love.load()
 	
 	hatcount = #love.filesystem.enumerate("graphics/SMB/hats")
 	
-	loadconfig()
+	if not pcall(loadconfig) then
+		players = 1
+		defaultconfig()
+	end
+	
 	saveconfig()
 	width = 25
 	fsaa = 0
@@ -68,6 +73,7 @@ function love.load()
 	require "shaders"
 	require "variables"
 	require "class"
+	require "sha1"
 	
 	require "intro"
 	require "menu"
@@ -729,6 +735,10 @@ function love.load()
 	shaders:set(1, shaderlist[currentshaderi1])
 	shaders:set(2, shaderlist[currentshaderi2])
 	
+	for i, v in pairs(dlclist) do
+		delete_mappack(v)
+	end
+	
 	intro_load()
 end
 
@@ -854,7 +864,10 @@ function saveconfig()
 	end
 	
 	for i = 1, #mariohats do
-		s = s .. "mariohats:" .. i .. ":"
+		s = s .. "mariohats:" .. i
+		if #mariohats[i] > 0 then
+			s = s .. ":"
+		end
 		for j = 1, #mariohats[i] do
 			s = s .. mariohats[i][j]
 			if j == #mariohats[i] then
@@ -862,6 +875,10 @@ function saveconfig()
 			else
 				s = s .. ","
 			end
+		end
+		
+		if #mariohats[i] == 0 then
+			s = s .. ";"
 		end
 	end
 	
@@ -926,7 +943,7 @@ function loadconfig()
 			for j = 1, #s3 do
 				s4 = s3[j]:split("-")
 				controls[tonumber(s2[2])][s4[1]] = {}
-				for k = 2, #s3[4]+1 do
+				for k = 2, #s4 do
 					if tonumber(s4[k]) ~= nil then
 						controls[tonumber(s2[2])][s4[1]][k-1] = tonumber(s4[k])
 					else
@@ -951,18 +968,21 @@ function loadconfig()
 			portalhues[tonumber(s2[2])] = {tonumber(s3[1]), tonumber(s3[2])}
 		
 		elseif s2[1] == "mariohats" then
-			if mariohats[tonumber(s2[2])] == nil then
-				mariohats[tonumber(s2[2])] = {}
-			end
-			s3 = s2[3]:split(",")
-			for i = 1, #s3 do
-				local hatno = tonumber(s3[i])
-				if hatno > hatcount then
-					hatno = hatcount
-				end
-				mariohats[tonumber(s2[2])][i] = hatno
-			end
+			local playerno = tonumber(s2[2])
+			mariohats[playerno] = {}
 			
+			if s2[3] == "mariohats" then --SAVING WENT WRONG OMG
+			
+			elseif s2[3] then
+				s3 = s2[3]:split(",")
+				for i = 1, #s3 do
+					local hatno = tonumber(s3[i])
+					if hatno > hatcount then
+						hatno = hatcount
+					end
+					mariohats[playerno][i] = hatno
+				end
+			end
 			
 		elseif s2[1] == "scale" then
 			scale = tonumber(s2[2])

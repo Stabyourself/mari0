@@ -65,7 +65,7 @@ function platform:update(dt)
 		self.x = self.x + self.speedx*dt
 		local checktable = {}
 		for i, v in pairs(enemies) do
-			if objects[v] then
+			if objects[v] and underwater == false then
 				table.insert(checktable, v)
 			end
 		end
@@ -89,7 +89,7 @@ function platform:update(dt)
 	
 		local checktable = {}
 		for i, v in pairs(enemies) do
-			if objects[v] then
+			if objects[v] and underwater == false then
 				table.insert(checktable, v)
 			end
 		end
@@ -109,7 +109,7 @@ function platform:update(dt)
 	elseif self.dir == "fall" then
 		local checktable = {}
 		for i, v in pairs(enemies) do
-			if objects[v] then
+			if objects[v] and underwater == false then
 				table.insert(checktable, v)
 			end
 		end

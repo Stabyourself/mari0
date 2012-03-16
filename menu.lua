@@ -383,6 +383,8 @@ function menu_draw()
 			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
 			love.graphics.setColor(255, 255, 255, 255)
 			properprint("a little patience..|downloading " .. currentdownload .. " of " .. downloadcount, 50*scale, 30*scale)
+			drawrectangle(50, 55, 152, 10)
+			love.graphics.rectangle("fill", 50*scale, 55*scale, 152*((currentfiledownload-1)/(filecount-1))*scale, 10*scale)
 		else
 			love.graphics.translate(-round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 			
@@ -488,8 +490,13 @@ function menu_draw()
 				if outdated then
 					love.graphics.setColor(255, 0, 0, 255)
 					properprint("version outdated!|you have an old|version of mari0!|mappacks could not|be downloaded.|go to|stabyourself.net|to download latest", 244*scale, 130*scale)
-				love.graphics.setColor(255, 255, 255, 255)
+					love.graphics.setColor(255, 255, 255, 255)
+				elseif downloaderror then
+					love.graphics.setColor(255, 0, 0, 255)
+					properprint("download error!|something went|wrong while|downloading|mappacks.|press left and|right to try|again.  sorry.", 244*scale, 130*scale)
+					love.graphics.setColor(255, 255, 255, 255)
 				end
+					
 				love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
 				
 				--scrollbar offset
@@ -1143,7 +1150,6 @@ function loadbackground(background)
 		end
 		
 		--add custom tiles
-		local bla = love.timer.getTime()
 		if love.filesystem.exists("mappacks/" .. mappack .. "/tiles.png") then
 			customtiles = true
 			customtilesimg = love.graphics.newImage("mappacks/" .. mappack .. "/tiles.png")
@@ -1164,7 +1170,6 @@ function loadbackground(background)
 			customtiles = false
 			customtilecount = 0
 		end
-		print("Custom tileset loaded in: " .. round(love.timer.getTime()-bla, 5))
 		
 		--MAP ITSELF
 		local t = s2[1]:split(",")
@@ -1261,7 +1266,7 @@ function loadmappacks()
 	
 	local delete = {}
 	for i = 1, #mappacklist do
-		if love.filesystem.exists( "mappacks/" .. mappacklist[i] .. "/version.txt") then
+		if love.filesystem.exists( "mappacks/" .. mappacklist[i] .. "/version.txt") or not love.filesystem.exists( "mappacks/" .. mappacklist[i] .. "/settings.txt") then
 			table.insert(delete, i)
 		end
 	end
@@ -1343,7 +1348,7 @@ function loadonlinemappacks()
 	
 	local delete = {}
 	for i = 1, #onlinemappacklist do
-		if not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/version.txt") then
+		if not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/version.txt") or not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt") then
 			table.insert(delete, i)
 		end
 	end
@@ -1416,11 +1421,14 @@ function loadonlinemappacks()
 end
 
 function downloadmappacks()	
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
+	downloaderror = false
+	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
 	
 	if code ~= 200 then
+		downloaderror = true
 		return false
 	elseif not onlinedata then
+		downloaderror = true
 		return false
 	end
 	
@@ -1445,6 +1453,8 @@ function downloadmappacks()
 		return false
 	end
 	
+	success = true
+	
 	--download all mappacks
 	for i = 1, #maplist do
 		--check if current version is equal or newer
@@ -1462,32 +1472,77 @@ function downloadmappacks()
 			--draw
 			currentdownload = i
 			downloadcount = #maplist
-			loadingonlinemappacks = true
-			love.graphics.clear()
-			love.draw()
-			love.graphics.present()
-			loadingonlinemappacks = false
 			
 			if love.filesystem.exists("mappacks/" .. maplist[i] .. "/") then
 				love.filesystem.remove("mappacks/" .. maplist[i] .. "/")
 			end
 			
 			love.filesystem.mkdir("mappacks/" .. maplist[i])
-			local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=getmap&get=" .. maplist[i])
+			local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i])
 			
-			if code ~= 200 then
-				return false
-			end
-			
-			local split1 = onlinedata:split("<")
-			for j = 2, #split1 do
-				local split2 = split1[j]:split(">")
-				if split2[1] == "asset" then
-					local target = "mappacks/" .. maplist[i] .. "/" .. split2[2]:match("([^/]-)$")
-					downloadfile(split2[2], target)
+			if code == 200 then
+				filecount = 0
+				local checksums = {}
+				
+				local split1 = onlinedata:split("<")
+				for j = 2, #split1 do
+					local split2 = split1[j]:split(">")
+					if split2[1] == "asset" then
+						filecount = filecount + 1
+					elseif split2[1] == "checksum" then
+						table.insert(checksums, split2[2])
+					end
 				end
+				
+				currentfiledownload = 1
+				
+				local split1 = onlinedata:split("<")
+				for j = 2, #split1 do
+					local split2 = split1[j]:split(">")
+					if split2[1] == "asset" then
+						loadingonlinemappacks = true
+						love.graphics.clear()
+						love.draw()
+						love.graphics.present()
+						loadingonlinemappacks = false
+						
+						local target = "mappacks/" .. maplist[i] .. "/" .. split2[2]:match("([^/]-)$")
+						
+						local tries = 0
+						success = false
+						while not success and tries < 3 do
+							success = downloadfile(split2[2], target, checksums[currentfiledownload])
+							tries = tries + 1
+						end
+						
+						if not success then
+							break
+						end
+						currentfiledownload = currentfiledownload + 1
+					end
+				end
+				if success then
+					love.filesystem.write( "mappacks/" .. maplist[i] .. "/version.txt", versionlist[i])
+				end
+			else
+				success = false
 			end
-			love.filesystem.write( "mappacks/" .. maplist[i] .. "/version.txt", versionlist[i])
+		end
+		
+		--Delete stuff and stuff.
+		if not success then
+			if love.filesystem.exists("mappacks/" .. maplist[i] .. "/") then
+				local list = love.filesystem.enumerate("mappacks/" .. maplist[i] .. "/")
+				for j = 1, #list do
+					love.filesystem.remove("mappacks/" .. maplist[i] .. "/" .. list[j])
+				end
+				
+				love.filesystem.remove("mappacks/" .. maplist[i] .. "/")
+			end
+			downloaderror = true
+			break
+		else
+			print("Download succeeded.")
 		end
 	end
 	
@@ -2069,10 +2124,15 @@ function keypromptstart()
 	end
 end
 
-function downloadfile(url, target)
+function downloadfile(url, target, checksum)
 	local data, code = http.request(url)
 	
 	if code ~= 200 then
+		return false
+	end
+	
+	if checksum ~= sha1(data) then
+		print("Checksum doesn't match!")
 		return false
 	end
 	

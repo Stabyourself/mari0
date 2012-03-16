@@ -14,7 +14,6 @@ function hammerbro:init(x, y)
 	self.active = true
 	self.category = 20
 	self.mask = {true, false, false, false, false, true, false, false, false, true}
-	self.emancipatecheck = true
 	self.autodelete = true
 	self.gravity = 40
 	

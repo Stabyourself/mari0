@@ -72,6 +72,8 @@ function music:update()
 			source:setPitch(self.pitch)
 		end
 	end
+	local err = self.thread:get("error") 
+	if err then print(err) end
 end
 
 function music:onLoad(name, source)

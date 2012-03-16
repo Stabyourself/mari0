@@ -1,4 +1,5 @@
 function game_load(suspended)
+	scrollfactor = 0
 	backgroundcolor = {}
 	backgroundcolor[1] = {92, 148, 252}
 	backgroundcolor[2] = {0, 0, 0}
@@ -121,6 +122,7 @@ function game_load(suspended)
 		custommusic = "mappacks/" .. mappack .. "/music.mp3"
 		music:load(custommusic)
 	end
+	print(custommusic)
 	
 	--FINALLY LOAD THE DAMN LEVEL
 	levelscreen_load("initial")
@@ -2480,8 +2482,6 @@ function loadmap(filename)
 			objects["tile"][x .. "-" .. y] = tile:new(x-1, y-1, 1, 1, true)
 		end
 	end
-	
-	scrollfactor = 0
 	
 	--MORE STUFF
 	for i = 2, #s2 do
