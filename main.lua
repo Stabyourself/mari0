@@ -1321,22 +1321,22 @@ end
 
 function love.joystickpressed(joystick, button)
 	if keyprompt then
-		keypromptenter("joybutton", joystick, button)
+		keypromptenter("joybutton", joystick:getID(), button)
 		return
 	end
 	
 	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickpressed(joystick, button)
+		menu_joystickpressed(joystick:getID(), button)
 	elseif gamestate == "game" then
-		game_joystickpressed(joystick, button)
+		game_joystickpressed(joystick:getID(), button)
 	end
 end
 
 function love.joystickreleased(joystick, button)
 	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickreleased(joystick, button)
+		menu_joystickreleased(joystick:getID(), button)
 	elseif gamestate == "game" then
-		game_joystickreleased(joystick, button)
+		game_joystickreleased(joystick:getID(), button)
 	end
 end
 
@@ -1446,9 +1446,17 @@ end
 
 function keyprompt_update()
 	if keyprompt then
+		local jss = love.joystick.getJoysticks()
+		
 		for i = 1, prompt.joysticks do
+			local js = jss[i]
+			
+			if not js then
+				return
+			end
+			
 			for j = 1, #prompt.joystick[i].validhats do
-				local dir = love.joystick.getHat(i, prompt.joystick[i].validhats[j])
+				local dir = js:getHat(prompt.joystick[i].validhats[j])
 				if dir ~= "c" then
 					keypromptenter("joyhat", i, prompt.joystick[i].validhats[j], dir)
 					return
@@ -1456,7 +1464,7 @@ function keyprompt_update()
 			end
 			
 			for j = 1, prompt.joystick[i].axes do
-				local value = love.joystick.getAxis(i, j)
+				local value = js:getAxis(j)
 				if value > prompt.joystick[i].axisposition[j] + joystickdeadzone then
 					keypromptenter("joyaxis", i, j, "pos")
 					return

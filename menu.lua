@@ -2044,7 +2044,7 @@ function menu_joystickreleased(joystick, button)
 end
 
 function keypromptenter(t, ...)
-	arg = {...}
+	local arg = {...}
 	if t == "key" and (arg[1] == ";" or arg[1] == "," or arg[1] == "," or arg[1] == "-") then
 		return
 	end
@@ -2095,23 +2095,23 @@ function keypromptstart()
 	--save number of stuff
 	prompt = {}
 	prompt.joystick = {}
-	prompt.joysticks = love.joystick.getNumJoysticks()
+	prompt.joysticks = love.joystick.getJoystickCount()
 	
-	for i = 1, prompt.joysticks do
+	for i, js in ipairs(love.joystick.getJoysticks()) do
 		prompt.joystick[i] = {}
-		prompt.joystick[i].hats = love.joystick.getNumHats(i)
-		prompt.joystick[i].axes = love.joystick.getNumAxes(i)
+		prompt.joystick[i].hats = js:getHatCount()
+		prompt.joystick[i].axes = js:getAxisCount()
 		
 		prompt.joystick[i].validhats = {}
 		for j = 1, prompt.joystick[i].hats do
-			if love.joystick.getHat(i, j) == "c" then
+			if js:getHat(j) == "c" then
 				table.insert(prompt.joystick[i].validhats, j)
 			end
 		end
 		
 		prompt.joystick[i].axisposition = {}
 		for j = 1, prompt.joystick[i].axes do
-			table.insert(prompt.joystick[i].axisposition, love.joystick.getAxis(i, j))
+			table.insert(prompt.joystick[i].axisposition, js:getAxis(j))
 		end
 	end
 end
