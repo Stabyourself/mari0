@@ -1225,7 +1225,7 @@ function love.keypressed(key, unicode)
 	end
 	
 	if key == "f12" then
-		love.mouse.setGrab(not love.mouse.isGrabbed())
+		love.mouse.setGrabbed(not love.mouse.isGrabbed())
 	end
 	
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
