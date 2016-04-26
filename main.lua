@@ -1053,7 +1053,7 @@ function defaultconfig()
 	controls[i]["down"] = {"s"}
 	controls[i]["up"] = {"w"}
 	controls[i]["run"] = {"lshift"}
-	controls[i]["jump"] = {" "}
+	controls[i]["jump"] = {"space"}
 	controls[i]["aimx"] = {""} --mouse aiming, so no need
 	controls[i]["aimy"] = {""}
 	controls[i]["portal1"] = {""}

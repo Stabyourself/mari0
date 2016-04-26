@@ -20,7 +20,7 @@ function client_controls()
 	controls[i]["left"] = {"a"}
 	controls[i]["down"] = {"s"}
 	controls[i]["run"] = {"lshift"}
-	controls[i]["jump"] = {" "}
+	controls[i]["jump"] = {"space"}
 	controls[i]["aimX"] = {} --mouse aiming, so no need
 	controls[i]["aimY"] = {}
 	controls[i]["portal1"] = {}

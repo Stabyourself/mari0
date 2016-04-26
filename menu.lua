@@ -1560,7 +1560,7 @@ function menu_keypressed(key, unicode)
 				if target > 0 then
 					selectworldcursor = target
 				end
-			elseif (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+			elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				selectworldopen = false
 				game_load(selectworldcursor)
 			elseif key == "escape" then
@@ -1582,7 +1582,7 @@ function menu_keypressed(key, unicode)
 			if selection < 4 then
 				selection = selection + 1
 			end
-		elseif (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+		elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 			if selection == 0 then
 				game_load(true)
 			elseif selection == 1 then
@@ -1680,7 +1680,7 @@ function menu_keypressed(key, unicode)
 					onlineupdatescroll()
 				end
 			end	
-		elseif key == "escape" or (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+		elseif key == "escape" or (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 			gamestate = "menu"
 			saveconfig()
 			if mappack == "custom_mappack" then
@@ -1705,7 +1705,7 @@ function menu_keypressed(key, unicode)
 				server_load()
 			end
 		elseif SERVER then
-			if (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+			if (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				server_start()
 			end
 		end
@@ -1739,7 +1739,7 @@ function menu_keypressed(key, unicode)
 			end
 		end
 		
-		if (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+		if (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 			if optionstab == 1 then
 				if optionsselection == 3 then
 					if mouseowner == skinningplayer then
