@@ -345,10 +345,10 @@ function game_update(dt)
 				gelcannontimer = 0
 			end
 		else
-			if love.mouse.isDown("l") then
+			if love.mouse.isDown(1) then
 				gelcannontimer = gelcannondelay
 				objects["player"][mouseowner]:shootgel(1)
-			elseif love.mouse.isDown("r") then
+			elseif love.mouse.isDown(2) then
 				gelcannontimer = gelcannondelay
 				objects["player"][mouseowner]:shootgel(2)
 			end
@@ -965,12 +965,12 @@ function game_draw()
 				
 				local tilenumber = t[1]
 				if tilequads[tilenumber].coinblock and tilequads[tilenumber].invisible == false then --coinblock
-					love.graphics.drawq(coinblockimage, coinblockquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+					love.graphics.draw(coinblockimage, coinblockquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 				elseif tilequads[tilenumber].coin then --coin
-					love.graphics.drawq(coinimage, coinquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+					love.graphics.draw(coinimage, coinquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 				elseif bounceyoffset ~= 0 then
 					if tilequads[tilenumber].invisible == false or editormode then
-						love.graphics.drawq(tilequads[tilenumber].image, tilequads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(tilequads[tilenumber].image, tilequads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 					end
 				end
 				
@@ -1002,13 +1002,13 @@ function game_draw()
 				
 				if editormode then
 					if tilequads[t[1]].invisible and t[1] ~= 1 then
-						love.graphics.drawq(tilequads[t[1]].image, tilequads[t[1]].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(tilequads[t[1]].image, tilequads[t[1]].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
 					end
 					
 					if #t > 1 and t[2] ~= "link" then
 						tilenumber = t[2]
 						love.graphics.setColor(255, 255, 255, 150)
-						love.graphics.drawq(entityquads[tilenumber].image, entityquads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(entityquads[tilenumber].image, entityquads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
 						love.graphics.setColor(255, 255, 255, 255)
 					end
 				end
@@ -1027,7 +1027,7 @@ function game_draw()
 		
 		properprint("*", uispace*1.5-8*scale, 16*scale)
 		
-		love.graphics.drawq(coinanimationimage, coinanimationquads[spriteset][coinframe], uispace*1.5-16*scale, 16*scale, 0, scale, scale)
+		love.graphics.draw(coinanimationimage, coinanimationquads[spriteset][coinframe], uispace*1.5-16*scale, 16*scale, 0, scale, scale)
 		properprint(addzeros(mariocoincount, 2), uispace*1.5-0*scale, 16*scale)
 		
 		properprint("world", uispace*2.5 - 20*scale, 8*scale)
@@ -1107,7 +1107,7 @@ function game_draw()
 		love.graphics.setColor(255, 255, 255)
 		--axe
 		if axex then
-			love.graphics.drawq(axeimg, axequads[coinframe], math.floor((axex-1-xscroll)*16*scale), (axey-1.5)*16*scale, 0, scale, scale)
+			love.graphics.draw(axeimg, axequads[coinframe], math.floor((axex-1-xscroll)*16*scale), (axey-1.5)*16*scale, 0, scale, scale)
 			
 			if marioworld ~= 8 then
 				love.graphics.draw(toadimg, math.floor((mapwidth-7-xscroll)*16*scale), 177*scale, 0, scale, scale)
@@ -1300,7 +1300,7 @@ function game_draw()
 								else
 									love.graphics.setColor(255, 255, 255)
 								end
-								love.graphics.drawq(v.graphic[k], v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+								love.graphics.draw(v.graphic[k], v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 							end
 							
 							if v.drawhat and hatoffsets[v.animationstate] then
@@ -1354,11 +1354,11 @@ function game_draw()
 							
 							if v.graphic[0] then
 								love.graphics.setColor(255, 255, 255)
-								love.graphics.drawq(v.graphic[0], v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+								love.graphics.draw(v.graphic[0], v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 							end
 						else
 							if v.graphic and v.quad then
-								love.graphics.drawq(v.graphic, v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+								love.graphics.draw(v.graphic, v.quad, math.floor(((v.x-xscroll)*16+v.offsetX)*scale), math.floor((v.y*16-v.offsetY)*scale), v.rotation, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 							end
 						end
 						
@@ -1397,7 +1397,7 @@ function game_draw()
 										else
 											love.graphics.setColor(255, 255, 255)
 										end
-										love.graphics.drawq(v.graphic[k], v.quad, math.ceil(((px-xscroll)*16+v.offsetX)*scale), math.ceil((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+										love.graphics.draw(v.graphic[k], v.quad, math.ceil(((px-xscroll)*16+v.offsetX)*scale), math.ceil((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 									end
 									
 									if v.drawhat and hatoffsets[v.animationstate] then
@@ -1451,10 +1451,10 @@ function game_draw()
 									
 									if v.graphic[0] then
 										love.graphics.setColor(255, 255, 255)
-										love.graphics.drawq(v.graphic[0], v.quad, math.floor(((px-xscroll)*16+v.offsetX)*scale), math.floor((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+										love.graphics.draw(v.graphic[0], v.quad, math.floor(((px-xscroll)*16+v.offsetX)*scale), math.floor((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 									end
 								else
-									love.graphics.drawq(v.graphic, v.quad, math.ceil(((px-xscroll)*16+v.offsetX)*scale), math.ceil((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
+									love.graphics.draw(v.graphic, v.quad, math.ceil(((px-xscroll)*16+v.offsetX)*scale), math.ceil((py*16-v.offsetY)*scale), pr, dirscale, horscale, v.quadcenterX, v.quadcenterY)
 								end
 							end
 						end
@@ -1543,7 +1543,7 @@ function game_draw()
 				end
 				
 				love.graphics.setColor(unpack(objects["player"][i].portal1color))
-				love.graphics.drawq(portalimage, portal1quad[portalframe], math.floor(((objects["player"][i].portal1X-1-xscroll)*16+offsetx)*scale), math.floor(((objects["player"][i].portal1Y-1)*16+offsety)*scale), rotation, scale, scale, 8, 8)
+				love.graphics.draw(portalimage, portal1quad[portalframe], math.floor(((objects["player"][i].portal1X-1-xscroll)*16+offsetx)*scale), math.floor(((objects["player"][i].portal1Y-1)*16+offsety)*scale), rotation, scale, scale, 8, 8)
 			end
 			
 			if objects["player"][i].portal2X ~= false then
@@ -1570,7 +1570,7 @@ function game_draw()
 				end
 				
 				love.graphics.setColor(unpack(objects["player"][i].portal2color))
-				love.graphics.drawq(portalimage, portal2quad[portalframe], math.floor(((objects["player"][i].portal2X-1-xscroll)*16+offsetx)*scale), math.floor(((objects["player"][i].portal2Y-1)*16+offsety)*scale), rotation, scale, scale, 8, 8)
+				love.graphics.draw(portalimage, portal2quad[portalframe], math.floor(((objects["player"][i].portal2X-1-xscroll)*16+offsetx)*scale), math.floor(((objects["player"][i].portal2Y-1)*16+offsety)*scale), rotation, scale, scale, 8, 8)
 			end
 		end		
 		
@@ -1578,7 +1578,7 @@ function game_draw()
 		
 		--COINBLOCKANIMATION
 		for i, v in pairs(coinblockanimations) do
-			love.graphics.drawq(coinblockanimationimage, coinblockanimationquads[coinblockanimations[i].frame], math.floor((coinblockanimations[i].x - xscroll)*16*scale), math.floor((coinblockanimations[i].y*16-8)*scale), 0, scale, scale, 4, 54)
+			love.graphics.draw(coinblockanimationimage, coinblockanimationquads[coinblockanimations[i].frame], math.floor((coinblockanimations[i].x - xscroll)*16*scale), math.floor((coinblockanimations[i].y*16-8)*scale), 0, scale, scale, 4, 54)
 		end
 		
 		--SCROLLING SCORE
@@ -1694,12 +1694,12 @@ function game_draw()
 						breakingblockX = cox
 						breakingblockY = coy
 						breakingblockprogress = 0
-					elseif not breakingblockX and love.mouse.isDown("l") then
+					elseif not breakingblockX and love.mouse.isDown(1) then
 						breakingblockX = cox
 						breakingblockY = coy
 						breakingblockprogress = 0
 					end
-				elseif love.mouse.isDown("l") then
+				elseif love.mouse.isDown(1) then
 					breakingblockX = cox
 					breakingblockY = coy
 					breakingblockprogress = 0
@@ -1712,7 +1712,7 @@ function game_draw()
 				love.graphics.setColor(255, 255, 255, 255)
 				local frame = math.ceil((breakingblockprogress/minecraftbreaktime)*10)
 				if frame ~= 0 then
-					love.graphics.drawq(minecraftbreakimg, minecraftbreakquad[frame], (breakingblockX-1-xscroll)*16*scale, (breakingblockY-1.5)*16*scale, 0, scale, scale)
+					love.graphics.draw(minecraftbreakimg, minecraftbreakquad[frame], (breakingblockX-1-xscroll)*16*scale, (breakingblockY-1.5)*16*scale, 0, scale, scale)
 				end
 			end
 			love.graphics.setColor(255, 255, 255, 255)
@@ -1731,7 +1731,7 @@ function game_draw()
 					elseif t <= smbtilecount+portaltilecount then
 						img = portaltilesimg
 					end
-					love.graphics.drawq(img, tilequads[t].quad, (width*8-88+(i-1)*20)*scale, 205*scale, 0, scale, scale)
+					love.graphics.draw(img, tilequads[t].quad, (width*8-88+(i-1)*20)*scale, 205*scale, 0, scale, scale)
 				end
 			end
 			
@@ -2584,11 +2584,11 @@ function generatespritebatch()
 					local tilenumber = t[1]
 					if tilenumber ~= 0 and tilequads[tilenumber].invisible == false and tilequads[tilenumber].coinblock == false and tilequads[tilenumber].coin == false then
 						if tilenumber <= smbtilecount then
-							smbmsb:addq( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
+							smbmsb:add( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
 						elseif tilenumber <= smbtilecount+portaltilecount then
-							portalmsb:addq( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
+							portalmsb:add( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
 						elseif tilenumber <= smbtilecount+portaltilecount+customtilecount then
-							custommsb:addq( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
+							custommsb:add( tilequads[tilenumber].quad, (x-1)*16*scale, ((y-1)*16-8)*scale, 0, scale, scale )
 						end
 					end
 				end
@@ -2916,7 +2916,7 @@ function game_mousepressed(x, y, button)
 		
 		if not noupdate and objects["player"][mouseowner] and objects["player"][mouseowner].controlsenabled and objects["player"][mouseowner].vine == false then
 		
-			if button == "l" or button == "r" and objects["player"][mouseowner] then
+			if button == 1 or button == 2 and objects["player"][mouseowner] then
 				--knockback
 				if portalknockback then
 					local xadd = math.sin(objects["player"][mouseowner].pointingangle)*30
@@ -2929,7 +2929,7 @@ function game_mousepressed(x, y, button)
 				end
 			end
 		
-			if button == "l" then
+			if button == 1 then
 				if playertype == "portal" then
 					local sourcex = objects["player"][mouseowner].x+6/16
 					local sourcey = objects["player"][mouseowner].y+6/16
@@ -2951,7 +2951,7 @@ function game_mousepressed(x, y, button)
 					end
 				end
 				
-			elseif button == "r" then
+			elseif button == 2 then
 				if playertype == "portal" then
 					local sourcex = objects["player"][mouseowner].x+6/16
 					local sourcey = objects["player"][mouseowner].y+6/16
@@ -2972,8 +2972,18 @@ function game_mousepressed(x, y, button)
 				end
 			end
 		end
-			
-		if button == "wd" then
+	end
+end
+
+function game_wheelmoved(x, y)
+	if editormode and editorstate ~= "portalgun" then
+		editor_wheelmoved(x, y)
+	else
+		if editormode then
+			editor_wheelmoved(x, y)
+		end
+		
+		if y < 0 then
 			if playertype == "minecraft" then
 				mccurrentblock = mccurrentblock + 1
 				if mccurrentblock >= 10 then
@@ -2985,7 +2995,7 @@ function game_mousepressed(x, y, button)
 					speedtarget = 0.1
 				end
 			end
-		elseif button == "wu" then
+		elseif y > 0 then
 			if playertype == "minecraft" then
 				mccurrentblock = mccurrentblock - 1
 				if mccurrentblock <= 0 then
@@ -3461,7 +3471,7 @@ function warpzone(i)
 end
 
 function game_mousereleased(x, y, button)
-	if button == "l" then
+	if button == 1 then
 		if playertype == "minecraft" then
 			breakingblockX = false
 		end
@@ -3525,8 +3535,8 @@ function savemap(filename)
 	
 	--tileset
 	
-	love.filesystem.mkdir( "mappacks" )
-	love.filesystem.mkdir( "mappacks/" .. mappack )
+	love.filesystem.createDirectory( "mappacks" )
+	love.filesystem.createDirectory( "mappacks/" .. mappack )
 	
 	love.filesystem.write("mappacks/" .. mappack .. "/" .. filename .. ".txt", s)
 	print("Map saved as " .. "mappacks/" .. filename .. ".txt")
@@ -3828,7 +3838,7 @@ end
 function properprint2(s, x, y)
 	for i = 1, string.len(tostring(s)) do
 		if fontquads[string.sub(s, i, i)] then
-			love.graphics.drawq(fontimage2, font2quads[string.sub(s, i, i)], x+((i-1)*4)*scale, y, 0, scale, scale)
+			love.graphics.draw(fontimage2, font2quads[string.sub(s, i, i)], x+((i-1)*4)*scale, y, 0, scale, scale)
 		end
 	end
 end
@@ -3868,27 +3878,34 @@ end
 
 function checkkey(s)
 	if s[1] == "joy" then
+		local jss = love.joystick.getJoysticks()
+		local js = jss[s[2]]
+		
+		if not js then
+			return
+		end
+		
 		if s[3] == "hat" then
-			if love.joystick.getHat(s[2], s[4]) == s[5] then
+			if js:getHat(s[4]) == s[5] then
 				return true
 			else
 				return false
 			end
 		elseif s[3] == "but" then
-			if love.joystick.isDown(s[2], s[4]) then
+			if js:isDown(s[4]) then
 				return true
 			else
 				return false
 			end
 		elseif s[3] == "axe" then
 			if s[5] == "pos" then
-				if love.joystick.getAxis(s[2], s[4]) > joystickdeadzone then
+				if js:getAxis(s[4]) > joystickdeadzone then
 					return true
 				else
 					return false
 				end
 			else
-				if love.joystick.getAxis(s[2], s[4]) < -joystickdeadzone then
+				if js:getAxis(s[4]) < -joystickdeadzone then
 					return true
 				else
 					return false

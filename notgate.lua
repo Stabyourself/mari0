@@ -40,7 +40,7 @@ end
 function notgate:draw()
 	love.graphics.setColor(255, 255, 255)
 	
-	love.graphics.drawq(entitiesimg, entityquads[84].quad, math.floor((self.x-1-xscroll)*16*scale), ((self.y-1)*16-8)*scale, 0, scale, scale)
+	love.graphics.draw(entitiesimg, entityquads[84].quad, math.floor((self.x-1-xscroll)*16*scale), ((self.y-1)*16-8)*scale, 0, scale, scale)
 end
 
 function notgate:out(t)

@@ -124,7 +124,7 @@ function lakito:draw()
 		quad = 2
 	end
 	
-	love.graphics.drawq(lakitoimg, lakitoquad[quad], math.floor((self.x-xscroll-2/16+.5)*16*scale), (self.y-0.5+1/16)*16*scale, 0, horscale, verscale, 8, 12)
+	love.graphics.draw(lakitoimg, lakitoquad[quad], math.floor((self.x-xscroll-2/16+.5)*16*scale), (self.y-0.5+1/16)*16*scale, 0, horscale, verscale, 8, 12)
 end
 
 function lakito:stomp()

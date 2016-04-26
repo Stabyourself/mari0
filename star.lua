@@ -88,7 +88,7 @@ end
 function star:draw()
 	if self.drawable == false then
 		--Draw it coming out of the block.
-		love.graphics.drawq(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor((self.y*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
+		love.graphics.draw(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor((self.y*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
 	end
 end
 

@@ -160,7 +160,7 @@ function bowser:draw()
 	--just for the hammers
 	if not self.fall and not self.backwards then
 		if self.hammertimer > self.hammertime - bowserhammerdrawtime then
-			love.graphics.drawq(hammerimg, hammerquad[spriteset][1], math.floor((self.x-xscroll)*16*scale), (self.y-.5-11/16)*16*scale, 0, scale, scale)
+			love.graphics.draw(hammerimg, hammerquad[spriteset][1], math.floor((self.x-xscroll)*16*scale), (self.y-.5-11/16)*16*scale, 0, scale, scale)
 		end
 	end
 end
