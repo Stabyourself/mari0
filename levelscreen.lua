@@ -193,7 +193,7 @@ function levelscreen_draw()
 		
 		properprint("*", uispace*1.5-8*scale, 16*scale)
 		
-		love.graphics.drawq(coinanimationimage, coinanimationquads[2][coinframe], uispace*1.5-16*scale, 16*scale, 0, scale, scale)
+		love.graphics.draw(coinanimationimage, coinanimationquads[2][coinframe], uispace*1.5-16*scale, 16*scale, 0, scale, scale)
 		properprint(addzeros(mariocoincount, 2), uispace*1.5-0*scale, 16*scale)
 		
 		properprint("world", uispace*2.5 - 20*scale, 8*scale)

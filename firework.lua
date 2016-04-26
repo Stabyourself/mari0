@@ -29,5 +29,5 @@ function fireworkboom:draw()
 		frame = 7
 	end
 	
-	love.graphics.drawq(fireballimg, fireballquad[frame], math.floor((self.x-xscroll)*16*scale), (self.y-0.5)*16*scale, 0, scale, scale, 8, 8)
+	love.graphics.draw(fireballimg, fireballquad[frame], math.floor((self.x-xscroll)*16*scale), (self.y-0.5)*16*scale, 0, scale, scale, 8, 8)
 end

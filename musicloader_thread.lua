@@ -1,5 +1,3 @@
-local this = love.thread.getThread()
-
 require("love.filesystem")
 require("love.sound")
 require("love.audio")
@@ -15,7 +13,7 @@ local musictoload = {} -- waiting to be loaded into memory
 local function getmusiclist()
 	-- the music string should have names separated by the ";" character
 	-- music will be loaded in in the same order as they appear in the string
-	local musicliststr = this:get("musiclist")
+	local musicliststr = love.thread.getChannel("musiclist"):pop()
 	if musicliststr then
 		for musicname in musicliststr:gmatch("[^;]+") do
 			if not musiclist[musicname] then
@@ -42,7 +40,7 @@ local function loadmusic()
 		if filename then
 			local source = love.audio.newSource(love.sound.newDecoder(filename, 512 * 1024), "static")
 			--print("thread loaded music", name)
-			this:set(name, source)
+			love.thread.getChannel(name):push(source)
 		end
 	end
 end

@@ -149,7 +149,7 @@ function guielement:draw()
 			high = 2
 		end
 		
-		love.graphics.drawq(checkboximg, checkboxquad[high][quad], self.x*scale, self.y*scale, 0, scale, scale)
+		love.graphics.draw(checkboximg, checkboxquad[high][quad], self.x*scale, self.y*scale, 0, scale, scale)
 	elseif self.type == "dropdown" then
 		local high = self:inhighlight(love.mouse.getPosition())
 	
@@ -395,6 +395,18 @@ function guielement:click(x, y, button)
 				self.cursorblink = true
 			else
 				self.inputting = false
+			end
+		end
+	end
+end
+
+function guielement:wheel(x, y)
+	if self.active then
+		if self.type == "scrollbar" then
+			if y < 0 then
+				self.value = math.min(1, self.value+0.2)
+			elseif y > 0 then
+				self.value = math.max(0, self.value-0.2)
 			end
 		end
 	end

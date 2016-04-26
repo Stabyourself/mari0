@@ -34,7 +34,7 @@ function pushbutton:draw()
 		horscale = -scale
 	end
 	
-	love.graphics.drawq(pushbuttonimg, pushbuttonquad[quad], math.floor((self.cox-0.5-xscroll)*16*scale), (self.coy-1.5)*16*scale, 0, horscale, scale, 8)
+	love.graphics.draw(pushbuttonimg, pushbuttonquad[quad], math.floor((self.cox-0.5-xscroll)*16*scale), (self.coy-1.5)*16*scale, 0, horscale, scale, 8)
 end
 
 function pushbutton:addoutput(a)

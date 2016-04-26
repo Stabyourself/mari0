@@ -35,5 +35,5 @@ function blockdebris:update(dt)
 end
 
 function blockdebris:draw()
-	love.graphics.drawq(blockdebrisimage, blockdebrisquads[spriteset][self.frame], math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 4, 4)
+	love.graphics.draw(blockdebrisimage, blockdebrisquads[spriteset][self.frame], math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 4, 4)
 end
