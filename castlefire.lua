@@ -27,7 +27,7 @@ function castlefire:update(dt)
 		self.timer = self.timer - castlefiredelay
 		if self.dir == "cw" then
 			self.angle = self.angle + castlefireangleadd
-			self.angle = math.mod(self.angle, 360)
+			self.angle = math.fmod(self.angle, 360)
 		else
 			self.angle = self.angle - castlefireangleadd
 			while self.angle < 0 do

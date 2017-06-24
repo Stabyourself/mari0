@@ -314,11 +314,11 @@ function editor_draw()
 			
 			if editentities == false then
 				for i = 1, tilelistcount+1 do
-					love.graphics.draw(tilequads[i+tileliststart-1].image, tilequads[i+tileliststart-1].quad, math.mod((i-1), 22)*17*scale+5*scale, math.floor((i-1)/22)*17*scale+38*scale-tilesoffset, 0, scale, scale)
+					love.graphics.draw(tilequads[i+tileliststart-1].image, tilequads[i+tileliststart-1].quad, math.fmod((i-1), 22)*17*scale+5*scale, math.floor((i-1)/22)*17*scale+38*scale-tilesoffset, 0, scale, scale)
 				end
 			else
 				for i = 1, entitiescount do
-					love.graphics.draw(entityquads[i].image, entityquads[i].quad, math.mod((i-1), 22)*17*scale+5*scale, math.floor((i-1)/22)*17*scale+38*scale-tilesoffset, 0, scale, scale)
+					love.graphics.draw(entityquads[i].image, entityquads[i].quad, math.fmod((i-1), 22)*17*scale+5*scale, math.floor((i-1)/22)*17*scale+38*scale-tilesoffset, 0, scale, scale)
 				end
 			end
 			
@@ -326,12 +326,12 @@ function editor_draw()
 			if editentities == false then
 				if tile and tile <= tilelistcount+1 then
 					love.graphics.setColor(255, 255, 255, 127)
-					love.graphics.rectangle("fill", (5+math.mod((tile-1), 22)*17)*scale, (38+math.floor((tile-1)/22)*17)*scale-tilesoffset, 16*scale, 16*scale)
+					love.graphics.rectangle("fill", (5+math.fmod((tile-1), 22)*17)*scale, (38+math.floor((tile-1)/22)*17)*scale-tilesoffset, 16*scale, 16*scale)
 				end
 			else
 				if tile and tile <= entitiescount then
 					love.graphics.setColor(255, 255, 255, 127)
-					love.graphics.rectangle("fill", (5+math.mod((tile-1), 22)*17)*scale, (38+math.floor((tile-1)/22)*17)*scale-tilesoffset, 16*scale, 16*scale)
+					love.graphics.rectangle("fill", (5+math.fmod((tile-1), 22)*17)*scale, (38+math.floor((tile-1)/22)*17)*scale-tilesoffset, 16*scale, 16*scale)
 				end
 			end
 			

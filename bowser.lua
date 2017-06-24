@@ -76,7 +76,7 @@ function bowser:update(dt)
 		end
 
 		--rotate back to 0 (portals)
-		self.rotation = math.mod(self.rotation, math.pi*2)
+		self.rotation = math.fmod(self.rotation, math.pi*2)
 		if self.rotation > 0 then
 			self.rotation = self.rotation - portalrotationalignmentspeed*dt
 			if self.rotation < 0 then
