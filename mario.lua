@@ -229,7 +229,7 @@ end
 function mario:update(dt)
 	self.passivemoved = false
 	--rotate back to 0 (portals)
-	self.rotation = math.mod(self.rotation, math.pi*2)
+	self.rotation = math.fmod(self.rotation, math.pi*2)
 	
 	if self.rotation < -math.pi then
 		self.rotation = self.rotation + math.pi*2
@@ -367,7 +367,7 @@ function mario:update(dt)
 				self.y = 68/16 + flagydistance-self.height
 				self.climbframe = 2
 			else
-				if math.mod(self.animationtimer, flagclimbframedelay*2) >= flagclimbframedelay then
+				if math.fmod(self.animationtimer, flagclimbframedelay*2) >= flagclimbframedelay then
 					self.climbframe = 1
 				else
 					self.climbframe = 2
@@ -483,7 +483,7 @@ function mario:update(dt)
 		if bridgedisappear then
 			local v = objects["bowser"][1]
 			if v then
-				v.walkframe = round(math.mod(self.animationtimer, castleanimationbowserframedelay*2)*(1/(castleanimationbowserframedelay*2)))+1
+				v.walkframe = round(math.fmod(self.animationtimer, castleanimationbowserframedelay*2)*(1/(castleanimationbowserframedelay*2)))+1
 			end
 			self.animationtimer2 = self.animationtimer2 + dt
 			while self.animationtimer2 > castleanimationbridgedisappeardelay do
@@ -630,7 +630,7 @@ function mario:update(dt)
 		
 		self.vinemovetimer = self.vinemovetimer + dt
 		
-		self.climbframe = math.ceil(math.mod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
+		self.climbframe = math.ceil(math.fmod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
 		self.climbframe = math.max(self.climbframe, 1)
 		self:setquad()
 		
@@ -647,7 +647,7 @@ function mario:update(dt)
 		if self.vineanimationclimb then
 			self.vinemovetimer = self.vinemovetimer + dt
 			
-			self.climbframe = math.ceil(math.mod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
+			self.climbframe = math.ceil(math.fmod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
 			self.climbframe = math.max(self.climbframe, 1)
 			
 			self.y = self.y - vinemovespeed*dt
@@ -675,7 +675,7 @@ function mario:update(dt)
 	elseif self.animation == "shrink" then
 		self.animationtimer = self.animationtimer + dt
 		--set frame lol
-		local frame = math.ceil(math.mod(self.animationtimer, growframedelay*3)/shrinkframedelay)
+		local frame = math.ceil(math.fmod(self.animationtimer, growframedelay*3)/shrinkframedelay)
 		self:updateangle()
 	
 		if frame == 1 then
@@ -700,7 +700,7 @@ function mario:update(dt)
 			end
 		end
 		
-		local invis = math.ceil(math.mod(self.animationtimer, invicibleblinktime*2)/invicibleblinktime)
+		local invis = math.ceil(math.fmod(self.animationtimer, invicibleblinktime*2)/invicibleblinktime)
 		
 		if invis == 1 then
 			self.drawable = true
@@ -724,7 +724,7 @@ function mario:update(dt)
 	elseif self.animation == "invincible" then
 		self.animationtimer = self.animationtimer + dt
 		
-		local invis = math.ceil(math.mod(self.animationtimer, invicibleblinktime*2)/invicibleblinktime)
+		local invis = math.ceil(math.fmod(self.animationtimer, invicibleblinktime*2)/invicibleblinktime)
 		
 		if invis == 1 then
 			self.drawable = true
@@ -741,7 +741,7 @@ function mario:update(dt)
 	elseif self.animation == "grow1" then
 		self.animationtimer = self.animationtimer + dt
 		--set frame lol
-		local frame = math.ceil(math.mod(self.animationtimer, growframedelay*3)/growframedelay)
+		local frame = math.ceil(math.fmod(self.animationtimer, growframedelay*3)/growframedelay)
 		self:updateangle()
 		
 		if frame == 3 then
@@ -781,7 +781,7 @@ function mario:update(dt)
 	elseif self.animation == "grow2" then
 		self.animationtimer = self.animationtimer + dt
 		--set frame lol
-		local frame = math.ceil(math.mod(self.animationtimer, growframedelay*3)/growframedelay)
+		local frame = math.ceil(math.fmod(self.animationtimer, growframedelay*3)/growframedelay)
 		self:updateangle()
 		
 		self.colors = starcolors[frame]
@@ -812,7 +812,7 @@ function mario:update(dt)
 		if upkey(self.playernumber) then
 			self.vinemovetimer = self.vinemovetimer + dt
 			
-			self.climbframe = math.ceil(math.mod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
+			self.climbframe = math.ceil(math.fmod(self.vinemovetimer, vineframedelay*2)/vineframedelay)
 			self.climbframe = math.max(self.climbframe, 1)
 			
 			self.y = self.y-vinemovespeed*dt
@@ -825,7 +825,7 @@ function mario:update(dt)
 		elseif downkey(self.playernumber) then
 			self.vinemovetimer = self.vinemovetimer + dt
 			
-			self.climbframe = math.ceil(math.mod(self.vinemovetimer, vineframedelaydown*2)/vineframedelaydown)
+			self.climbframe = math.ceil(math.fmod(self.vinemovetimer, vineframedelaydown*2)/vineframedelaydown)
 			self.climbframe = math.max(self.climbframe, 1)
 			
 			checkportalHOR(self, self.y+vinemovedownspeed*dt)
@@ -1063,7 +1063,7 @@ function mario:movement(dt)
 	--not in air
 	if self.falling == false and self.jumping == false then
 		--bottom on grid
-		if math.mod(self.y+self.height, 1) == 0 then
+		if math.fmod(self.y+self.height, 1) == 0 then
 			local x = round(self.x+self.width/2+.5)
 			local y = self.y+self.height+1
 			--x and y in map

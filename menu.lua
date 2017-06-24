@@ -126,7 +126,7 @@ function menu_update(dt)
 	
 		if optionsselection > 3 and optionsselection < 13 then
 			local colornumber = math.floor((optionsselection-1)/3)
-			local colorRGB = math.mod(optionsselection-4, 3)+1
+			local colorRGB = math.fmod(optionsselection-4, 3)+1
 			
 			if love.keyboard.isDown("right") and mariocolors[skinningplayer][colornumber][colorRGB] < 255 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] + RGBchangespeed*dt
@@ -806,7 +806,7 @@ function menu_draw()
 			--WHITE BACKGROUND FOR RGB BARS
 			
 			if optionsselection > 3 and optionsselection < 13 then
-				love.graphics.rectangle("fill", 69*scale, 89*scale + math.mod(optionsselection-4, 3)*10*scale + math.floor((optionsselection-4)/3)*14*scale, 142*scale, 10*scale)
+				love.graphics.rectangle("fill", 69*scale, 89*scale + math.fmod(optionsselection-4, 3)*10*scale + math.floor((optionsselection-4)/3)*14*scale, 142*scale, 10*scale)
 			end
 			
 			if math.floor((optionsselection-1)/3) == 1 then
@@ -1166,7 +1166,7 @@ function loadbackground(background)
 		--MAP ITSELF
 		local t = s2[1]:split(",")
 		
-		if math.mod(#t, 15) ~= 0 then
+		if math.fmod(#t, 15) ~= 0 then
 			print("Incorrect number of entries: " .. #t)
 			return false
 		end
