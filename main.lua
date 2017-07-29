@@ -1,18 +1,221 @@
 --[[
 	STEAL MY SHIT AND I'LL FUCK YOU UP
-	PRETTY MUCH EVERYTHING BY MAURICE GUÉGAN AND IF SOMETHING ISN'T BY ME THEN IT SHOULD BE OBVIOUS OR NOBODY CARES
+	PRETTY MUCH EVERYTHING BY MAURICE GUÃ‰GAN AND IF SOMETHING ISN'T BY ME THEN IT SHOULD BE OBVIOUS OR NOBODY CARES
 
-	THIS AWESOME PIECE OF CELESTIAL AMBROSIA IS RELEASED AS NON-COMMERCIAL, SHARE ALIKE, WHATEVER. YOU MAY PRINT OUT THIS CODES AND USE IT AS WALLPAPER IN YOUR BATHROOM.
-	FOR SPECIFIC LICENSE (I know you linux users get a hard on when it comes to licenses) SEE http://creativecommons.org/licenses/by-nc-sa/3.0/
-	NOW GO AWAY (or stay and modify shit. I don't care as long as you stick to the above license.)
+	Please keep in mind that for obvious reasons, I do not hold the rights to artwork, audio or trademarked elements of the game.
+	This license only applies to the code and original other assets. But you'd have to be pretty dumb to think otherwise. Riiiiiiiiiiight?
+	Anyway, enjoy.
+
+	
+	
+	DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+              Version 2, December 2004
+
+	Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+	Everyone is permitted to copy and distribute verbatim or modified
+	copies of this license document, and changing it is allowed as long
+	as the name is changed.
+
+			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+	0. You just DO WHAT THE FUCK YOU WANT TO.
 ]]
 
-function love.load()
-	marioversion = 1006
-	versionstring = "version 1.6"
-	shaderlist = love.filesystem.enumerate( "shaders/" )
-	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
+function love.run()
+    math.randomseed(os.time())
+    math.random() math.random()
+
+    love.load(arg)
+
+    -- Main loop time.
+    while true do
+        -- Process events.
+		love.event.pump()
+		for e,a,b,c,d in love.event.poll() do
+			if e == "quit" then
+				if not love.quit() then
+					love.audio.stop()
+					return
+				end
+			end
+			love.handlers[e](a,b,c,d)
+		end
+
+        -- Update dt, as we'll be passing it to update
+		love.timer.step()
+		local dt = love.timer.getDelta()
+
+        -- Call update and draw
+        love.update(dt) -- will pass 0 if love.timer is disabled
+		love.graphics.clear()
+		
+		--Fullscreen hack
+		if not mkstation and fullscreen and gamestate ~= "intro" then
+			completecanvas:clear()
+			love.graphics.setScissor()
+			completecanvas:renderTo(love.draw)
+			love.graphics.setScissor()
+			if fullscreenmode == "full" then
+				love.graphics.draw(completecanvas, 0, 0, 0, desktopsize.width/(width*16*scale), desktopsize.height/(height*16*scale))
+			else
+				love.graphics.draw(completecanvas, 0, touchfrominsidemissing/2, 0, touchfrominsidescaling/scale, touchfrominsidescaling/scale)
+				love.graphics.setColor(0, 0, 0)
+				love.graphics.rectangle("fill", 0, 0, desktopsize.width, touchfrominsidemissing/2)
+				love.graphics.rectangle("fill", 0, desktopsize.height-touchfrominsidemissing/2, desktopsize.width, touchfrominsidemissing/2)
+				love.graphics.setColor(255, 255, 255, 255)
+			end
+		else
+			love.graphics.setScissor()
+			love.draw()
+		end
+		
+		love.graphics.present()
+		love.timer.sleep(0.001)
+    end
+end
+
+function love.errhand(msg)
+
+    msg = tostring(msg)
+
+    --error_printer(msg, 2)
+
+    if not love.graphics or not love.event or not love.graphics.isCreated() then
+        return
+    end
+
+	local scale = scale or 2
 	
+    -- Load.
+    if love.audio then love.audio.stop() end
+    love.graphics.reset()
+    love.graphics.setBackgroundColor(89, 157, 220)
+    local font = love.graphics.newFont(scale*7)
+    love.graphics.setFont(font)
+
+    love.graphics.setColor(255, 255, 255, 255)
+
+    local trace = debug.traceback()
+
+    --love.graphics.clear()
+
+    local err = {}
+
+    table.insert(err, "FLAGRANT SYSTEM ERROR\n")
+    table.insert(err, "Mari0 Over.")
+    table.insert(err, "Crash = Very Yes.\n\n")
+	table.insert(err, "Mari0 " .. (marioversion or "UNKNOWN") .. ", LOVE " .. (love._version or "UNKNOWN") .. " running on " .. (love._os or "UNKNOWN") .. "\n")
+    table.insert(err, msg.."\n\n")
+
+    for l in string.gmatch(trace, "(.-)\n") do
+        if not string.match(l, "boot.lua") then
+            l = string.gsub(l, "stack traceback:", "Traceback\n")
+            table.insert(err, l)
+        end
+    end
+
+    local p = table.concat(err, "\n")
+
+    p = string.gsub(p, "\t", "")
+    p = string.gsub(p, "%[string \"(.-)\"%]", "%1")
+
+    local function draw()
+        --love.graphics.clear()
+		love.graphics.setColor(0, 0, 0, 200)
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.printf(p, 35*scale, 15*scale-1, love.graphics.getWidth() - 35*scale)
+		love.graphics.printf(p, 35*scale+1, 15*scale, love.graphics.getWidth() - 35*scale)
+		love.graphics.printf(p, 35*scale-1, 15*scale, love.graphics.getWidth() - 35*scale)
+		love.graphics.printf(p, 35*scale, 15*scale+1, love.graphics.getWidth() - 35*scale)
+		love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.printf(p, 35*scale, 15*scale, love.graphics.getWidth() - 35*scale)
+        love.graphics.present()
+    end
+
+    draw()
+
+    local e, a, b, c
+    while true do
+        e, a, b, c = love.event.wait()
+
+        if e == "quit" then
+            return
+        end
+        if e == "keypressed" and a == "escape" then
+            return
+        end
+
+        --draw()
+
+		love.timer.sleep(0.001)
+    end
+
+end
+
+function add(desc)
+	print((desc or "") .. "\n" .. round((love.timer.getTime()-starttime)*1000) .. "ms\tlines " .. lastline+1 .. " - " .. debug.getinfo(2).currentline-1 .. "\n")
+	lastline = debug.getinfo(2).currentline
+	totaltime = totaltime + round((love.timer.getTime()-starttime)*1000)
+	starttime = love.timer.getTime()
+end
+
+function love.load(arg)
+	--blame slime still
+	
+	love.mouse.setVisible(false)
+	
+	print("Loading Mari0 SE!")
+	print("=======================")
+	lastline = debug.getinfo(1).currentline
+	starttime = love.timer.getTime()
+	totaltime = 0
+	JSON = require "JSON"
+	require "notice"
+	require "sasorgasm"
+	
+	
+	stats_prev = 1
+	stats_curr = 1
+	stats_timer = 0
+	stats_delay = 3
+	stats_letterspeed = 0.1
+	stats_currletter = 1
+	stats_currlettertimer = 0
+	
+	ttalphabet = "abcdefghijklmnopqrstuvwxyz "
+	
+	--Get biggest screen size
+	
+	local sizes = love.graphics.getModes()
+	desktopsize = sizes[1]
+	
+	for i = 2, #sizes do
+		if sizes[i].width > desktopsize.width or sizes[i].height > desktopsize.height then
+			desktopsize = sizes[i]
+		end
+	end
+	
+	recordtarget = 1/40
+	recordskip = 1
+	recordframe = 1
+	
+	loadtrack()
+	savetrack()
+	magicdns_session_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	magicdns_session = ""
+	for i = 1, 8 do
+		rand = math.random(string.len(magicdns_session_chars))
+		magicdns_session = magicdns_session .. string.sub(magicdns_session_chars, rand, rand)
+	end
+	--use love.filesystem.getIdentity() when it works
+	magicdns_identity = love.filesystem.getSaveDirectory():split("/")
+	magicdns_identity = string.upper(magicdns_identity[#magicdns_identity])
+
+	
+	shaderlist = love.filesystem.enumerate( "shaders/" )
 	local rem
 	for i, v in pairs(shaderlist) do
 		if v == "init.lua" then
@@ -24,79 +227,215 @@ function love.load()
 	
 	table.remove(shaderlist, rem)
 	table.insert(shaderlist, 1, "none")
-	currentshaderi1 = 1
-	currentshaderi2 = 1
-	
-	hatcount = #love.filesystem.enumerate("graphics/SMB/hats")
-	
-	if not pcall(loadconfig) then
-		players = 1
-		defaultconfig()
-	end
-	
-	saveconfig()
-	width = 25
-	fsaa = 0
-	fullscreen = false
-	changescale(scale, fullscreen)
-	love.graphics.setCaption( "Mari0" )
-	
-	--version check by checking for a const that was added in 0.8.0
-	if love._version_major == nil then error("You have an outdated version of Love! Get 0.8.0 or higher and retry.") end
 	
 	iconimg = love.graphics.newImage("graphics/icon.gif")
 	love.graphics.setIcon(iconimg)
 	
 	love.graphics.setDefaultImageFilter("nearest", "nearest")
 	
+	add("Variables, shaderlist")
+	
+	local suc, err = pcall(loadconfig)
+	if not suc then
+		players = 1
+		defaultconfig()
+		print("== FAILED TO LOAD CONFIG ==")
+		print(err)
+	end
+	
+	physicsdebug = false
+	skipintro = true
+	portalwalldebug = false
+	userectdebug = true
+	
+	arcade = false
+	mkstation = true
+	skiplevelscreen = true
+	drawplayers = true
+	replaysystem = true
+	drawreplays = true
+	drawalllinks = false
+	debugtimescale = false
+	timetrials = true
+	
+	
+	width = 25	--! default 25
+	height = 14
+	fsaa = 0
+	
+	steptimer = 0
+	targetdt = 1/60
+	
+	if mkstation then
+		width = 26.25
+		fullscreen = true
+		scale = 4
+	elseif arcade then
+		width = 24
+		scale = 5
+	end
+	
+	--Calculate relative scaling factor
+	touchfrominsidescaling = math.min(desktopsize.width/(width*16), desktopsize.height/(height*16))
+	touchfrominsidemissing = desktopsize.height-height*16*touchfrominsidescaling
+	
+	if fullscreen and not mkstation then
+		scale = math.max(math.floor(math.min(desktopsize.width/(width*16), desktopsize.height/(height*16))), 1)
+	end
+	add("Variables")
+	changescale(scale, true)
+	add("Resolution change")
+	require "characterloader"
+	add("Characterloader")
+	
+	
+	replaysystem = true
+	
+	if replaysystem then
+		replaydata = {}
+		replaytimer = {}
+		replayi = {}
+		replaychar = {}
+		local i = 1
+		while love.filesystem.exists("replay" .. i .. ".txt") do
+			print("loading " .. i)
+			replaydata[i] = JSON:decode(love.filesystem.read("replay" .. i .. ".txt"))
+			replaytimer[i] = 0
+			replayi[i] = 1
+			replaychar[i] = characters.mario
+			
+			i = i + 1
+		end
+	end
+	table.sort(replaydata, function(a, b) return a.finaltime < b.finaltime end)
+	
+	local toload = 200
+	
+	
+	for i = #replaydata, 1, -1 do
+		if (#replaydata > toload*2 and (math.mod(i+1, math.floor(#replaydata/toload+.5)) ~= 0)) or (#replaydata <= toload*2 and (math.mod(i+1, math.floor(#replaydata/(#replaydata-toload)+.5)) == 0)) then
+			if #replaydata > toload and i > 10 then
+				replaydata[i].data = nil
+				print("REMOVING #" .. i)
+			end
+		end
+	end
+	
+	for i = 1, #mariocharacter do
+		if not characters[mariocharacter[i]] then
+			mariocharacter[i] = "mario"
+		end
+	end
+	
+	arcadejoystickmaps = {}
+	for i = 1, 4 do
+		arcadejoystickmaps[i] = i --index is joystick, i is 1-4
+	end
+	
+	marioversion = 1100
+	versionstring = "version 1.0se"
+	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
+	
+	hatcount = #love.filesystem.enumerate("graphics/SMB/hats")
+	saveconfig()
+	love.graphics.setCaption( "Mari0 SE" )
+	
+	--version check by checking for a const that was added in 0.8.0
+	if love._version_major == nil then error("You have an outdated version of Love! Get 0.8.0 or higher and retry.") end
+		
 	love.graphics.setBackgroundColor(0, 0, 0)
 	
 	
-	fontimage = love.graphics.newImage("graphics/SMB/font.png")
-	fontglyphs = "0123456789abcdefghijklmnopqrstuvwxyz.:/,'C-_>* !{}?"
+	fontimage = love.graphics.newImage("graphics/font.png")
+	fontimageback = love.graphics.newImage("graphics/fontback.png")
+	fontglyphs = "0123456789abcdefghijklmnopqrstuvwxyz.:/,\"C-_A* !{}?'()+=><#"
 	fontquads = {}
 	for i = 1, string.len(fontglyphs) do
-		fontquads[string.sub(fontglyphs, i, i)] = love.graphics.newQuad((i-1)*8, 0, 8, 8, 512, 8)
+		fontquads[string.sub(fontglyphs, i, i)] = love.graphics.newQuad((i-1)*8, 0, 7, 8, 472, 8)
 	end
-	
-	math.randomseed(os.time());math.random();math.random()
-	
+	fontquadsback = {}
+	for i = 1, string.len(fontglyphs) do
+		fontquadsback[string.sub(fontglyphs, i, i)] = love.graphics.newQuad((i-1)*9, 0, 9, 9, 468, 9)
+	end
+  
 	love.graphics.clear()
 	love.graphics.setColor(100, 100, 100)
-	loadingtexts = {"reticulating splines..", "loading..", "booting glados..", "growing potatoes..", "voting against acta..", "rendering important stuff..",
-					"baking cake..", "happy explosion day..", "raising coolness by 20 percent..", "yay facepunch..", "stabbing myself..", "sharpening knives..",
-					"tanaka, thai kick..", "loading game genie.."}
+	loadingtexts = {"reticulating splines", "rendering important stuff", "01110000011011110110111001111001", "sometimes, i dream about cheese",
+					"baking cake", "happy explosion day", "raising coolness by a fifth", "yay facepunch", "stabbing myself", "sharpening knives",
+					"tanaka, thai kick", "slime will find you", "becoming self-aware", "it's a secret to everybody", "there is no minus world", 
+					"oh my god, jc, a bomb", "silly loading message here", "watch brutalmoose on youtube", "this font does not have the following symbols:",
+					"motivational art by jorichi", "what is this, a center for ants!?", "love.graphics.print(\"loading..\", 200, 120)",
+					"you're my favorite deputy", "licensed under wtfpl", "banned in australia", "loading anti-piracy module", "watch out there's a sni",
+					"attack while its tail's up!", "what a horrible night to have a curse", "han shot first"}
+	
+	
 	loadingtext = loadingtexts[math.random(#loadingtexts)]
-	properprint(loadingtext, 25*8*scale-string.len(loadingtext)*4*scale, 108*scale)
+	
+	if mariocharacter[1] == "rainbow dash" then -- /)^3^(\
+		logo = love.graphics.newImage("graphics/stabyourselfdash.png")
+		logoblood = love.graphics.newImage("graphics/stabyourselfblooddash.png")
+	else
+		logo = love.graphics.newImage("graphics/stabyourself.png")
+		logoblood = love.graphics.newImage("graphics/stabyourselfblood.png")
+	end
+	
+	local logoscale = scale
+	if logoscale <= 1 then
+		logoscale = 0.5
+	else
+		logoscale = 1
+	end
+	
+	love.graphics.setColor(255, 255, 255)
+	
+	love.graphics.draw(logo, love.graphics.getWidth()/2, love.graphics.getHeight()/2, 0, logoscale, logoscale, 142, 150)
+	love.graphics.setColor(100, 100, 100)
+	properprint("loading mari0 se..", love.graphics.getWidth()/2-string.len("loading mari0 se..")*4*scale, love.graphics.getHeight()/2-170*logoscale-7*scale)
+	love.graphics.setColor(50, 50, 50)
+	properprint(loadingtext, love.graphics.getWidth()/2-string.len(loadingtext)*4*scale, love.graphics.getHeight()/2+165*logoscale)
 	love.graphics.present()
+	
+	add("Variables")
+	
 	--require ALL the files!
+	--require "netplay"
+	--require "client"
+	--require "server"
+	--require "lobby"
+	
 	require "shaders"
 	require "variables"
-	require "class"
 	require "sha1"
+	require "class"
+	require "camera"
 	
+	require "animatedquad"
 	require "intro"
 	require "menu"
+	--require "onlinemenu"
 	require "levelscreen"
 	require "game"
 	require "editor"
+	require "animationguiline"
 	require "physics"
 	require "quad"
 	require "entity"
 	require "portalwall"
 	require "tile"
 	require "mario"
-	require "goomba"
-	require "koopa"
-	require "cheepcheep"
-	require "mushroom"
+	--require "goomba"
+	--require "koopa"
+	--require "cheepcheep"
+	--require "mushroom"
 	require "hatconfigs"
 	require "bighatconfigs"
-	require "flower"
-	require "star"
-	require "oneup"
+	require "customhats"
+	--require "flower"
+	--require "star"
+	--require "oneup"
 	require "coinblockanimation"
 	require "scrollingscore"
+	require "scrollingtext"
 	require "platform"
 	require "platformspawner"
 	require "portalparticle"
@@ -118,33 +457,62 @@ function love.load()
 	require "pushbutton"
 	require "screenboundary"
 	require "bulletbill"
-	require "hammerbro"
+	--require "hammerbro"
 	require "fireball"
 	require "gui"
 	require "blockdebris"
 	require "firework"
-	require "plant"
+	--require "plant"
 	require "castlefire"
 	require "fire"
 	require "bowser"
 	require "vine"
 	require "spring"
-	require "flyingfish"
-	require "upfire"
+	--require "flyingfish"
+	--require "upfire"
 	require "seesaw"
 	require "seesawplatform"
-	require "lakito"
+	--require "lakito"
 	require "bubble"
-	require "squid"
+	--require "squid"
 	require "rainboom"
 	require "miniblock"
 	require "notgate"
+	require "andgate"
+	require "orgate"
+	require "musicentity"
+	require "enemyspawner"
 	require "musicloader"
+	require "magic"
+	require "ceilblocker"
+	require "funnel"
+	require "panel"
+	require "rightclickmenu"
+	require "emancipateanimation"
+	require "emancipationfizzle"
+	require "textentity"
+	require "squarewave"
+	require "scaffold"
+	require "animation"
+	require "animationsystem"
+	require "regiondrag"
+	require "regiontrigger"
+	require "checkpoint"
+	require "portal"
+	require "portalent"
+	require "pedestal"
+	require "actionblock"
+	require "animationtrigger"
+	require "dialogbox"
+	require "itemanimation"
+	
+	require "enemy"
+	require "enemies"
+	add("Requires")
 	
 	http = require("socket.http")
+	http.PORT = 55555
 	http.TIMEOUT = 1
-	
-	love.filesystem.setIdentity("mari0")
 	
 	updatenotification = false
 	if getupdate() then
@@ -152,7 +520,6 @@ function love.load()
 	end
 	http.TIMEOUT = 4
 	
-	graphicspack = "SMB" --SMB, ALLSTARS
 	playertypei = 1
 	playertype = playertypelist[playertypei] --portal, minecraft
 	
@@ -165,40 +532,63 @@ function love.load()
 	editormode = false
 	yoffset = 0
 	love.graphics.setPointSize(3*scale)
-	love.graphics.setLineWidth(3*scale)
+	love.graphics.setLineWidth(2*scale)
 	
 	uispace = math.floor(width*16*scale/4)
 	guielements = {}
+	
+	--limit hats
+	for playerno = 1, players do
+		for i = 1, #mariohats[playerno] do
+			if mariohats[playerno][i] > hatcount then
+				mariohats[playerno][i] = hatcount
+			end
+		end
+	end
 	
 	--Backgroundcolors
 	backgroundcolor = {}
 	backgroundcolor[1] = {92, 148, 252}
 	backgroundcolor[2] = {0, 0, 0}
 	backgroundcolor[3] = {32, 56, 236}
+	add("Update Check, variables")
 	
 	--IMAGES--
+	overwrittenimages = {}
+	imagelist = {"blockdebris", "coinblockanimation", "coinanimation", "coinblock", "coin", "axe", "spring", "toad", "peach", "platform", 
+	"platformbonus", "scaffold", "seesaw", "vine",  
+	"bowser", "decoys", "box", "flag", "castleflag", "bubble", "fizzle", "emanceparticle", "emanceside", "doorpiece", "doorcenter", 
+	"button", "pushbutton", "wallindicator", "walltimer", "lightbridge", "lightbridgeside", "laser", "laserside", "excursionbase", "excursionfunnel", "excursionfunnel2", 
+	"faithplateplate", "laserdetector", "gel1", "gel2", "gel3", "gel4", "gel1ground", "gel2ground", "gel3ground", "gel4ground", "geldispenser", "cubedispenser", "panel", "pedestalbase",
+	"pedestalgun", "actionblock", "portal", "markbase", "markoverlay", "andgate", "notgate", "orgate", "squarewave", "portalglow", "fireball", "musicentity", "smbtiles", "portaltiles"}
 	
-	menuselection = love.graphics.newImage("graphics/" .. graphicspack .. "/menuselect.png")
-	mappackback = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackback.png")
-	mappacknoicon = love.graphics.newImage("graphics/" .. graphicspack .. "/mappacknoicon.png")
-	mappackoverlay = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackoverlay.png")
-	mappackhighlight = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackhighlight.png")
+	for i, v in pairs(imagelist) do
+		_G["default" .. v .. "img"] = love.graphics.newImage("graphics/SMB/" .. v .. ".png")
+		_G[v .. "img"] = _G["default" .. v .. "img"]
+	end
 	
-	mappackscrollbar = love.graphics.newImage("graphics/" .. graphicspack .. "/mappackscrollbar.png")
+	mari0img = love.graphics.newImage("graphics/mari0titel.png");mari0img:setFilter("linear", "linear")
+	mari0imgsmall = love.graphics.newImage("graphics/mari0titelsmall.png");mari0imgsmall:setFilter("linear", "linear")
+	instrimg = love.graphics.newImage("graphics/speedrunmari0-instructions.png")
+	tttitle = love.graphics.newImage("graphics/timetrialtitlescreen.png")
+	
+	menuselection = love.graphics.newImage("graphics/menuselect.png")
+	mappackback = love.graphics.newImage("graphics/mappackback.png")
+	mappacknoicon = love.graphics.newImage("graphics/mappacknoicon.png")
+	mappackoverlay = love.graphics.newImage("graphics/mappackoverlay.png")
+	mappackhighlight = love.graphics.newImage("graphics/mappackhighlight.png")
+	
+	mappackscrollbar = love.graphics.newImage("graphics/mappackscrollbar.png")
 	
 	--tiles
-	smbtilesimg = love.graphics.newImage("graphics/" .. graphicspack .. "/smbtiles.png")
-	portaltilesimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portaltiles.png")
-	entitiesimg = love.graphics.newImage("graphics/" .. graphicspack .. "/entities.png")
 	tilequads = {}
-	
 	rgblist = {}
 	
 	--add smb tiles
 	local imgwidth, imgheight = smbtilesimg:getWidth(), smbtilesimg:getHeight()
 	local width = math.floor(imgwidth/17)
 	local height = math.floor(imgheight/17)
-	local imgdata = love.image.newImageData("graphics/" .. graphicspack .. "/smbtiles.png")
+	local imgdata = love.image.newImageData("graphics/SMB/smbtiles.png")
 	
 	for y = 1, height do
 		for x = 1, width do
@@ -213,7 +603,7 @@ function love.load()
 	local imgwidth, imgheight = portaltilesimg:getWidth(), portaltilesimg:getHeight()
 	local width = math.floor(imgwidth/17)
 	local height = math.floor(imgheight/17)
-	local imgdata = love.image.newImageData("graphics/" .. graphicspack .. "/portaltiles.png")
+	local imgdata = love.image.newImageData("graphics/SMB/portaltiles.png")
 	
 	for y = 1, height do
 		for x = 1, width do
@@ -225,30 +615,36 @@ function love.load()
 	portaltilecount = width*height
 	
 	--add entities
+	entitiesimg = love.graphics.newImage("graphics/entities.png")
 	entityquads = {}
 	local imgwidth, imgheight = entitiesimg:getWidth(), entitiesimg:getHeight()
 	local width = math.floor(imgwidth/17)
 	local height = math.floor(imgheight/17)
-	local imgdata = love.image.newImageData("graphics/" .. graphicspack .. "/entities.png")
+	local imgdata = love.image.newImageData("graphics/entities.png")
 	
+	editorentitylist = {}
 	for y = 1, height do
 		for x = 1, width do
 			table.insert(entityquads, entity:new(entitiesimg, x, y, imgwidth, imgheight))
 			entityquads[#entityquads]:sett(#entityquads)
+			if entitylist[(y-1)*10+x] and entitylist[(y-1)*10+x] ~= "" then
+				table.insert(editorentitylist, (y-1)*10+x)
+			end
 		end
 	end
 	entitiescount = width*height
 	
-	fontimage2 = love.graphics.newImage("graphics/" .. graphicspack .. "/smallfont.png")
+	fontimage2 = love.graphics.newImage("graphics/smallfont.png")
 	numberglyphs = "012458"
 	font2quads = {}
 	for i = 1, 6 do
-		font2quads[string.sub(numberglyphs, i, i)] = love.graphics.newQuad((i-1)*4, 0, 4, 8, 32, 8)
+		font2quads[string.sub(numberglyphs, i, i)] = love.graphics.newQuad((i-1)*4, 0, 4, 8, 24, 8)
 	end
 	
-	oneuptextimage = love.graphics.newImage("graphics/" .. graphicspack .. "/oneuptext.png")
+	oneuptextimage = love.graphics.newImage("graphics/oneuptext.png")
 	
-	blockdebrisimage = love.graphics.newImage("graphics/" .. graphicspack .. "/blockdebris.png")
+	linktoolpointerimg = love.graphics.newImage("graphics/linktoolpointer.png")
+	
 	blockdebrisquads = {}
 	for y = 1, 4 do
 		blockdebrisquads[y] = {}
@@ -257,50 +653,44 @@ function love.load()
 		end
 	end
 	
-	coinblockanimationimage = love.graphics.newImage("graphics/" .. graphicspack .. "/coinblockanimation.png")
 	coinblockanimationquads = {}
 	for i = 1, 30 do
 		coinblockanimationquads[i] = love.graphics.newQuad((i-1)*8, 0, 8, 52, 256, 64)
 	end
 	
-	coinanimationimage = love.graphics.newImage("graphics/" .. graphicspack .. "/coinanimation.png")
 	coinanimationquads = {}
 	for j = 1, 4 do
 		coinanimationquads[j] = {}
-		for i = 1, 3 do
-			coinanimationquads[j][i] = love.graphics.newQuad((i-1)*5, (j-1)*8, 5, 8, 16, 32)
+		for i = 1, 5 do
+			coinanimationquads[j][i] = love.graphics.newQuad((i-1)*5, (j-1)*8, 5, 8, 25, 32)
 		end
 	end
 	
 	--coinblock
-	coinblockimage = love.graphics.newImage("graphics/" .. graphicspack .. "/coinblock.png")
 	coinblockquads = {}
 	for j = 1, 4 do
 		coinblockquads[j] = {}
-		for i = 1, 3 do
-			coinblockquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*16, 16, 16, 64, 64)
+		for i = 1, 5 do
+			coinblockquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*16, 16, 16, 80, 64)
 		end
 	end
 	
 	--coin
-	coinimage = love.graphics.newImage("graphics/" .. graphicspack .. "/coin.png")
 	coinquads = {}
 	for j = 1, 4 do
 		coinquads[j] = {}
-		for i = 1, 3 do
-			coinquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*16, 16, 16, 64, 64)
+		for i = 1, 5 do
+			coinquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*16, 16, 16, 80, 64)
 		end
 	end
 	
 	--axe
-	axeimg = love.graphics.newImage("graphics/" .. graphicspack .. "/axe.png")
 	axequads = {}
-	for i = 1, 3 do
-		axequads[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 64, 16)
+	for i = 1, 5 do
+		axequads[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 80, 16)
 	end
 	
 	--spring
-	springimg = love.graphics.newImage("graphics/" .. graphicspack .. "/spring.png")
 	springquads = {}
 	for i = 1, 4 do
 		springquads[i] = {}
@@ -309,37 +699,24 @@ function love.load()
 		end
 	end
 	
-	--toad
-	toadimg = love.graphics.newImage("graphics/" .. graphicspack .. "/toad.png")
-	
-	--queen I mean princess
-	peachimg = love.graphics.newImage("graphics/" .. graphicspack .. "/peach.png")
-	
-	platformimg = love.graphics.newImage("graphics/" .. graphicspack .. "/platform.png")
-	platformbonusimg = love.graphics.newImage("graphics/" .. graphicspack .. "/platformbonus.png")
-	
-	seesawimg = love.graphics.newImage("graphics/" .. graphicspack .. "/seesaw.png")
 	seesawquad = {}
 	for i = 1, 4 do
 		seesawquad[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 64, 16)
 	end
 	
-	titleimage = love.graphics.newImage("graphics/" .. graphicspack .. "/title.png")
-	playerselectimg = love.graphics.newImage("graphics/" .. graphicspack .. "/playerselectarrow.png")
+	titleimage = love.graphics.newImage("graphics/title.png")
+	playerselectimg = love.graphics.newImage("graphics/playerselectarrow.png")
 	
-	starimg = love.graphics.newImage("graphics/" .. graphicspack .. "/star.png")
 	starquad = {}
 	for i = 1, 4 do
 		starquad[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 64, 16)
 	end
 	
-	flowerimg = love.graphics.newImage("graphics/" .. graphicspack .. "/flower.png")
 	flowerquad = {}
 	for i = 1, 4 do
 		flowerquad[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 64, 16)
 	end
 	
-	fireballimg = love.graphics.newImage("graphics/" .. graphicspack .. "/fireball.png")
 	fireballquad = {}
 	for i = 1, 4 do
 		fireballquad[i] = love.graphics.newQuad((i-1)*8, 0, 8, 8, 80, 16)
@@ -349,7 +726,6 @@ function love.load()
 		fireballquad[i] = love.graphics.newQuad((i-5)*16+32, 0, 16, 16, 80, 16)
 	end
 	
-	vineimg = love.graphics.newImage("graphics/" .. graphicspack .. "/vine.png")
 	vinequad = {}
 	for i = 1, 4 do
 		vinequad[i] = {}
@@ -359,7 +735,6 @@ function love.load()
 	end
 	
 	--enemies
-	goombaimage = love.graphics.newImage("graphics/" .. graphicspack .. "/goomba.png")
 	goombaquad = {}
 	
 	for y = 1, 4 do
@@ -368,33 +743,31 @@ function love.load()
 			goombaquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*16, 16, 16, 32, 64)
 		end
 	end
-	
-	spikeyimg = love.graphics.newImage("graphics/" .. graphicspack .. "/spikey.png")
-	
+		
 	spikeyquad = {}
-	for x = 1, 4 do
-		spikeyquad[x] = love.graphics.newQuad((x-1)*16, 0, 16, 16, 64, 16)
+	for y = 1, 4 do
+		spikeyquad[y] = {}
+		for x = 1, 4 do
+			spikeyquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*16, 16, 16, 64, 64)
+		end
 	end
 	
-	lakitoimg = love.graphics.newImage("graphics/" .. graphicspack .. "/lakito.png")
 	lakitoquad = {}
-	for x = 1, 2 do
-		lakitoquad[x] = love.graphics.newQuad((x-1)*16, 0, 16, 24, 32, 24)
+	for y = 1, 4 do
+		lakitoquad[y] = {}
+		for x = 1, 2 do
+			lakitoquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*24, 16, 24, 32, 96)
+		end
 	end
 	
-	koopaimage = love.graphics.newImage("graphics/" .. graphicspack .. "/koopa.png")
-	kooparedimage = love.graphics.newImage("graphics/" .. graphicspack .. "/koopared.png")
-	beetleimage = love.graphics.newImage("graphics/" .. graphicspack .. "/beetle.png")
 	koopaquad = {}
 	
 	for y = 1, 4 do
 		koopaquad[y] = {}
 		for x = 1, 5 do
-			koopaquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*24, 16, 24, 128, 128)
+			koopaquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*24, 16, 24, 80, 96)
 		end
 	end
-	
-	cheepcheepimg = love.graphics.newImage("graphics/" .. graphicspack .. "/cheepcheep.png")
 	cheepcheepquad = {}
 	
 	cheepcheepquad[1] = {}
@@ -405,29 +778,25 @@ function love.load()
 	cheepcheepquad[2][1] = love.graphics.newQuad(0, 16, 16, 16, 32, 32)
 	cheepcheepquad[2][2] = love.graphics.newQuad(16, 16, 16, 16, 32, 32)
 	
-	squidimg = love.graphics.newImage("graphics/" .. graphicspack .. "/squid.png")
 	squidquad = {}
 	for x = 1, 2 do
-		squidquad[x] = love.graphics.newQuad((x-1)*16, 0, 16, 24, 32, 32)
+		squidquad[x] = love.graphics.newQuad((x-1)*16, 0, 16, 24, 32, 24)
 	end
 	
-	bulletbillimg = love.graphics.newImage("graphics/" .. graphicspack .. "/bulletbill.png")
 	bulletbillquad = {}
 	
 	for y = 1, 4 do
 		bulletbillquad[y] = love.graphics.newQuad(0, (y-1)*16, 16, 16, 16, 64)
 	end
 	
-	hammerbrosimg = love.graphics.newImage("graphics/" .. graphicspack .. "/hammerbros.png")
 	hammerbrosquad = {}
 	for y = 1, 4 do
 		hammerbrosquad[y] = {}
 		for x = 1, 4 do
-			hammerbrosquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*34, 16, 34, 64, 256)
+			hammerbrosquad[y][x] = love.graphics.newQuad((x-1)*16, (y-1)*34, 16, 34, 64, 136)
 		end
 	end	
 	
-	hammerimg = love.graphics.newImage("graphics/" .. graphicspack .. "/hammer.png")
 	hammerquad = {}
 	for j = 1, 4 do
 		hammerquad[j] = {}
@@ -436,38 +805,27 @@ function love.load()
 		end
 	end
 	
-	plantimg = love.graphics.newImage("graphics/" .. graphicspack .. "/plant.png")
 	plantquads = {}
 	for j = 1, 4 do
 		plantquads[j] = {}
 		for i = 1, 2 do
-			plantquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*23, 16, 23, 32, 128)
+			plantquads[j][i] = love.graphics.newQuad((i-1)*16, (j-1)*23, 16, 23, 32, 92)
 		end
 	end
 	
-	fireimg = love.graphics.newImage("graphics/" .. graphicspack .. "/fire.png")
 	firequad = {love.graphics.newQuad(0, 0, 24, 8, 48, 8), love.graphics.newQuad(24, 0, 24, 8, 48, 8)}
 	
-	upfireimg = love.graphics.newImage("graphics/" .. graphicspack .. "/upfire.png")
 	
-	bowserimg = love.graphics.newImage("graphics/" .. graphicspack .. "/bowser.png")
 	bowserquad = {}
 	bowserquad[1] = {love.graphics.newQuad(0, 0, 32, 32, 64, 64), love.graphics.newQuad(32, 0, 32, 32, 64, 64)}
 	bowserquad[2] = {love.graphics.newQuad(0, 32, 32, 32, 64, 64), love.graphics.newQuad(32, 32, 32, 32, 64, 64)}
 	
-	decoysimg = love.graphics.newImage("graphics/" .. graphicspack .. "/decoys.png")
 	decoysquad = {}
 	for y = 1, 7 do
 		decoysquad[y] = love.graphics.newQuad(0, (y-1)*32, 32, 32, 64, 256)
 	end
 	
-	boximage = love.graphics.newImage("graphics/" .. graphicspack .. "/box.png")
-	boxquad = love.graphics.newQuad(0, 0, 12, 12, 16, 16)
-	
-	flagimg = love.graphics.newImage("graphics/" .. graphicspack .. "/flag.png")
-	castleflagimg = love.graphics.newImage("graphics/" .. graphicspack .. "/castleflag.png")
-	
-	bubbleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/bubble.png")
+	boxquad = {love.graphics.newQuad(0, 0, 12, 12, 32, 16), love.graphics.newQuad(16, 0, 12, 12, 32, 16)}
 	
 	--eh
 	rainboomimg = love.graphics.newImage("graphics/rainboom.png")
@@ -478,184 +836,71 @@ function love.load()
 		end
 	end
 	
-	logo = love.graphics.newImage("graphics/stabyourself.png")
-	logoblood = love.graphics.newImage("graphics/stabyourselfblood.png")
+	--magic!
+	magicimg = love.graphics.newImage("graphics/magic.png")
+	magicquad = {}
+	for x = 1, 6 do
+		magicquad[x] = love.graphics.newQuad((x-1)*9, 0, 9, 9, 54, 9)
+	end
 	
 	--GUI
-	checkboximg = love.graphics.newImage("graphics/GUI/checkbox.png")
+	checkboximg = love.graphics.newImage("graphics/checkbox.png")
 	checkboxquad = {{love.graphics.newQuad(0, 0, 9, 9, 18, 18), love.graphics.newQuad(9, 0, 9, 9, 18, 18)}, {love.graphics.newQuad(0, 9, 9, 9, 18, 18), love.graphics.newQuad(9, 9, 9, 9, 18, 18)}}
 	
-	dropdownarrowimg = love.graphics.newImage("graphics/GUI/dropdownarrow.png")
-	
-	--players
-	marioanimations = {}
-	marioanimations[0] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/marioanimations0.png")
-	marioanimations[1] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/marioanimations1.png")
-	marioanimations[2] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/marioanimations2.png")
-	marioanimations[3] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/marioanimations3.png")
-	
-	minecraftanimations = {}
-	minecraftanimations[0] = love.graphics.newImage("graphics/Minecraft/marioanimations0.png")
-	minecraftanimations[1] = love.graphics.newImage("graphics/Minecraft/marioanimations1.png")
-	minecraftanimations[2] = love.graphics.newImage("graphics/Minecraft/marioanimations2.png")
-	minecraftanimations[3] = love.graphics.newImage("graphics/Minecraft/marioanimations3.png")
-	
-	marioidle = {}
-	mariorun = {}
-	marioslide = {}
-	mariojump = {}
-	mariodie = {}
-	marioclimb = {}
-	marioswim = {}
-	mariogrow = {}
-	
-	for i = 1, 5 do
-		marioidle[i] = love.graphics.newQuad(0, (i-1)*20, 20, 20, 512, 128)
-		
-		mariorun[i] = {}
-		mariorun[i][1] = love.graphics.newQuad(20, (i-1)*20, 20, 20, 512, 128)
-		mariorun[i][2] = love.graphics.newQuad(40, (i-1)*20, 20, 20, 512, 128)
-		mariorun[i][3] = love.graphics.newQuad(60, (i-1)*20, 20, 20, 512, 128)
-		
-		marioslide[i] = love.graphics.newQuad(80, (i-1)*20, 20, 20, 512, 128)
-		mariojump[i] = love.graphics.newQuad(100, (i-1)*20, 20, 20, 512, 128)
-		mariodie[i] = love.graphics.newQuad(120, (i-1)*20, 20, 20, 512, 128)
-		
-		marioclimb[i] = {}
-		marioclimb[i][1] = love.graphics.newQuad(140, (i-1)*20, 20, 20, 512, 128)
-		marioclimb[i][2] = love.graphics.newQuad(160, (i-1)*20, 20, 20, 512, 128)
-		
-		marioswim[i] = {}
-		marioswim[i][1] = love.graphics.newQuad(180, (i-1)*20, 20, 20, 512, 128)
-		marioswim[i][2] = love.graphics.newQuad(200, (i-1)*20, 20, 20, 512, 128)
-		
-		mariogrow[i] = love.graphics.newQuad(260, 0, 20, 24, 512, 128)
-	end
-	
-	
-	bigmarioanimations = {}
-	bigmarioanimations[0] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/bigmarioanimations0.png")
-	bigmarioanimations[1] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/bigmarioanimations1.png")
-	bigmarioanimations[2] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/bigmarioanimations2.png")
-	bigmarioanimations[3] = love.graphics.newImage("graphics/" .. graphicspack .. "/player/bigmarioanimations3.png")
-	
-	bigminecraftanimations = {}
-	bigminecraftanimations[0] = love.graphics.newImage("graphics/Minecraft/bigmarioanimations0.png")
-	bigminecraftanimations[1] = love.graphics.newImage("graphics/Minecraft/bigmarioanimations1.png")
-	bigminecraftanimations[2] = love.graphics.newImage("graphics/Minecraft/bigmarioanimations2.png")
-	bigminecraftanimations[3] = love.graphics.newImage("graphics/Minecraft/bigmarioanimations3.png")
-	
-	bigmarioidle = {}
-	bigmariorun = {}
-	bigmarioslide = {}
-	bigmariojump = {}
-	bigmariofire = {}
-	bigmarioclimb = {}
-	bigmarioswim = {}
-	bigmarioduck = {} --hehe duck.
-	
-	for i = 1, 5 do
-		bigmarioidle[i] = love.graphics.newQuad(0, (i-1)*36, 20, 36, 512, 256)
-		
-		bigmariorun[i] = {}
-		bigmariorun[i][1] = love.graphics.newQuad(20, (i-1)*36, 20, 36, 512, 256)
-		bigmariorun[i][2] = love.graphics.newQuad(40, (i-1)*36, 20, 36, 512, 256)
-		bigmariorun[i][3] = love.graphics.newQuad(60, (i-1)*36, 20, 36, 512, 256)
-		
-		bigmarioslide[i] = love.graphics.newQuad(80, (i-1)*36, 20, 36, 512, 256)
-		bigmariojump[i] = love.graphics.newQuad(100, (i-1)*36, 20, 36, 512, 256)
-		bigmariofire[i] = love.graphics.newQuad(120, (i-1)*36, 20, 36, 512, 256)
-		
-		bigmarioclimb[i] = {}
-		bigmarioclimb[i][1] = love.graphics.newQuad(140, (i-1)*36, 20, 36, 512, 256)
-		bigmarioclimb[i][2] = love.graphics.newQuad(160, (i-1)*36, 20, 36, 512, 256)
-		
-		bigmarioswim[i] = {}
-		bigmarioswim[i][1] = love.graphics.newQuad(180, (i-1)*36, 20, 36, 512, 256)
-		bigmarioswim[i][2] = love.graphics.newQuad(200, (i-1)*36, 20, 36, 512, 256)
-		
-		bigmarioduck[i] = love.graphics.newQuad(260, (i-1)*36, 20, 36, 512, 256)
-	end
+	dropdownarrowimg = love.graphics.newImage("graphics/dropdownarrow.png")
 	
 	--portals
-	portalimage = love.graphics.newImage("graphics/" .. graphicspack .. "/portal.png")
-	portal1quad = {}
+	portalquad = {}
 	for i = 0, 7 do
-		portal1quad[i] = love.graphics.newQuad(0, i*4, 32, 4, 64, 32)
+		portalquad[i] = love.graphics.newQuad(0, i*4, 32, 4, 32, 28)
 	end
 	
-	portal2quad = {}
-	for i = 0, 7 do
-		portal2quad[i] = love.graphics.newQuad(32, i*4, 32, 4, 64, 32)
-	end
-	
-	portalglow = love.graphics.newImage("graphics/" .. graphicspack .. "/portalglow.png")
-	
-	portalparticleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalparticle.png")
-	portalcrosshairimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalcrosshair.png")
-	portaldotimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portaldot.png")
-	portalprojectileimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalprojectile.png")
-	portalprojectileparticleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalprojectileparticle.png")
+	portalparticleimg = love.graphics.newImage("graphics/portalparticle.png")
+	portalcrosshairimg = love.graphics.newImage("graphics/portalcrosshair.png")
+	portaldotimg = love.graphics.newImage("graphics/portaldot.png")
+	portalprojectileimg = love.graphics.newImage("graphics/portalprojectile.png")
+	portalprojectileparticleimg = love.graphics.newImage("graphics/portalprojectileparticle.png")
+	portalbackgroundimg = love.graphics.newImage("graphics/portalbackground.png")
 	
 	--Menu shit
-	huebarimg = love.graphics.newImage("graphics/" .. graphicspack .. "/huebar.png")
-	huebarmarkerimg = love.graphics.newImage("graphics/" .. graphicspack .. "/huebarmarker.png")
-	volumesliderimg = love.graphics.newImage("graphics/" .. graphicspack .. "/volumeslider.png")
+	huebarimg = love.graphics.newImage("graphics/huehuehuebar.png")
+	huebarmarkerimg = love.graphics.newImage("graphics/huebarmarker.png")
+	volumesliderimg = love.graphics.newImage("graphics/volumeslider.png")
 	
-	--Portal props
-	emanceparticleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/emanceparticle.png")
-	emancesideimg = love.graphics.newImage("graphics/" .. graphicspack .. "/emanceside.png")
+	--Portal props	
+	buttonquad = {love.graphics.newQuad(0, 0, 32, 5, 64, 5), love.graphics.newQuad(32, 0, 32, 5, 64, 5)}
 	
-	doorpieceimg = love.graphics.newImage("graphics/" .. graphicspack .. "/doorpiece.png")
-	doorcenterimg = love.graphics.newImage("graphics/" .. graphicspack .. "/doorcenter.png")
-	
-	buttonbaseimg = love.graphics.newImage("graphics/" .. graphicspack .. "/buttonbase.png")
-	buttonbuttonimg = love.graphics.newImage("graphics/" .. graphicspack .. "/buttonbutton.png")
-	
-	pushbuttonimg = love.graphics.newImage("graphics/" .. graphicspack .. "/pushbutton.png")
 	pushbuttonquad = {love.graphics.newQuad(0, 0, 16, 16, 32, 16), love.graphics.newQuad(16, 0, 16, 16, 32, 16)}
 	
-	wallindicatorimg = love.graphics.newImage("graphics/" .. graphicspack .. "/wallindicator.png")
 	wallindicatorquad = {love.graphics.newQuad(0, 0, 16, 16, 32, 16), love.graphics.newQuad(16, 0, 16, 16, 32, 16)}
 	
-	walltimerimg = love.graphics.newImage("graphics/" .. graphicspack .. "/walltimer.png")
 	walltimerquad = {}
 	for i = 1, 10 do
 		walltimerquad[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, 160, 16)
 	end
 	
-	lightbridgeimg = love.graphics.newImage("graphics/" .. graphicspack .. "/lightbridge.png")
-	lightbridgesideimg = love.graphics.newImage("graphics/" .. graphicspack .. "/lightbridgeside.png")
+	directionsimg = love.graphics.newImage("graphics/directions.png")
+	directionsquad = {}
+	for x = 1, 6 do
+		directionsquad[x] = love.graphics.newQuad((x-1)*7, 0, 7, 7, 42, 7)
+	end
 	
-	laserimg = love.graphics.newImage("graphics/" .. graphicspack .. "/laser.png")
-	lasersideimg = love.graphics.newImage("graphics/" .. graphicspack .. "/laserside.png")
+	excursionquad = {}
+	for x = 1, 8 do
+		excursionquad[x] = love.graphics.newQuad((x-1)*8, 0, 8, 32, 64, 32)
+	end
 	
-	faithplateplateimg = love.graphics.newImage("graphics/" .. graphicspack .. "/faithplateplate.png")
+	faithplatequad = {love.graphics.newQuad(0, 0, 32, 16, 32, 32), love.graphics.newQuad(0, 16, 32, 16, 32, 32)}
 	
-	laserdetectorimg = love.graphics.newImage("graphics/" .. graphicspack .. "/laserdetector.png")
-	
-	gel1img = love.graphics.newImage("graphics/" .. graphicspack .. "/gel1.png")
-	gel2img = love.graphics.newImage("graphics/" .. graphicspack .. "/gel2.png")
-	gel3img = love.graphics.newImage("graphics/" .. graphicspack .. "/gel3.png")
 	gelquad = {love.graphics.newQuad(0, 0, 12, 12, 36, 12), love.graphics.newQuad(12, 0, 12, 12, 36, 12), love.graphics.newQuad(24, 0, 12, 12, 36, 12)}
-	
-	gel1ground = love.graphics.newImage("graphics/" .. graphicspack .. "/gel1ground.png")
-	gel2ground = love.graphics.newImage("graphics/" .. graphicspack .. "/gel2ground.png")
-	gel3ground = love.graphics.newImage("graphics/" .. graphicspack .. "/gel3ground.png")
-	
-	geldispenserimg = love.graphics.newImage("graphics/" .. graphicspack .. "/geldispenser.png")
-	cubedispenserimg = love.graphics.newImage("graphics/" .. graphicspack .. "/cubedispenser.png")
 	
 	gradientimg = love.graphics.newImage("graphics/gradient.png");gradientimg:setFilter("linear", "linear")
 	
-	--optionsmenu
-	skinpuppet = {}
-	secondskinpuppet = {}
-	for i = 0, 3 do
-		skinpuppet[i] = love.graphics.newImage("graphics/" .. graphicspack .. "/options/skin" .. i .. ".png")
-		secondskinpuppet[i] = love.graphics.newImage("graphics/" .. graphicspack .. "/options/secondskin" .. i .. ".png")
+	panelquad = {}
+	for x = 1, 2 do
+		panelquad[x] = love.graphics.newQuad((x-1)*16, 0, 16, 16, 32, 16)
 	end
-	
+		
 	--Ripping off
 	minecraftbreakimg = love.graphics.newImage("graphics/Minecraft/blockbreak.png")
 	minecraftbreakquad = {}
@@ -665,148 +910,243 @@ function love.load()
 	minecraftgui = love.graphics.newImage("graphics/Minecraft/gui.png")
 	minecraftselected = love.graphics.newImage("graphics/Minecraft/selected.png")
 	
+	add("Images, quads")
+	
 	--AUDIO--
 	--sounds
-	jumpsound = love.audio.newSource("sounds/jump.ogg", "static");love.audio.stop(jumpsound)
-	jumpbigsound = love.audio.newSource("sounds/jumpbig.ogg", "static");love.audio.stop(jumpbigsound)
-	stompsound = love.audio.newSource("sounds/stomp.ogg", "static");stompsound:setVolume(0);stompsound:play();stompsound:stop();stompsound:setVolume(1)
-	shotsound = love.audio.newSource("sounds/shot.ogg", "static");shotsound:setVolume(0);shotsound:play();shotsound:stop();shotsound:setVolume(1)
-	blockhitsound = love.audio.newSource("sounds/blockhit.ogg", "static");blockhitsound:setVolume(0);blockhitsound:play();blockhitsound:stop();blockhitsound:setVolume(1)
-	blockbreaksound = love.audio.newSource("sounds/blockbreak.ogg", "static");blockbreaksound:setVolume(0);blockbreaksound:play();blockbreaksound:stop();blockbreaksound:setVolume(1)
-	coinsound = love.audio.newSource("sounds/coin.ogg", "static");coinsound:setVolume(0);coinsound:play();coinsound:stop();coinsound:setVolume(1)
-	pipesound = love.audio.newSource("sounds/pipe.ogg", "static");pipesound:setVolume(0);pipesound:play();pipesound:stop();pipesound:setVolume(1)
-	boomsound = love.audio.newSource("sounds/boom.ogg", "static");boomsound:setVolume(0);boomsound:play();boomsound:stop();boomsound:setVolume(1)
-	mushroomappearsound = love.audio.newSource("sounds/mushroomappear.ogg", "static");mushroomappearsound:setVolume(0);mushroomappearsound:play();mushroomappearsound:stop();mushroomappearsound:setVolume(1)
-	mushroomeatsound = love.audio.newSource("sounds/mushroomeat.ogg", "static");mushroomeatsound:setVolume(0);mushroomeatsound:play();mushroomeatsound:stop();mushroomeatsound:setVolume(1)
-	shrinksound = love.audio.newSource("sounds/shrink.ogg", "static");shrinksound:setVolume(0);shrinksound:play();shrinksound:stop();shrinksound:setVolume(1)
-	deathsound = love.audio.newSource("sounds/death.ogg", "static");deathsound:setVolume(0);deathsound:play();deathsound:stop();deathsound:setVolume(1)
-	gameoversound = love.audio.newSource("sounds/gameover.ogg", "static");gameoversound:setVolume(0);gameoversound:play();gameoversound:stop();gameoversound:setVolume(1)
-	fireballsound = love.audio.newSource("sounds/fireball.ogg", "static");fireballsound:setVolume(0);fireballsound:play();fireballsound:stop();fireballsound:setVolume(1)
-	oneupsound = love.audio.newSource("sounds/oneup.ogg", "static");oneupsound:setVolume(0);oneupsound:play();oneupsound:stop();oneupsound:setVolume(1)
-	levelendsound = love.audio.newSource("sounds/levelend.ogg", "static");levelendsound:setVolume(0);levelendsound:play();levelendsound:stop();levelendsound:setVolume(1)
-	castleendsound = love.audio.newSource("sounds/castleend.ogg", "static");castleendsound:setVolume(0);castleendsound:play();castleendsound:stop();castleendsound:setVolume(1)
-	scoreringsound = love.audio.newSource("sounds/scorering.ogg", "static");scoreringsound:setVolume(0);scoreringsound:play();scoreringsound:stop();scoreringsound:setVolume(1);scoreringsound:setLooping(true)
-	intermissionsound = love.audio.newSource("sounds/intermission.ogg", "static");intermissionsound:setVolume(0);intermissionsound:play();intermissionsound:stop();intermissionsound:setVolume(1)
-	firesound = love.audio.newSource("sounds/fire.ogg", "static");firesound:setVolume(0);firesound:play();firesound:stop();firesound:setVolume(1)
-	bridgebreaksound = love.audio.newSource("sounds/bridgebreak.ogg", "static");bridgebreaksound:setVolume(0);bridgebreaksound:play();bridgebreaksound:stop();bridgebreaksound:setVolume(1)
-	bowserfallsound = love.audio.newSource("sounds/bowserfall.ogg", "static");bowserfallsound:setVolume(0);bowserfallsound:play();bowserfallsound:stop();bowserfallsound:setVolume(1)
-	vinesound = love.audio.newSource("sounds/vine.ogg", "static");vinesound:setVolume(0);vinesound:play();vinesound:stop();vinesound:setVolume(1)
-	swimsound = love.audio.newSource("sounds/swim.ogg", "static");swimsound:setVolume(0);swimsound:play();swimsound:stop();swimsound:setVolume(1)
-	rainboomsound = love.audio.newSource("sounds/rainboom.ogg", "static");rainboomsound:setVolume(0);rainboomsound:play();rainboomsound:stop();rainboomsound:setVolume(1)
-	konamisound = love.audio.newSource("sounds/konami.ogg", "static");konamisound:setVolume(0);konamisound:play();konamisound:stop();konamisound:setVolume(1)
-	pausesound = love.audio.newSource("sounds/pause.ogg", "static");pausesound:setVolume(0);pausesound:play();pausesound:stop();pausesound:setVolume(1)
-	bulletbillsound = love.audio.newSource("sounds/bulletbill.ogg", "static");pausesound:setVolume(0);pausesound:play();pausesound:stop();pausesound:setVolume(1)
-	stabsound = love.audio.newSource("sounds/stab.ogg", "static")
+	soundstoload = {"jump", "jumpbig", "stomp", "shot", "blockhit", "blockbreak", "coin", "pipe", "boom", "mushroomappear", "mushroomeat", "shrink", "death", "gameover", "fireball",
+					"oneup", "levelend", "castleend", "scorering", "intermission", "fire", "bridgebreak", "bowserfall", "vine", "swim", "rainboom", "konami", "pause", "bulletbill",
+					"lowtime", "tailwag", "planemode", "stab", "portal1open", "portal2open", "portalenter", "portalfizzle"}
+				
+	soundlist = {}
 	
+	for i, v in pairs(soundstoload) do
+		soundlist[v] = {}
+		soundlist[v].source = love.audio.newSource("sounds/" .. v .. ".ogg", "stream")
+		soundlist[v].lastplayed = 0
+	end
 	
-	portal1opensound = love.audio.newSource("sounds/portal1open.ogg", "static");portal1opensound:setVolume(0);portal1opensound:play();portal1opensound:stop();portal1opensound:setVolume(0.3)
-	portal2opensound = love.audio.newSource("sounds/portal2open.ogg", "static");portal2opensound:setVolume(0);portal2opensound:play();portal2opensound:stop();portal2opensound:setVolume(0.3)
-	portalentersound = love.audio.newSource("sounds/portalenter.ogg", "static");portalentersound:setVolume(0);portalentersound:play();portalentersound:stop();portalentersound:setVolume(0.3)
-	portalfizzlesound = love.audio.newSource("sounds/portalfizzle.ogg", "static");portalfizzlesound:setVolume(0);portalfizzlesound:play();portalfizzlesound:stop();portalfizzlesound:setVolume(0.3)
+	soundlist["scorering"].source:setLooping(true)
+	soundlist["planemode"].source:setLooping(true)
+	soundlist["portal1open"].source:setVolume(0.3)
+	soundlist["portal2open"].source:setVolume(0.3)
+	soundlist["portalenter"].source:setVolume(0.3)
+	soundlist["portalfizzle"].source:setVolume(0.3)
 	
-	lowtime = love.audio.newSource("sounds/lowtime.ogg", "static");rainboomsound:setVolume(0);rainboomsound:play();rainboomsound:stop();rainboomsound:setVolume(1)
+	delaylist = {}
+	delaylist["blockhit"] = 0.2
+	
+	--[[jumpsound = love.audio.newSource("sounds/jump.ogg", "stream")
+	jumpbigsound = love.audio.newSource("sounds/jumpbig.ogg", "stream")
+	stompsound = love.audio.newSource("sounds/stomp.ogg", "stream")
+	shotsound = love.audio.newSource("sounds/shot.ogg", "stream")
+	blockhitsound = love.audio.newSource("sounds/blockhit.ogg", "stream")
+	blockbreaksound = love.audio.newSource("sounds/blockbreak.ogg", "stream")
+	coinsound = love.audio.newSource("sounds/coin.ogg", "stream")
+	pipesound = love.audio.newSource("sounds/pipe.ogg", "stream")
+	boomsound = love.audio.newSource("sounds/boom.ogg", "stream")
+	mushroomappearsound = love.audio.newSource("sounds/mushroomappear.ogg", "stream")
+	mushroomeatsound = love.audio.newSource("sounds/mushroomeat.ogg", "stream")
+	shrinksound = love.audio.newSource("sounds/shrink.ogg", "stream")
+	deathsound = love.audio.newSource("sounds/death.ogg", "stream")
+	gameoversound = love.audio.newSource("sounds/gameover.ogg", "stream")
+	fireballsound = love.audio.newSource("sounds/fireball.ogg", "stream")
+	oneupsound = love.audio.newSource("sounds/oneup.ogg", "stream")
+	levelendsound = love.audio.newSource("sounds/levelend.ogg", "stream")
+	castleendsound = love.audio.newSource("sounds/castleend.ogg", "stream")
+	scoreringsound = love.audio.newSource("sounds/scorering.ogg", "stream");
+	intermissionsound = love.audio.newSource("sounds/intermission.ogg", "stream")
+	firesound = love.audio.newSource("sounds/fire.ogg", "stream")
+	bridgebreaksound = love.audio.newSource("sounds/bridgebreak.ogg", "stream")
+	bowserfallsound = love.audio.newSource("sounds/bowserfall.ogg", "stream")
+	vinesound = love.audio.newSource("sounds/vine.ogg", "stream")
+	swimsound = love.audio.newSource("sounds/swim.ogg", "stream")
+	rainboomsound = love.audio.newSource("sounds/rainboom.ogg", "stream")
+	konamisound = love.audio.newSource("sounds/konami.ogg", "stream")
+	pausesound = love.audio.newSource("sounds/pause.ogg", "stream")
+	bulletbillsound = love.audio.newSource("sounds/bulletbill.ogg", "stream")
+	lowtime = love.audio.newSource("sounds/lowtime.ogg", "stream")
+	tailwagsound = love.audio.newSource("sounds/tailwag.ogg", "stream")
+	planemodesound = love.audio.newSource("sounds/planemode.ogg", "stream");
+	stabsound = love.audio.newSource("sounds/stab.ogg", "stream")
+	portal1opensound = love.audio.newSource("sounds/portal1open.ogg", "stream");portal1opensound:setVolume(0.3)
+	portal2opensound = love.audio.newSource("sounds/portal2open.ogg", "stream");portal2opensound:setVolume(0.3)
+	portalentersound = love.audio.newSource("sounds/portalenter.ogg", "stream");portalentersound:setVolume(0.3)
+	portalfizzlesound = love.audio.newSource("sounds/portalfizzle.ogg", "stream");portalfizzlesound:setVolume(0.3)--]]
+	
 	
 	--music
 	--[[
-	overworldmusic = love.audio.newSource("sounds/overworld.ogg", "stream");overworldmusic:setLooping(true)
-	undergroundmusic = love.audio.newSource("sounds/underground.ogg", "stream");undergroundmusic:setLooping(true)
-	castlemusic = love.audio.newSource("sounds/castle.ogg", "stream");castlemusic:setLooping(true)
-	underwatermusic = love.audio.newSource("sounds/underwater.ogg", "stream");underwatermusic:setLooping(true)
-	starmusic = love.audio.newSource("sounds/starmusic.ogg", "stream");starmusic:setLooping(true)
-	princessmusic = love.audio.newSource("sounds/princessmusic.ogg", "stream");princessmusic:setLooping(true)
+	overworldmusic = love.audio.newSource("sounds/overworld.ogg", "static");overworldmusic:setLooping(true)
+	undergroundmusic = love.audio.newSource("sounds/underground.ogg", "static");undergroundmusic:setLooping(true)
+	castlemusic = love.audio.newSource("sounds/castle.ogg", "static");castlemusic:setLooping(true)
+	underwatermusic = love.audio.newSource("sounds/underwater.ogg", "static");underwatermusic:setLooping(true)
+	starmusic = love.audio.newSource("sounds/starmusic.ogg", "static");starmusic:setLooping(true)
+	princessmusic = love.audio.newSource("sounds/princessmusic.ogg", "static");princessmusic:setLooping(true)
 	
-	overworldmusicfast = love.audio.newSource("sounds/overworld-fast.ogg", "stream");overworldmusicfast:setLooping(true)
-	undergroundmusicfast = love.audio.newSource("sounds/underground-fast.ogg", "stream");undergroundmusicfast:setLooping(true)
-	castlemusicfast = love.audio.newSource("sounds/castle-fast.ogg", "stream");castlemusicfast:setLooping(true)
-	underwatermusicfast = love.audio.newSource("sounds/underwater-fast.ogg", "stream");underwatermusicfast:setLooping(true)
-	starmusicfast = love.audio.newSource("sounds/starmusic-fast.ogg", "stream");starmusicfast:setLooping(true)
+	overworldmusicfast = love.audio.newSource("sounds/overworld-fast.ogg", "static");overworldmusicfast:setLooping(true)
+	undergroundmusicfast = love.audio.newSource("sounds/underground-fast.ogg", "static");undergroundmusicfast:setLooping(true)
+	castlemusicfast = love.audio.newSource("sounds/castle-fast.ogg", "static");castlemusicfast:setLooping(true)
+	underwatermusicfast = love.audio.newSource("sounds/underwater-fast.ogg", "static");underwatermusicfast:setLooping(true)
+	starmusicfast = love.audio.newSource("sounds/starmusic-fast.ogg", "static");starmusicfast:setLooping(true)
 	]]
-	
-	soundlist = {jumpsound, jumpbigsound, stompsound, shotsound, blockhitsound, blockbreaksound, coinsound, pipesound, boomsound, mushroomappearsound, mushroomeatsound, shrinksound, deathsound, gameoversound,
-				fireballsound, oneupsound, levelendsound, castleendsound, scoreringsound, intermissionsound, firesound, bridgebreaksound, bowserfallsound, vinesound, swimsound, rainboomsoud, 
-				portal1opensound, portal2opensound, portalentersound, portalfizzlesound, lowtime, konamisound, pausesound, stabsound, bulletbillsound}
+
 	
 	-- musiclist = {overworldmusic, undergroundmusic, castlemusic, underwatermusic, starmusic}
 	-- musiclistfast = {overworldmusicfast, undergroundmusicfast, castlemusicfast, underwatermusicfast, starmusicfast}
 	
-	musici = 2
+	musicname = "overworld.ogg"
 	
+	add("Sounds")
 	shaders:init()
-	shaders:set(1, shaderlist[currentshaderi1])
-	shaders:set(2, shaderlist[currentshaderi2])
+	add("Shaders init")
 	
 	for i, v in pairs(dlclist) do
 		delete_mappack(v)
 	end
 	
-	intro_load()
+	firstload = true
+	
+	if skipintro then
+		menu_load()
+	else
+		intro_load()
+	end
+	add("Intro Load")
+	print("=======================\nDONE!")
+	print("TOTAL: " .. totaltime .. "ms")
+	
+	mycamera = camera:new()
+	mycamera:zoomTo(0.4)
 end
 
 function love.update(dt)
 	if music then
 		music:update()
 	end
-	dt = math.min(0.01666667, dt)
+	realdt = dt
+	dt = math.min(0.5, dt) --ignore any dt higher than half a second
 	
-	--speed
-	if speed ~= speedtarget then
-		if speed > speedtarget then
-			speed = math.max(speedtarget, speed+(speedtarget-speed)*dt*5)
-		elseif speed < speedtarget then
-			speed = math.min(speedtarget, speed+(speedtarget-speed)*dt*5)
-		end
-		
-		if math.abs(speed-speedtarget) < 0.02 then
-			speed = speedtarget
-		end
-		
-		if speed > 0 then
-			for i, v in pairs(soundlist) do
-				v:setPitch( speed )
-			end
-			music.pitch = speed
-			love.audio.setVolume(volume)
-		else
-			love.audio.setVolume(0)
-		end
+	if recording then
+		dt = recordtarget
 	end
 	
-	dt = dt * speed
-	gdt = dt
+	steptimer = steptimer + dt
+	dt = targetdt
 	
-	if frameadvance == 1 then
-		return
-	elseif frameadvance == 2 then
-		frameadvance = 1
-	end
-
 	if skipupdate then
+		steptimer = 0
 		skipupdate = false
 		return
 	end
 	
-	--netplay_update(dt)
-	keyprompt_update()
-	
-	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
-		menu_update(dt)
-	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "sublevelscreen" or gamestate == "mappackfinished" then
-		levelscreen_update(dt)
-	elseif gamestate == "game" then
-		game_update(dt)	
-	elseif gamestate == "intro" then
-		intro_update(dt)	
-	end
-	
-	for i, v in pairs(guielements) do
-		v:update(dt)
+	while steptimer >= targetdt do
+		steptimer = steptimer - targetdt
+		
+		
+		if mkstation then --Old school stats display for gamescom
+			--[[ debug lol
+			
+			print(stats_curr)
+			if replaydata[stats_curr] then
+				print(stats_curr, stats_currletter, replaydata[stats_curr].finaltime, replaydata[stats_curr].name)
+			end--]]
+			
+			stats_currlettertimer = stats_currlettertimer + dt
+			if stats_currlettertimer > stats_letterspeed then
+				stats_currlettertimer = stats_currlettertimer - stats_letterspeed
+				stats_currletter = stats_currletter + 1
+			end
+			
+			
+			local string1, string2
+			if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].finaltime and replaydata[stats_prev].finaltime then
+				string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].finaltime, 2) .. " sec"
+				string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].finaltime, 2) .. " sec"
+			else
+				string1 = ""
+				string2 = ""
+			end
+			
+			local l = math.max(string1:len(), string2:len())
+			
+			if stats_currletter > l then
+				stats_timer = stats_timer + dt
+				
+				if stats_timer > stats_delay then
+					stats_timer = stats_timer - stats_delay
+					stats_prev = stats_curr
+					
+					if #replaydata >= 1 then
+						stats_curr = math.mod(stats_curr, math.min(#replaydata, 10)) + 1
+					
+						if stats_curr > #tracking then
+							stats_curr = 1
+						end
+						stats_currletter = 0
+					end
+				end
+			end
+		end
+		
+		--speed
+		if bullettime and speed ~= speedtarget then
+			if speed > speedtarget then
+				speed = math.max(speedtarget, speed+(speedtarget-speed)*dt*5)
+			elseif speed < speedtarget then
+				speed = math.min(speedtarget, speed+(speedtarget-speed)*dt*5)
+			end
+			
+			if math.abs(speed-speedtarget) < 0.02 then
+				speed = speedtarget
+			end
+			
+			if speed > 0 then
+				for i, v in pairs(soundlist) do
+					v.source:setPitch( speed )
+				end
+				music.pitch = speed
+				love.audio.setVolume(volume)
+			else	
+				love.audio.setVolume(0)
+			end
+		end
+		
+		if frameadvance == 1 then
+			return
+		elseif frameadvance == 2 then
+			frameadvance = 1
+		end
+		
+		keyprompt_update()
+		
+		if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" or gamestate == "lobby" then
+			menu_update(dt)
+		elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "sublevelscreen" or gamestate == "mappackfinished" then
+			levelscreen_update(dt)
+		elseif gamestate == "game" then
+			game_update(dt)	
+		elseif gamestate == "intro" then
+			intro_update(dt)	
+		end
+		
+		for i, v in pairs(guielements) do
+			v:update(dt)
+		end
+		
+		--netplay_update(dt)
+		
+		notice.update(dt)
+		
+		love.graphics.setCaption(love.timer.getFPS())
 	end
 end
 
 function love.draw()
 	shaders:predraw()
 	
-	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
+	--mycamera:attach()
+	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" or gamestate == "lobby" then
 		menu_draw()
 	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "mappackfinished" then
 		levelscreen_draw()
@@ -816,12 +1156,67 @@ function love.draw()
 		intro_draw()
 	end
 	
+	notice.draw()
+	
+	--mycamera:detach()
+	
 	shaders:postdraw()
 	
+	if mkstation then
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.rectangle("fill", 0, 896, 1680, 154)
+		if ttstate == "demo" then
+			love.graphics.setColor(128, 128, 128)
+			properprint("play and your replay will be saved and shown!", 30*scale, 920)
+		end
+		love.graphics.setColor(255, 255,255)
+		properprint("highscore #", 280, 960)
+		--love.graphics.draw(mari0imgsmall, gamewidth/2-380, 896, 0, 1, 1, mari0imgsmall:getWidth()/2, 0)
+		
+		
+		local string1, string2
+		if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].finaltime and replaydata[stats_prev].finaltime then
+			string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].finaltime, 2) .. " sec"
+			string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].finaltime, 2) .. " sec"
+		else
+			string1 = ""
+			string2 = ""
+		end
+		
+		local l = math.max(string1:len(), string2:len())
+		
+		for i = 1, l do
+			local l
+			if i < stats_currletter then
+				letter = string.sub(string2, i, i)
+			elseif i > stats_currletter then
+				letter = string.sub(string1, i, i)
+			else
+				local r = math.random(fontglyphs:len())
+				letter = string.sub(fontglyphs, r, r)
+			end
+			properprint(letter, 600+8*scale*i, 960)
+		end
+		
+			love.graphics.setColor(128, 128, 128)
+		properprint("# of replays: " .. #replaydata, 1120, 1018)
+			love.graphics.setColor(255, 255, 255)
+	end
+	
 	love.graphics.setColor(255, 255,255)
+	
+	if recording then
+		screenshotimagedata = love.graphics.newScreenshot( )
+		screenshotimagedata:encode("recording/" .. recordframe .. ".png")
+		recordframe = recordframe + 1
+	end
 end
 
 function saveconfig()
+	if CLIENT or SERVER then
+		return
+	end
+	
 	local s = ""
 	for i = 1, #controls do
 		s = s .. "playercontrols:" .. i .. ":"
@@ -844,18 +1239,28 @@ function saveconfig()
 		end
 	end	
 	
-	for i = 1, #mariocolors do
+	for i = 1, #mariocolors do --players
 		s = s .. "playercolors:" .. i .. ":"
-		for j = 1, 3 do
-			for k = 1, 3 do
-				s = s .. mariocolors[i][j][k]
-				if j == 3 and k == 3 then
-					s = s .. ";"
-				else
-					s = s .. ","
+		if #mariocolors[i] > 0 then
+			for j = 1, #mariocolors[i] do --colorsets (dynamic)
+				for k = 1, 3 do --R, G or B values
+					s = s .. mariocolors[i][j][k]
+					if j == #mariocolors[i] and k == 3 then
+						s = s .. ";"
+					else
+						s = s .. ","
+					end
 				end
 			end
+		else
+			s = s .. ";"
 		end
+	end
+	
+	for i = 1, #mariocharacter do
+		s = s .. "mariocharacter:" .. i .. ":"
+		s = s .. mariocharacter[i]
+		s = s .. ";"
 	end
 	
 	for i = 1, #portalhues do
@@ -900,6 +1305,9 @@ function saveconfig()
 		s = s .. "gamefinished;"
 	end
 	
+	s = s .. "fullscreen:" .. tostring(fullscreen) .. ";"
+	s = s .. "fullscreenmode:" .. fullscreenmode .. ";"
+	
 	--reached worlds
 	for i, v in pairs(reachedworlds) do
 		s = s .. "reachedworlds:" .. i .. ":"
@@ -931,9 +1339,9 @@ function loadconfig()
 	
 	local s = love.filesystem.read("options.txt")
 	s1 = s:split(";")
+	
 	for i = 1, #s1-1 do
 		s2 = s1[i]:split(":")
-		
 		if s2[1] == "playercontrols" then
 			if controls[tonumber(s2[2])] == nil then
 				controls[tonumber(s2[2])] = {}
@@ -958,8 +1366,10 @@ function loadconfig()
 				mariocolors[tonumber(s2[2])] = {}
 			end
 			s3 = s2[3]:split(",")
-			mariocolors[tonumber(s2[2])] = {{tonumber(s3[1]), tonumber(s3[2]), tonumber(s3[3])}, {tonumber(s3[4]), tonumber(s3[5]), tonumber(s3[6])}, {tonumber(s3[7]), tonumber(s3[8]), tonumber(s3[9])}}
-			
+			mariocolors[tonumber(s2[2])] = {}
+			for i = 1, #s3/3 do
+				mariocolors[tonumber(s2[2])][i] = {tonumber(s3[1+(i-1)*3]), tonumber(s3[2+(i-1)*3]), tonumber(s3[3+(i-1)*3])}
+			end
 		elseif s2[1] == "portalhues" then
 			if portalhues[tonumber(s2[2])] == nil then
 				portalhues[tonumber(s2[2])] = {}
@@ -977,9 +1387,6 @@ function loadconfig()
 				s3 = s2[3]:split(",")
 				for i = 1, #s3 do
 					local hatno = tonumber(s3[i])
-					if hatno > hatcount then
-						hatno = hatcount
-					end
 					mariohats[playerno][i] = hatno
 				end
 			end
@@ -1005,7 +1412,7 @@ function loadconfig()
 		elseif s2[1] == "mouseowner" then
 			mouseowner = tonumber(s2[2])
 		elseif s2[1] == "mappack" then
-			if love.filesystem.exists("mappacks/" .. s2[2] .. "/") then
+			if love.filesystem.exists("mappacks/" .. s2[2] .. "/settings.txt") then
 				mappack = s2[2]
 			end
 		elseif s2[1] == "gamefinished" then
@@ -1020,12 +1427,19 @@ function loadconfig()
 					reachedworlds[s2[2]][i] = true
 				end
 			end
+		elseif s2[1] == "mariocharacter" then
+			mariocharacter[tonumber(s2[2])] = s2[3]
+		elseif s2[1] == "fullscreen" then
+			fullscreen = s2[2] == "true"
+		elseif s2[1] == "fullscreenmode" then
+			fullscreenmode = s2[2]
 		end
 	end
 	
 	for i = 1, math.max(4, players) do
 		portalcolor[i] = {getrainbowcolor(portalhues[i][1]), getrainbowcolor(portalhues[i][2])}
 	end
+	
 	players = 1
 end
 
@@ -1117,37 +1531,111 @@ function defaultconfig()
 	
 	flowercolor = {{252, 216, 168}, {216,  40,   0}, {252, 152,  56}}
 	
+	--CHARACTERS
+	mariocharacter = {"mario", "mario", "mario", "mario"}
+	
 	--options
 	scale = 2
 	volume = 1
 	mappack = "smb"
-	vsync = false
+	vsync = true
+	currentshaderi1 = 1
+	currentshaderi2 = 1
+	firstpersonview = false
+	firstpersonrotate = false
+	seethroughportals = false
+	fullscreen = false
+	fullscreenmode = "letterbox"
 	
 	reachedworlds = {}
+end
+
+function loadcustomimages(path)
+	for i = 1, #overwrittenimages do
+		local s = overwrittenimages[i]
+		_G[s .. "img"] = _G["default" .. s .. "img"]
+	end
+	overwrittenimages = {}
+
+	local fl = love.filesystem.enumerate(path)
+	for i = 1, #fl do
+		local v = fl[i]
+		if love.filesystem.isFile(path .. "/" .. v) then
+			local s = string.sub(v, 1, -5)
+			if tablecontains(imagelist, s) then
+				_G[s .. "img"] = love.graphics.newImage(path .. "/" .. v)
+				table.insert(overwrittenimages, s)
+			end
+		end
+	end
+	
+	--tiles
+	tilequads = {}
+	rgblist = {}
+	
+	--add smb tiles
+	local imgwidth, imgheight = smbtilesimg:getWidth(), smbtilesimg:getHeight()
+	local width = math.floor(imgwidth/17)
+	local height = math.floor(imgheight/17)
+	local imgdata
+	if love.filesystem.isFile(path .. "/smbtiles.png") then
+		imgdata = love.image.newImageData(path .. "/smbtiles.png")
+	else
+		imgdata = love.image.newImageData("graphics/SMB/smbtiles.png")
+	end
+	
+	for y = 1, height do
+		for x = 1, width do
+			table.insert(tilequads, quad:new(smbtilesimg, imgdata, x, y, imgwidth, imgheight))
+			local r, g, b = getaveragecolor(imgdata, x, y)
+			table.insert(rgblist, {r, g, b})
+		end
+	end
+	smbtilecount = width*height
+	
+	--add portal tiles
+	local imgwidth, imgheight = portaltilesimg:getWidth(), portaltilesimg:getHeight()
+	local width = math.floor(imgwidth/17)
+	local height = math.floor(imgheight/17)
+	local imgdata
+	if love.filesystem.isFile(path .. "/portaltiles.png") then
+		imgdata = love.image.newImageData(path .. "/portaltiles.png")
+	else
+		imgdata = love.image.newImageData("graphics/SMB/portaltiles.png")
+	end
+	
+	for y = 1, height do
+		for x = 1, width do
+			table.insert(tilequads, quad:new(portaltilesimg, imgdata, x, y, imgwidth, imgheight))
+			local r, g, b = getaveragecolor(imgdata, x, y)
+			table.insert(rgblist, {r, g, b})
+		end
+	end
+	portaltilecount = width*height
 end
 
 function suspendgame()
 	local s = ""
 	if marioworld == "M" then
-		marioworld = 8
-		mariolevel = 4
+		marioworld = 1
+		mariolevel = 3
 	end
-	s = s .. "world/" .. marioworld .. "|"
-	s = s .. "level/" .. mariolevel .. "|"
-	s = s .. "coincount/" .. mariocoincount .. "|"
-	s = s .. "score/" .. marioscore .. "|"
-	s = s .. "players/" .. players .. "|"
+	s = s .. "a/" .. marioworld .. "|"
+	s = s .. "b/" .. mariolevel .. "|"
+	s = s .. "c/" .. mariocoincount .. "|"
+	s = s .. "d/" .. marioscore .. "|"
+	s = s .. "e/" .. players .. "|"
 	for i = 1, players do
 		if mariolivecount ~= false then
-			s = s .. "lives/" .. i .. "/" .. mariolives[i] .. "|"
+			s = s .. "f/" .. i .. "/" .. mariolives[i] .. "|"
 		end
 		if objects["player"][i] then
-			s = s .. "size/" .. i .. "/" .. objects["player"][i].size .. "|"
+			s = s .. "g/" .. i .. "/" .. objects["player"][i].size .. "|"
 		else
-			s = s .. "size/" .. i .."/1|"
+			s = s .. "g/" .. i .."/1|"
 		end
 	end
-	s = s .. "mappack/" .. mappack
+	s = s .. "h/" .. mappack
 	
 	love.filesystem.write("suspend.txt", s)
 	
@@ -1168,21 +1656,21 @@ function continuegame()
 	local split = s:split("|")
 	for i = 1, #split do
 		local split2 = split[i]:split("/")
-		if split2[1] == "world" then
+		if split2[1] == "a" then
 			marioworld = tonumber(split2[2])
-		elseif split2[1] == "level" then
+		elseif split2[1] == "b" then
 			mariolevel = tonumber(split2[2])
-		elseif split2[1] == "coincount" then
+		elseif split2[1] == "c" then
 			mariocoincount = tonumber(split2[2])
-		elseif split2[1] == "score" then
+		elseif split2[1] == "d" then
 			marioscore = tonumber(split2[2])
-		elseif split2[1] == "players" then
+		elseif split2[1] == "e" then
 			players = tonumber(split2[2])
-		elseif split2[1] == "lives" and mariolivecount ~= false then
+		elseif split2[1] == "f" and mariolivecount ~= false then
 			mariolives[tonumber(split2[2])] = tonumber(split2[3])
-		elseif split2[1] == "size" then
+		elseif split2[1] == "g" then
 			mariosizes[tonumber(split2[2])] = tonumber(split2[3])
-		elseif split2[1] == "mappack" then
+		elseif split2[1] == "h" then
 			mappack = split2[2]
 		end
 	end
@@ -1190,17 +1678,52 @@ function continuegame()
 	love.filesystem.remove("suspend.txt")
 end
 
-function changescale(s, fullscreen)
+function changescale(s, init)
 	scale = s
 	
-	if fullscreen then
-		fullscreen = true
-		scale = 2
-		love.graphics.setMode(800, 600, fullscreen, vsync, fsaa)
+	if not init then
+		if width*16*scale > desktopsize.width then
+			if fullscreen and fullscreenmode == "full" then
+				scale = scale - 1
+				return
+			end
+			
+			if fullscreen and fullscreenmode == "touchfrominside" then
+				fullscreenmode = "full"
+				scale = scale - 1
+				return
+			end
+			
+			if love.graphics.isSupported("canvas") then
+				fullscreen = true
+			end
+			
+			scale = scale - 1
+			fullscreenmode = "touchfrominside"
+			
+		elseif fullscreen then
+			if fullscreenmode == "full" then
+				fullscreenmode = "touchfrominside"
+				scale = scale + 1
+				return
+			else
+				fullscreen = false
+			end
+			scale = scale + 1
+			fullscreenmode = "full"
+			
+		end
 	end
 	
-	uispace = math.floor(width*16*scale/4)
-	love.graphics.setMode(width*16*scale, 224*scale, fullscreen, vsync, fsaa) --27x14 blocks (15 blocks actual height)
+	if fullscreen then
+		love.graphics.setMode(desktopsize.width, desktopsize.height+22, false, vsync, fsaa)
+	else
+		uispace = math.floor(width*16*scale/4)
+		love.graphics.setMode(width*16*scale, height*16*scale, false, vsync, fsaa) --27x14 blocks (15 blocks actual height)
+	end
+	
+	completecanvas = love.graphics.newCanvas()
+	completecanvas:setFilter("linear", "linear")
 	
 	gamewidth = love.graphics.getWidth()
 	gameheight = love.graphics.getHeight()
@@ -1208,16 +1731,35 @@ function changescale(s, fullscreen)
 	if shaders then
 		shaders:refresh()
 	end
+	
 end
 
 function love.keypressed(key, unicode)
+	if key == "y" then
+		if love.keyboard.isDown("lalt") then
+			recording = not recording
+		end
+	end
+	
+	if key == "lctrl" then
+		debug.debug()
+		return
+	end
+	
+	if replaysystem then
+		if key == "k" then
+			objects["player"][1]:savereplaydata()
+		end
+	end
+	
 	if keyprompt then
 		keypromptenter("key", key)
 		return
 	end
 
 	for i, v in pairs(guielements) do
-		if v:keypress(key) then
+		local mykey = unicode or key
+		if v:keypress(string.lower(mykey), mykey) then
 			return
 		end
 	end
@@ -1226,20 +1768,36 @@ function love.keypressed(key, unicode)
 		love.mouse.setGrab(not love.mouse.isGrabbed())
 	end
 	
+	if gamestate == "lobby" or gamestate == "onlinemenu" then
+		if key == "escape" then
+			net_quit()
+			return
+		end
+	end
+	
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
-		--konami code
-		if key == konami[konamii] then
-			konamii = konamii + 1
-			if konamii == #konami+1 then
-				if konamisound:isStopped() then
-					playsound(konamisound)
-				end
-				gamefinished = true
-				saveconfig()
-				konamii = 1
+		--(not) konami code
+		--With this you can figure out the new Konami code:
+
+		--SY
+
+		--0..3
+
+		--Have fun.
+		
+		table.insert(konamitable, key)
+		table.remove(konamitable, 1)
+		local s = ""
+		for i = 1, #konamitable do
+			s = s .. konamitable[i]
+		end
+		
+		if sha1(s) == konamihash then
+			if konamisound:isStopped() then
+				playsound("konami")
 			end
-		else
-			konamii = 1
+			gamefinished = true
+			saveconfig()
 		end
 		menu_keypressed(key, unicode)
 	elseif gamestate == "game" then
@@ -1258,6 +1816,13 @@ function love.keyreleased(key, unicode)
 end
 
 function love.mousepressed(x, y, button)
+	if fullscreen then
+		if fullscreenmode == "full" then
+			x, y = x/(desktopsize.width/(width*16*scale)), y/(desktopsize.height/(height*16*scale))
+		else
+			x, y = x/(touchfrominsidescaling/scale), y/(touchfrominsidescaling/scale)-touchfrominsidemissing/2
+		end
+	end
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 		menu_mousepressed(x, y, button)
 	elseif gamestate == "game" then
@@ -1284,6 +1849,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
+	x, y = desktopsize.width/(width*16*scale)*x, desktopsize.height/(height*16*scale)*y
 	if gamestate == "menu" or gamestate == "options" then
 		menu_mousereleased(x, y, button)
 	elseif gamestate == "game" then
@@ -1397,7 +1963,7 @@ function tablecontains(t, entry)
 	return false
 end
 
-function getaveragecolor(imgdata, cox, coy)
+function getaveragecolor(imgdata, cox, coy)	
 	local xstart = (cox-1)*17
 	local ystart = (coy-1)*17
 	
@@ -1455,10 +2021,10 @@ function print_r (t, indent) --Not by me
 end
 
 function love.focus(f)
-	if not f and gamestate == "game"and not editormode and not levelfinished and not everyonedead  then
+	--[[if not f and gamestate == "game"and not editormode and not levelfinished and not everyonedead  then
 		pausemenuopen = true
 		love.audio.pause()
-	end
+	end--]]
 end
 
 function openSaveFolder(subfolder) --By Slime
@@ -1471,9 +2037,9 @@ function openSaveFolder(subfolder) --By Slime
 	if os.getenv("WINDIR") then -- lolwindows
 		--cmdstr = "Explorer /root,%s"
 		if path:match("LOVE") then --hardcoded to fix ISO characters in usernames and made sure release mode doesn't mess anything up -saso
-			cmdstr = "Explorer %%appdata%%\\LOVE\\mari0"
+			cmdstr = "Explorer %%appdata%%\\LOVE\\mari0_se"
 		else
-			cmdstr = "Explorer %%appdata%%\\mari0"
+			cmdstr = "Explorer %%appdata%%\\mari0_se"
 		end
 		path = path:gsub("/", "\\")
 		successval = 1
@@ -1491,7 +2057,6 @@ end
 
 function getupdate()
 	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
-	
 	if code ~= 200 then
 		return false
 	elseif not onlinedata then
@@ -1514,49 +2079,193 @@ function getupdate()
 	return false
 end
 
-function properprint(s, x, y)
+function properprint(s, x, y, sc)
+	local scale = sc or scale
 	local startx = x
+	local skip = 0
 	for i = 1, string.len(tostring(s)) do
-		local char = string.sub(s, i, i)
-		if char == "|" then
-			x = startx-((i)*8)*scale
-			y = y + 10*scale
-		elseif fontquads[char] then
-			love.graphics.drawq(fontimage, fontquads[char], x+((i-1)*8)*scale, y, 0, scale, scale)
+		if skip > 0 then
+			skip = skip - 1
+		else
+			local char = string.sub(s, i, i)
+			if string.sub(s, i, i+3) == "_dir" and tonumber(string.sub(s, i+4, i+4)) then
+				love.graphics.drawq(directionsimg, directionsquad[tonumber(string.sub(s, i+4, i+4))], x+((i-1)*8+1)*scale, y, 0, scale, scale)
+				skip = 4
+			elseif char == "|" then
+				x = startx-((i)*8)*scale
+				y = y + 10*scale
+			elseif fontquads[char] then
+				love.graphics.drawq(fontimage, fontquads[char], x+((i-1)*8+1)*scale, y, 0, scale, scale)
+			end
 		end
 	end
 end
 
-function loadcustombackground()
-	local i = 1
-	custombackgroundimg = {}
-	custombackgroundwidth = {}
-	custombackgroundheight = {}
-	--try to load map specific background first
-	local levelstring = marioworld .. "-" .. mariolevel
-	if mariosublevel ~= 0 then
-		levelstring = levelstring .. "_" .. mariosublevel
-	end
-	
-	while love.filesystem.exists("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png") do
-		custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png")
-		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
-		i = i +1
-	end
-	
-	if #custombackgroundimg == 0 then
-		while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
-			custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
-			custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-			custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
-			i = i +1
+function properprintbackground(s, x, y, include, color, sc)
+	local scale = sc or scale
+	local startx = x
+	local skip = 0
+	for i = 1, string.len(tostring(s)) do
+		if skip > 0 then
+			skip = skip - 1
+		else
+			local char = string.sub(s, i, i)
+			if char == "|" then
+				x = startx-((i)*8)*scale
+				y = y + 10*scale
+			elseif fontquadsback[char] then
+				love.graphics.drawq(fontimageback, fontquadsback[char], x+((i-1)*8)*scale, y-1*scale, 0, scale, scale)
+			end
 		end
 	end
 	
-	if #custombackgroundimg == 0 then
-		custombackgroundimg[i] = love.graphics.newImage("graphics/SMB/portalbackground.png")
-		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
-		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
+	if include then
+		properprint(s, x, y, scale)
 	end
 end
+
+function loadcustombackgrounds()
+	custombackgrounds = {}
+
+	custombackgroundimg = {}
+	custombackgroundwidth = {}
+	custombackgroundheight = {}
+	local fl = love.filesystem.enumerate("mappacks/" .. mappack .. "/background")
+	
+	for i = 1, #fl do
+		local v = "mappacks/" .. mappack .. "/background/" .. fl[i]
+		
+		if love.filesystem.isFile(v) and string.sub(v, -5, -5) == "1" then
+			local name = string.sub(fl[i], 1, -6)
+			local bg = string.sub(v, 1, -6)
+			local i = 1
+			table.insert(custombackgrounds, name)
+			
+			custombackgroundimg[name] = {}
+			custombackgroundwidth[name] = {}
+			custombackgroundheight[name] = {}
+			
+			while love.filesystem.exists(bg .. i .. ".png") do
+				custombackgroundimg[name][i] = love.graphics.newImage(bg .. i .. ".png")
+				custombackgroundwidth[name][i] = custombackgroundimg[name][i]:getWidth()/16
+				custombackgroundheight[name][i] = custombackgroundimg[name][i]:getHeight()/16
+				i = i + 1
+			end
+		end
+	end
+end
+
+function loadcustommusics()
+	musiclist = {"none.ogg", "overworld.ogg", "underground.ogg", "castle.ogg", "underwater.ogg", "starmusic.ogg"}
+	local fl = love.filesystem.enumerate("mappacks/" .. mappack .. "/music")
+	custommusics = {}
+	
+	for i = 1, #fl do
+		local v = fl[i]
+		if (v:match(".ogg") or v:match(".mp3")) and v:sub(-9, -5) ~= "-fast" then
+			table.insert(musiclist, v)
+			--music:load(v)
+		end
+	end
+end
+
+function loadanimatedtiles()
+	if animatedtilecount then
+		for i = 1, animatedtilecount do
+			tilequads["a" .. i] = nil
+		end
+	end
+	
+	animatedtiles = {}
+	
+	local fl = love.filesystem.enumerate("mappacks/" .. mappack .. "/animated")
+	animatedtilecount = 0
+	
+	local i = 1
+	while love.filesystem.isFile("mappacks/" .. mappack .. "/animated/" .. i .. ".png") do
+		local v = "mappacks/" .. mappack .. "/animated/" .. i .. ".png"
+		if love.filesystem.isFile(v) and string.sub(v, -4) == ".png" then
+			if love.filesystem.isFile(string.sub(v, 1, -5) .. ".txt") then
+				animatedtilecount = animatedtilecount + 1
+				local t = animatedquad:new(v, love.filesystem.read(string.sub(v, 1, -5) .. ".txt"))
+				tilequads[animatedtilecount+10000] = t
+				table.insert(animatedtiles, t)
+			end
+		end
+		i = i + 1
+	end
+end
+
+function love.quit()
+	
+end
+
+function savestate(i)
+	serializetable(_G)
+end
+
+function serializetable(t)
+	tablestodo = {t}
+	tableindex = {}
+	repeat
+		nexttablestodo = {}
+		for i, v in pairs(tablestodo) do
+			if type(v) == "table" then
+				local tableexists = false
+				for j, k in pairs(tableindex) do
+					if k == v then
+						tableexists = true
+					end
+				end
+				
+				if tableexists then
+					
+				else
+					table.insert(nexttablestodo, v)
+					table.insert(tableindex, v)
+				end
+			end
+		end
+		tablestodo = nexttablestodo
+	until #tablestodo == 0
+end
+
+mouse = {}
+
+function mouse.getPosition()
+	if fullscreen then
+		if fullscreenmode == "full" then
+			return love.mouse.getX()/(desktopsize.width/(width*16*scale)), love.mouse.getY()/(desktopsize.height/(height*16*scale))
+		else
+			return love.mouse.getX()/(touchfrominsidescaling/scale), love.mouse.getY()/(touchfrominsidescaling/scale)-touchfrominsidemissing/2
+		end
+	else
+		return love.mouse.getPosition()
+	end
+end
+
+function mouse.getX()
+	if fullscreen then
+		if fullscreenmode == "full" then
+			return love.mouse.getX()/(desktopsize.width/(width*16*scale))
+		else
+			return love.mouse.getX()/(touchfrominsidescaling/scale)
+		end
+	else
+		return love.mouse.getX()
+	end
+end
+
+function mouse.getY()
+	if fullscreen then
+		if fullscreenmode == "full" then
+			return love.mouse.getY()/(desktopsize.height/(height*16*scale))
+		else
+			return love.mouse.getY()/(touchfrominsidescaling/scale)-touchfrominsidemissing/2
+		end
+	else
+		return love.mouse.getY()
+	end
+end
+
+math.mod = math.fmod

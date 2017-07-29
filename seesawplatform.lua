@@ -62,7 +62,7 @@ function seesawplatform:update(dt)
 		self.callback:callbackright(numberofobjects)
 	end
 	
-	if self.y > 16 then
+	if self.y > mapheight+1 then
 		return true
 	end
 	
@@ -72,14 +72,14 @@ end
 function seesawplatform:draw()
 	for i = 1, self.size do
 		if self.dir ~= "justright" then
-			love.graphics.draw(platformimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+			love.graphics.draw(platformimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 		else
-			love.graphics.draw(platformbonusimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+			love.graphics.draw(platformbonusimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 		end
 	end
 	
 	if math.ceil(self.size) ~= self.size then --draw 1 more on the rightest
-		love.graphics.draw(platformimg, math.floor((self.x+self.size-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+		love.graphics.draw(platformimg, math.floor((self.x+self.size-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 	end
 end
 

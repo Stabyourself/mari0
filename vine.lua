@@ -45,11 +45,11 @@ function vine:update(dt)
 end
 
 function vine:draw()
-	love.graphics.setScissor(0, 0, width*16*scale, (self.coy-1.5)*16*scale)
+	love.graphics.setScissor(0, 0, width*16*scale, math.floor((self.coy-1.5-yscroll)*16*scale))
 	
-	love.graphics.drawq(vineimg, vinequad[spriteset][1], math.floor((self.x-xscroll-1/16-((1-self.width)/2))*16*scale), (self.y-0.5-2/16)*16*scale, 0, scale, scale)
+	love.graphics.drawq(vineimg, vinequad[spriteset][1], math.floor((self.x-xscroll-1/16-((1-self.width)/2))*16*scale), (self.y-yscroll-0.5-2/16)*16*scale, 0, scale, scale)
 	for i = 1, math.ceil(self.height-14/16+.7) do
-		love.graphics.drawq(vineimg, vinequad[spriteset][2], math.floor((self.x-xscroll-1/16-((1-self.width)/2))*16*scale), (self.y-0.5-2/16+i)*16*scale, 0, scale, scale)
+		love.graphics.drawq(vineimg, vinequad[spriteset][2], math.floor((self.x-xscroll-1/16-((1-self.width)/2))*16*scale), (self.y-yscroll-0.5-2/16+i)*16*scale, 0, scale, scale)
 	end
 		
 	

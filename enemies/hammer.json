@@ -1,0 +1,38 @@
+{
+	"quadcount": 4,
+	
+	"animationtype": "frames",
+	"animationframes": 4,
+	"animationstart": 1,
+	"animationspeed": 0.05,
+
+	"nocollidestops": true,
+	"killsenemiesafterportal": true,
+	"kills": true,
+
+	"speedy": -15,
+	"speedx": -4,
+
+	"offsetX": 6,
+	"offsetY": 2,
+	"quadcenterX": 8,
+	"quadcenterY": 8,
+
+	"width": 0.75,
+	"height": 0.75,
+	"static": false,
+	"active": true,
+	"category": 14,
+	"mask": [	true,
+				true, false, false, false, true,
+				true, true, true, true, true,
+				true, false, true, true, true,
+				true, true, true, false, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+				
+	"gravity": 25,
+	"emancipatecheck": true,
+	"autodelete": true,
+	"resistsstar": true
+}

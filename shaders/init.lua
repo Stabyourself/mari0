@@ -1,4 +1,4 @@
-local supported = love.graphics.isSupported and love.graphics.isSupported("canvas") and love.graphics.isSupported("pixeleffect")
+local supported = love.graphics.isSupported and love.graphics.isSupported("canvas") and love.graphics.isSupported("shader")
 local supports_npo2 = love.graphics.isSupported and love.graphics.isSupported("npot") or false -- on the safe side
 if not supported then 
 	shaderssupported = false
@@ -19,8 +19,8 @@ local function CreateShaderPass()
 	local pass = {
 		cureffect = "",
 		on = false,
-		xres = love.graphics.getWidth(),
-		yres = love.graphics.getHeight(),
+		xres = width*16*scale,
+		yres = height*16*scale,
 	}
 	
 	function pass:useCanvas(usenpo2)
@@ -84,16 +84,25 @@ local function CreateShaderPass()
 				end
 			end
 			if effect.supported == nil then
-				effect.supported = pcall(love.graphics.setPixelEffect, effect[1])
+				effect.supported = pcall(love.graphics.setShader, effect[1])
 				if not effect.supported then
 					print(string.format("Error setting shader: %s!", self.cureffect))
 				end
 			elseif effect.supported then
-				love.graphics.setPixelEffect(effect[1])
+				love.graphics.setShader(effect[1])
 			else
-				love.graphics.setPixelEffect()
+				love.graphics.setShader()
 			end
-			love.graphics.drawq(self.canvas.canvas, self.canvas.quad, 0, 0)
+			
+			if fullscreen then
+				if fullscreenmode == "full" then
+					love.graphics.drawq(self.canvas.canvas, self.canvas.quad, 0, 0, 0, desktopsize.width/(width*16*scale), desktopsize.height/(height*16*scale))
+				else
+					love.graphics.drawq(self.canvas.canvas, self.canvas.quad, 0, touchfrominsidemissing/2, 0, touchfrominsidescaling/scale, touchfrominsidescaling/scale)
+				end
+			else
+				love.graphics.drawq(self.canvas.canvas, self.canvas.quad, 0, 0)
+			end
 		end
 	end
 	
@@ -128,7 +137,7 @@ function shaders:init(numpasses)
 			local name = "shaders".."/"..v
 			if love.filesystem.isFile(name) then
 				local str = love.filesystem.read(name)
-				local success, effect = pcall(love.graphics.newPixelEffect, str)
+				local success, effect = pcall(love.graphics.newShader, str)
 				if success then
 					local defs = {}
 					for vtype, extern in str:gmatch("extern (%w+) (%w+)") do
@@ -191,10 +200,10 @@ function shaders:refresh()
 	
 	if not self.scale or self.scale ~= scale
 	or not self.xres or not self.yres
-	or self.xres ~= love.graphics.getWidth() or self.yres ~= love.graphics.getHeight() then
+	or self.xres ~= width*16*scale or self.yres ~= height*16*scale then
 		self.scale = scale
 		
-		self.xres, self.yres = love.graphics.getWidth(), love.graphics.getHeight()
+		self.xres, self.yres = width*16*scale, height*16*scale
 		self.po2xres, self.po2yres = FindNextPO2(self.xres), FindNextPO2(self.yres)
 		
 		for i,v in ipairs(self.passes) do
@@ -202,7 +211,7 @@ function shaders:refresh()
 		end
 	end
 	
-	collectgarbage("collect")
+	--collectgarbage("collect")
 end
 
 
@@ -250,5 +259,5 @@ function shaders:postdraw()
 	end
 
 	love.graphics.setBlendMode(blendmode)
-	love.graphics.setPixelEffect()
+	love.graphics.setShader()
 end

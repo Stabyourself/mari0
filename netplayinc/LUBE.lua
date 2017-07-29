@@ -527,7 +527,7 @@ function lube.server:update(dt)
 	local data, ip, port = self:receive()
 	while data do
 		local index = 0
-		for i, v in ipairs(self.clients) do
+		for i, v in pairs(self.clients) do
 			if v[1] == ip and v[2] == port then
 				index = i
 				break

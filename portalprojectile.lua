@@ -1,6 +1,6 @@
 portalprojectile = class:new()
 
-function portalprojectile:init(x, y, tx, ty, color, hit, payload)
+function portalprojectile:init(x, y, tx, ty, color, hit, payload, mirror, mirrored)
 	self.x = x
 	self.y = y
 	
@@ -11,12 +11,18 @@ function portalprojectile:init(x, y, tx, ty, color, hit, payload)
 	
 	self.color = color
 	self.hit = hit
-	
 	self.payload = payload
 	self.payloaddelivered = false
 	
+	self.mirror = mirror
+	
 	self.sinestart = math.random(math.pi*10)/10
-	self.timer = 0.005
+	if mirrored then
+		self.timer = 0
+	else
+		self.timer = 0.005
+	end
+	
 	self.length = math.sqrt((tx-x)^2 + (ty-y)^2)
 	self.time = self.length/portalprojectilespeed
 	self.angle = math.atan2(tx-x, ty-y)
@@ -79,7 +85,7 @@ function portalprojectile:update(dt)
 	end
 	
 	if (self.timer >= self.time and self.timer-dt < self.time) or (self.time <= 0.005 and self.payloaddelivered == false) then
-		createportal(unpack(self.payload))
+		self:createportal()
 		self.payloaddelivered = true
 	end
 	
@@ -98,7 +104,7 @@ function portalprojectile:draw()
 	if self.timer < self.time then
 		love.graphics.setColor(unpack(self.color))
 		
-		love.graphics.draw(portalprojectileimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-0.5)*16*scale), 0, scale, scale, 3, 3)
+		love.graphics.draw(portalprojectileimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-yscroll-0.5)*16*scale), 0, scale, scale, 6, 6)
 	end
 end
 
@@ -138,5 +144,23 @@ function portalprojectileparticle:draw()
 	local r, g, b = unpack(self.color)
 	love.graphics.setColor(r, g, b, self.alpha)
 	
-	love.graphics.draw(portalprojectileparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 2, 2)
+	love.graphics.draw(portalprojectileparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-yscroll-.5)*16*scale), 0, scale, scale, 2, 2)
+end
+
+function portalprojectile:createportal()
+	if self.mirror then
+		local portal, i, cox, coy, side, tendency, x, y = unpack(self.payload)
+		portaldelay[portal.number] = 0
+		
+		local angle
+		if side == "up" or side == "down" then
+			angle = -math.atan2(self.endx-self.startx, self.endy-self.starty)
+		else
+			angle = math.atan2(self.endx-self.startx, self.starty-self.endy)
+		end
+		
+		shootportal(portal.number, i, self.endx, self.endy, angle, true)
+	else
+		portal.createportal(unpack(self.payload))
+	end
 end

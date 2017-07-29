@@ -1,0 +1,40 @@
+{
+	"quadcount": 4,
+	
+	"spawnoffsety": -0.5,
+
+	"movement": "none",
+	"kills": true,
+	
+	"animationtype": "frames",
+	"animationspeed": 0.1,
+	"animationstart": 1,
+	"animationframes": 4,
+	
+	"width": 0.5,
+	"height": 0.5,
+	
+	"static": false,
+	"active": true,
+	
+	"gravity": 0,
+	
+	"mask": [	true, 
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+				
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 4,
+	"offsetY": 4,
+	"quadcenterX": 4,
+	"quadcenterY": 4,
+	
+	"nospritesets": true
+}

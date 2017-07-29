@@ -32,12 +32,25 @@ function gel:init(x, y, id)
 		self.graphic = gel2img
 	elseif self.id == 3 then
 		self.graphic = gel3img
+	elseif self.id == 4 then
+		self.graphic = gel4img
 	end
 	
 	self.destroy = false
 end
 
 function gel:update(dt)
+	--Funnels and fuck
+	if self.funnel and not self.infunnel then
+		self:enteredfunnel(true)
+	end
+	
+	if self.infunnel and not self.funnel then
+		self:enteredfunnel(false)
+	end
+	
+	self.funnel = false
+
 	if self.speedy > gelmaxspeed then
 		self.speedy = gelmaxspeed
 	end
@@ -72,6 +85,8 @@ function gel:leftcollide(a, b)
 		end
 		
 		map[x][y]["gels"]["right"] = self.id
+	elseif a == "lightbridgebody" and b.dir == "ver" then
+		b.gels.right = self.id
 	end
 end
 
@@ -95,6 +110,8 @@ function gel:rightcollide(a, b)
 		end
 		
 		map[x][y]["gels"]["left"] = self.id
+	elseif a == "lightbridgebody" and b.dir == "ver" then
+		b.gels.left = self.id
 	end
 end
 
@@ -146,6 +163,8 @@ function gel:floorcollide(a, b)
 				map[x][y]["gels"]["top"] = self.id
 			end
 		end
+	elseif a == "lightbridgebody" and b.dir == "hor" then
+		b.gels.top = self.id
 	end
 end
 
@@ -161,14 +180,25 @@ function gel:ceilcollide(a, b)
 			
 			map[x][y]["gels"]["bottom"] = self.id
 		end
+	elseif a == "lightbridgebody" and b.dir == "hor" then
+		b.gels.bottom = self.id
 	end
 end
 
 function gel:globalcollide(a, b)
 	if a == "tile" then
 		local x, y = b.cox, b.coy
-		if tilequads[map[x][y][1]].invisible then
+		if tilequads[map[x][y][1]].invisible or tilequads[map[x][y][1]].grate then
 			return true
 		end
+	end
+end
+
+function gel:enteredfunnel(inside)
+	if inside then
+		self.infunnel = true
+	else
+		self.infunnel = false
+		self.gravity = 50
 	end
 end

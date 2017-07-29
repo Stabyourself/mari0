@@ -1,0 +1,45 @@
+{
+	"quadcount": 2,
+
+	"kills": true,
+	
+	"animationtype": "frames",
+	"animationframes": 2,
+	"animationstart": 1,
+	"animationspeed": 0.2,
+	
+	"transforms": true,
+	"transformsinto": "spikey",
+	"transformtrigger": "floorcollide",
+	
+	"nospritesets": true,
+	
+	"quadno": 1,
+	
+	"width": 0.75,
+	"height": 0.75,
+	
+	"static": false,
+	"active": true,
+	
+	"category": 5,
+	
+	"mask": [	true, 
+				false, false, true, true, true,
+				false, true, false, true, false,
+				false, false, false, false, false,
+				true, true, false, false, true,
+				false, true, true, false, false,
+				true, false, true, true, true],
+					
+					
+	"gravity": 30,
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 6,
+	"offsetY": 3,
+	"quadcenterX": 8,
+	"quadcenterY": 8
+}

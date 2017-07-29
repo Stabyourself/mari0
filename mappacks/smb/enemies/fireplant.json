@@ -1,0 +1,10 @@
+base=plant
+{
+	"pistonextendtime": 4,
+
+	"spawnsenemy": "fireplantfire",
+	"spawnenemydelays": [2, 1],
+	"spawnenemytowardsplayer": true,
+	"spawnenemyspeed": 5,
+	"spawnonlyonextended": true
+}

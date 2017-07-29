@@ -41,6 +41,7 @@ function fireball:init(x, y, dir, v)
 	self.fireballthrower = v
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	self.timer = 0
 	self.quadi = 1
 end
@@ -73,7 +74,7 @@ function fireball:update(dt)
 		end
 	end
 	
-	if self.x < xscroll-1 or self.x > xscroll+width+1 or self.y > 15 and self.active then
+	if self.x < xscroll-1 or self.x > xscroll+width+1 or self.y > mapheight and self.active then
 		self.fireballthrower:fireballcallback()
 		self.destroy = true
 	end
@@ -121,13 +122,12 @@ end
 function fireball:hitstuff(a, b)
 	if a == "tile" or a == "bulletbill" or a == "portalwall" or a == "spring" then
 		self:explode()
-		playsound(blockhitsound)
+		playsound("blockhit")
 
-	elseif a == "goomba" or a == "koopa" or a == "hammerbro" or a == "plant" or a == "cheep" or a == "bowser" or a == "squid" or a == "cheep" or a == "flyingfish" or a == "lakito" then
-		if a ~= "koopa" or b.t ~= "beetle" then
-			b:shotted("right")
+	elseif a == "enemy" then
+		if b:shotted("right", false, false, true) ~= false then
 			if a ~= "bowser" then
-				addpoints(firepoints[a], self.x, self.y)
+				addpoints(b.firepoints or 200, self.x, self.y)
 			end
 		end
 		self:explode()

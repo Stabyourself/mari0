@@ -1,0 +1,4 @@
+name=time attack
+author=jorichi
+description=run!!!
+lives=0

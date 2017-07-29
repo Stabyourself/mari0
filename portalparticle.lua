@@ -1,10 +1,10 @@
 portalparticle = class:new()
 
 function portalparticle:init(x, y, color, direction)
-	self.x = x
-	self.y = y
+	self.x = x or 0
+	self.y = y or 0
 	self.timer = 0
-	self.color = color
+	self.color = color or {255, 255, 255, 0}
 	self.direction = direction
 	
 	self.speedx, self.speedy = 0, 0
@@ -44,5 +44,5 @@ function portalparticle:draw()
 	local r, g, b = unpack(self.color)
 	local a = (1 - self.timer/portalparticleduration) * 255
 	love.graphics.setColor(r, g, b, a)
-	love.graphics.draw(portalparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, .5, .5)
+	love.graphics.draw(portalparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-yscroll-.5)*16*scale), 0, scale, scale, .5, .5)
 end

@@ -1,6 +1,6 @@
 tile = class:new()
 
-function tile:init(x, y)
+function tile:init(x, y, slant)
 	self.cox = x+1
 	self.coy = y+1
 	self.x = x

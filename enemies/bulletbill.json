@@ -1,0 +1,45 @@
+{
+	"quadcount": 1,
+	
+	"spawnoffsety": -0.0625,
+
+	"movement": "none",
+	"killsontop": true,
+	"killsonsides": true,
+	
+	"stompable": true,
+	"stompcombosuppressor": true,
+	
+	"speedx": 8,
+	"starttowardsplayerhorizontal": true,
+	
+	"width": 1,
+	"height": 0.875,
+	
+	"static": false,
+	"active": true,
+	
+	"gravity": 0,
+	
+	"mask": [	true, 
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+				
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 8,
+	"offsetY": 1,
+	"quadcenterX": 8,
+	"quadcenterY": 8,
+	
+	"customscissor": [0, 0, 1, 1],
+	"invertedscissor": true,
+	
+	"spawnsound": "bulletbill"
+}

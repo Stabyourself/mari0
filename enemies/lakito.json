@@ -1,0 +1,45 @@
+{
+	"quadcount": 2,
+	
+	"animationtype": "frames",
+	"animationframes": 1,
+	"animationstart": 1,
+	"animationspeed": 100,
+	
+	"nospritesets": true,
+
+	"width": 0.75,
+	"height": 0.75,
+
+	"mask": [	true,
+					true, false, false, true, true,
+					true, true, true, true, true,
+					true, false, true, true, true,
+					true, true, true, true, true,
+					true, true, true, true, true,
+					true, true, true, true, true],
+
+	"gravity": 0,
+	"portalable": false,
+	"category": 21,
+
+	"movement": "follow",
+	"stompable": true,
+	"killsonsides": true,
+	"killsonbottom": true,
+
+	"offsetX": 6,
+	"offsetY": 6,
+	"quadcenterX": 8,
+	"quadcenterY": 12,
+
+	"followspace": 4,
+	"distancetime": 1.5,
+
+	"spawnsenemy": "spikeyegg",
+	"spawnenemydelays": [4],
+	"spawnenemyspeedy": -10,
+	
+	"throwquadoffset": 1,
+	"throwpreparetime": 0.5
+}

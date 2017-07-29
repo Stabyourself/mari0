@@ -1,110 +1,93 @@
 music = {
-	thread = love.thread.newThread("musicthread", "musicloader_thread.lua"),
-	toload = {},
 	loaded = {},
-	list = {},
-	list_fast = {},
 	pitch = 1,
+	list = {
+		"overworld.ogg",
+		"underground.ogg",
+		"castle.ogg",
+		"underwater.ogg",
+		"starmusic.ogg",
+	},
+	list_fast = {
+		"overworld-fast.ogg",
+		"underground-fast.ogg",
+		"castle-fast.ogg",
+		"underwater-fast.ogg",
+		"starmusic-fast.ogg",
+	},
 }
 
-music.stringlist = table.concat(music.toload, ";")
 
-function music:init()
-	self.thread:start()
-end
-
-function music:load(musicfile) -- can take a single file string or an array of file strings
-	if type(musicfile) == "table" then
-		for i,v in ipairs(musicfile) do
-			self:preload(v)
-		end
-	else
-		self:preload(musicfile)
-	end
-	self.stringlist = table.concat(self.toload, ";")
-	self.thread:set("musiclist", self.stringlist)
-end
-
-function music:preload(musicfile)
-	if self.loaded[musicfile] == nil then
-		self.loaded[musicfile] = false
-		table.insert(self.toload, musicfile)
-	end
-end
-
-function music:play(name)
-	if name and soundenabled then
-		if self.loaded[name] == false then
-			local source = self.thread:demand(name)
-			self:onLoad(name, source)
-		end
-		if self.loaded[name] then
-			playsound(self.loaded[name])
+function getfilepath(name)
+	local musicpaths = {"sounds/", "mappacks/" .. mappack .. "/music/"}
+	
+	for i = 1, #musicpaths do
+		if love.filesystem.isFile(musicpaths[i] .. name) then
+			return musicpaths[i] .. name
 		end
 	end
 end
 
-function music:playIndex(index, isfast)
-	local name = isfast and self.list_fast[index] or self.list[index]
-	self:play(name)
+function music:load(name)
+	local filepath = getfilepath(name)
+	if not filepath then
+		print(string.format("can't load music %q: can't find file!", name))
+		return false
+	end
+	
+	if not self.loaded[filepath] then
+		local loaded, source = pcall(love.audio.newSource, filepath, "stream")
+		if loaded then
+			-- all music should loop
+			source:setLooping(true)
+			source:setPitch(self.pitch)
+			self.loaded[name] = source
+		else
+			print(string.format("can't load music %q: can't create source!", filepath))
+			return false
+		end
+	end
+	
+	return true
 end
 
-function music:stop(name)
-	if name and self.loaded[name] then
-		love.audio.stop(self.loaded[name])
+function music:play(name, fast)
+	if fast then
+		local newname = name:sub(0, -5) .. "-fast" .. name:sub(-4)
+		if getfilepath(newname) then
+			name = newname
+		end
+	end
+	
+	-- try to load source from disk if it hasn't been loaded already
+	if not self.loaded[name] and not self:load(name) then
+		return
+	end
+	
+	if self.loaded[name] then
+		if soundenabled then
+			self.loaded[name]:stop()
+			self.loaded[name]:rewind()
+			self.loaded[name]:play()
+		end
 	end
 end
 
-function music:stopIndex(index, isfast)
-	local name = isfast and self.list_fast[index] or self.list[index]
-	self:stop(name)
+function music:stop(name, fast)
+	if fast then
+		local newname = name:sub(0, -5) .. "-fast" .. name:sub(-4)
+		if getfilepath(newname) then
+			name = newname
+		end
+	end
+	
+	if self.loaded[name] then
+		self.loaded[name]:stop()
+	end
 end
 
 function music:update()
-	for i,v in ipairs(self.toload) do
-		local source = self.thread:get(v)
-		if source then
-			self:onLoad(v, source)
-		end
-	end
-	for name, source in pairs(self.loaded) do
-		if source ~= false then
-			source:setPitch(self.pitch)
-		end
-	end
-	local err = self.thread:get("error") 
-	if err then print(err) end
-end
-
-function music:onLoad(name, source)
-	self.loaded[name] = source
-	source:setLooping(true)
-	source:setPitch(self.pitch)
-end
-
-
-music:load{
-	"overworld",
-	"overworld-fast",
-	"underground",
-	"underground-fast",
-	"castle",
-	"castle-fast",
-	"underwater",
-	"underwater-fast",
-	"starmusic",
-	"starmusic-fast",
-	"princessmusic",
-}
-
--- the original/default music needs to be put in the correct lists
-for i,v in ipairs(music.toload) do
-	if v:match("fast") then
-		table.insert(music.list_fast, v)
-	elseif not v:match("princessmusic") then
-		table.insert(music.list, v)
+	for filepath, source in pairs(self.loaded) do
+		source:setPitch(self.pitch)
 	end
 end
-
-music:init()
-

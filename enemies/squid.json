@@ -1,0 +1,49 @@
+{
+	"quadcount": 2,
+	
+	"spawnoffsety": 0,
+
+	"movement": "squid",
+	"animationtype": "squid",
+	"squidfallspeed": 1.8,
+	"squidxspeed": 6,
+	"squidupspeed": 6,
+	"squidacceleration": 10,
+	"squiddowndistance": 1,
+	
+	"kills": true,
+	
+	"gravity": 0,
+	
+	"nospritesets": true,
+	
+	
+	"quadno": 1,
+	
+	"width": 0.75,
+	"height": 0.75,
+	
+	"static": false,
+	"active": true,
+	
+	"category": 30,
+	
+	"mask": [	true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+					
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 6,
+	"offsetY": 3,
+	"quadcenterX": 8,
+	"quadcenterY": 8,
+	
+	"portalable": false
+}

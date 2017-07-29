@@ -1,0 +1,38 @@
+{
+	"quadcount": 1,
+
+	"movement": "rocket",
+	"rocketdistance": 30,
+	
+	"nospritesets": true,
+	
+	"gravity": 20,
+	
+	"kills": true,
+	
+	"animationtype": "none",
+	
+	"quadno": 1,
+	
+	"width": 0.75,
+	"height": 0.75,
+	
+	"static": false,
+	"active": true,
+	
+	"category": 31,
+	
+	"mask": [	true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+	
+	"offsetX": 6,
+	"offsetY": 3,
+	"quadcenterX": 8,
+	"quadcenterY": 8,
+	"resistsstar": true
+}

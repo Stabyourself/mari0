@@ -11,16 +11,32 @@ end
 
 function rocketlauncher:update(dt)
 	self.timer = self.timer + dt
-	if self.timer > self.time and self.x > splitxscroll[1] and self.x < splitxscroll[1]+width+2 then
+	if self.timer > self.time and self.x > xscroll and self.x < xscroll+width+2 then
 		if self:fire() then
 			self.timer = 0
 			self:randomtime()
+			
+			--remove on non solids
+			if tilequads[map[self.x][self.y][1]].collision == false then
+				return true
+			else
+				return false
+			end
 		end
 	end
 end
 
 function rocketlauncher:fire()
-	if #objects["bulletbill"] >= maximumbulletbills then
+	--count all bullet bills
+	
+	local count = 0
+	for i, v in pairs(objects["enemy"]) do
+		if v.t == "bulletbill" then
+			count = count + 1
+		end
+	end
+	
+	if count >= maximumbulletbills then
 		return false
 	end
 	
@@ -33,10 +49,10 @@ function rocketlauncher:fire()
 	end
 	
 	if objects["player"][pl].x + 14/16 > self.x + bulletbillrange then
-		table.insert(objects["bulletbill"], bulletbill:new(self.x, self.y, "right"))
+		table.insert(objects["enemy"], enemy:new(self.x, self.y, "bulletbill"))
 		return true
 	elseif objects["player"][pl].x + 14/16 < self.x - bulletbillrange then
-		table.insert(objects["bulletbill"], bulletbill:new(self.x, self.y, "left"))
+		table.insert(objects["enemy"], enemy:new(self.x, self.y, "bulletbill"))
 		return true
 	end
 end
@@ -46,7 +62,8 @@ function rocketlauncher:randomtime()
 	self.time = rand
 end
 
-----------------------
+---------------------- 
+--[[
 bulletbill = class:new()
 function bulletbill:init(x, y, dir)
 	self.startx = x-14/16
@@ -92,7 +109,7 @@ function bulletbill:init(x, y, dir)
 					
 	self.shot = false
 	
-	playsound(bulletbillsound)
+	playsound("bulletbill")
 end
 
 function bulletbill:update(dt)
@@ -191,4 +208,4 @@ end
 
 function bulletbill:portaled()
 	self.killstuff = true
-end
+end--]]

@@ -8,12 +8,10 @@ function fire:init(x, y)
 		
 		--get goal Y
 		self.targety = objects["bowser"][1].starty-math.random(3)+2/16
-		self.source = "bowser"
 	else
 		self.y = y-1+1/16
 		self.targety = self.y
 		self.x = x+6/16
-		self.source = "none"
 	end
 	
 	self.speedy = 0
@@ -48,7 +46,7 @@ function fire:init(x, y)
 	self.timer = 0
 	self.quadi = 1
 	
-	playsound(firesound)
+	playsound("fire")
 end
 
 function fire:update(dt)

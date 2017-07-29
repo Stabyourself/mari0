@@ -1,41 +1,66 @@
 lightbridge = class:new()
 
-function lightbridge:init(x, y, dir, r)
+function lightbridge:init(x, y, r)
 	self.cox = x
 	self.coy = y
-	self.dir = dir
-	self.r = r
+	self.dir = "right"
+	self.r = {unpack(r)}
 	
 	self.childtable = {}
 	
-	self.enabled = true
+	self.power = true
+	self.input1state = "off"
+	
+	self.dir = "right"
+	
+	--Input list
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--DIRECTION
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dir = self.r[1]
+		table.remove(self.r, 1)
+	end
+	
+	--POWER
+	if #self.r > 0 and self.r[1] ~= "link" then
+		if self.r[1] == "true" then
+			self.power = false
+		end
+		table.remove(self.r, 1)
+	end
+	
 	self:updaterange()
 end
 
 function lightbridge:link()
-	self.outtable = {}
-	if #self.r > 2 then
+	while #self.r > 3 do
 		for j, w in pairs(outputs) do
 			for i, v in pairs(objects[w]) do
-				if tonumber(self.r[4]) == v.cox and tonumber(self.r[5]) == v.coy then
-					v:addoutput(self)
-					self.enabled = false
+				if tonumber(self.r[3]) == v.cox and tonumber(self.r[4]) == v.coy then
+					v:addoutput(self, self.r[2])
 				end
 			end
 		end
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
 	end
 end
 
-function lightbridge:input(t)
-	if t == "on" then
-		self.enabled = true
+function lightbridge:input(t, input)
+	if input == "power" then
+		if t == "on" and self.input1state == "off" then
+			self.power = not self.power
+		elseif t == "off" and self.input1state == "on" then
+			self.power = not self.power
+		elseif t == "toggle" then
+			self.power = not self.power
+		end
 		self:updaterange()
-	elseif t == "off" then
-		self.enabled = false
-		self:updaterange()
-	else
-		self.enabled = not self.enabled
-		self:updaterange()
+		
+		self.input1state = t
 	end
 end
 
@@ -53,16 +78,31 @@ function lightbridge:draw()
 		rot = math.pi
 	end
 
-	love.graphics.draw(lightbridgesideimg, math.floor((self.cox-xscroll-.5)*16*scale), (self.coy-1)*16*scale, rot, scale, scale, 8, 8)
+	love.graphics.draw(lightbridgesideimg, math.floor((self.cox-xscroll-.5)*16*scale), (self.coy-yscroll-1)*16*scale, rot, scale, scale, 8, 8)
 end
 
 function lightbridge:updaterange()
+	--save old gel values
+	local gels = {}
+	
+	for i, v in pairs(self.childtable) do
+		if v.gels.top then
+			table.insert(gels, {x=v.cox, y=v.coy, dir="top", i=v.gels.top})
+		elseif v.gels.left then
+			table.insert(gels, {x=v.cox, y=v.coy, dir="left", i=v.gels.left})
+		elseif v.gels.right then
+			table.insert(gels, {x=v.cox, y=v.coy, dir="right", i=v.gels.right})
+		elseif v.gels.bottom then
+			table.insert(gels, {x=v.cox, y=v.coy, dir="bottom", i=v.gels.bottom})
+		end
+	end	
+	
 	for i, v in pairs(self.childtable) do
 		v.destroy = true
 	end
 	self.childtable = {}
 	
-	if self.enabled == false then
+	if self.power == false then
 		return
 	end
 	
@@ -72,7 +112,7 @@ function lightbridge:updaterange()
 	
 	local firstcheck = true
 	local quit = false
-	while x >= 1 and x <= mapwidth and y >= 1 and y <= 15 and tilequads[map[x][y][1]].collision == false and (x ~= startx or y ~= starty or dir ~= self.dir or firstcheck == true) and quit == false do
+	while x >= 1 and x <= mapwidth and y >= 1 and y <= 15 and (tilequads[map[x][y][1]].collision == false or tilequads[map[x][y][1]].grate) and (x ~= startx or y ~= starty or dir ~= self.dir or firstcheck == true) and quit == false do
 		firstcheck = false
 		
 		if dir == "right" then
@@ -90,7 +130,16 @@ function lightbridge:updaterange()
 		end
 		
 		--check if current block is a portal
-		local portalx, portaly, portalfacing, infacing = getPortal(x, y)
+		local opp = "left"
+		if dir == "left" then
+			opp = "right"
+		elseif dir == "up" then
+			opp = "down"
+		elseif dir == "down" then
+			opp = "up"
+		end
+		
+		local portalx, portaly, portalfacing, infacing = getPortal(x, y, opp)
 		if portalx ~= false and ((dir == "left" and infacing == "right") or (dir == "right" and infacing == "left") or (dir == "up" and infacing == "down") or (dir == "down" and infacing == "up")) then
 			x, y = portalx, portaly
 			dir = portalfacing
@@ -116,6 +165,24 @@ function lightbridge:updaterange()
 				elseif v.dir == "hor" then
 					if y == v.coy and (x == v.cox or x == v.cox+1) then
 						quit = true
+					end
+				end
+			end
+		end
+	end
+	
+	--Restore gels! yay!
+	--crosscheck childtable with gels to see any matching shit
+	for j, w in pairs(self.childtable) do
+		for i, v in pairs(gels) do
+			if v.x == w.cox and v.y == w.coy then
+				if v.dir == "left" or v.dir == "right" then
+					if w.dir == "ver" then
+						w.gels[v.dir] = v.i
+					end
+				else
+					if w.dir == "hor" then
+						w.gels[v.dir] = v.i
 					end
 				end
 			end
@@ -154,6 +221,8 @@ function lightbridgebody:init(parent, x, y, dir)
 	self.category = 28
 	
 	self.mask = {true}
+	
+	self.gels = {}
 	
 	self:pushstuff()
 end
@@ -206,8 +275,40 @@ function lightbridgebody:draw()
 	love.graphics.setColor(255, 255, 255)
 	
 	if self.dir == "hor" then
-		love.graphics.draw(lightbridgeimg, math.floor((self.cox-xscroll-1)*16*scale), (self.coy-20/16)*16*scale, 0, scale, scale)
+		love.graphics.draw(lightbridgeimg, math.floor((self.cox-xscroll-1)*16*scale), (self.coy-yscroll-20/16)*16*scale, 0, scale, scale)
 	else
-		love.graphics.draw(lightbridgeimg, math.floor((self.cox-xscroll-5/16)*16*scale), (self.coy-1)*16*scale, math.pi/2, scale, scale, 8, 1)
+		love.graphics.draw(lightbridgeimg, math.floor((self.cox-xscroll-5/16)*16*scale), (self.coy-yscroll-1)*16*scale, math.pi/2, scale, scale, 8, 1)
+	end
+	
+	--gel
+	for i = 1, 4 do
+		local dir = "top"
+		local r = 0
+		if i == 2 then
+			dir = "right"
+			r = math.pi/2
+		elseif i == 3 then
+			dir = "bottom"
+			r = math.pi
+		elseif i == 4 then
+			dir = "left"
+			r = math.pi*1.5
+		end
+		
+		for i = 1, 4 do
+			if self.gels[dir] == i then
+				if i == 1 then
+					img = gel1groundimg
+				elseif i == 2 then
+					img = gel2groundimg
+				elseif i == 3 then
+					img = gel3groundimg
+				elseif i == 4 then
+					img = gel4groundimg
+				end
+				
+				love.graphics.draw(img, math.floor((self.cox-.5-xscroll)*16*scale), math.floor((self.coy-1-yscroll)*16*scale), r, scale, scale, 8, 2)
+			end
+		end
 	end
 end

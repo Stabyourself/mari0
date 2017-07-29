@@ -1,0 +1,71 @@
+{
+	"nopointing": false,
+	"raccoon": true,
+	"colorables": [
+		"hat",
+		"hair",
+		"skin"
+	],
+
+	"defaultcolors": [
+		[
+			[224,32,0],
+			[136,112,0],
+			[252,152,56]
+		],
+		
+		[
+			[255,255,255],
+			[0,160,0],
+			[252,152,56]
+		],
+		
+		[
+			[0,0,0],
+			[200,76,12],
+			[252,188,176]
+		],
+		
+		[
+			[32,56,236],
+			[0,128,136],
+			[252,152,56]
+		]
+	],
+
+	"smalloffsetX": 6,
+	"smalloffsetY": 3,
+	"smallquadcenterX": 11,
+	"smallquadcenterY": 10,
+
+	"shrinkquadcenterX": 9,
+	"shrinkquadcenterY": 32,
+	"shrinkoffsetY": -3,
+	"shrinkquadcenterY2": 16,
+
+	"growquadcenterY": 4,
+	"growquadcenterY2": -2,
+
+	"duckquadcenterY": 22,
+	"duckoffsetY": 7,
+
+	"runframes": 3,
+	"jumpframes": 1,
+	"customframes": 15,
+
+	"smallquadwidth": 20,
+	"smallquadheight": 20,
+	"smallimgwidth": 240,
+	"smallimgheight": 80,
+
+	"bigquadcenterY": 20,
+	"bigquadcenterX": 14,
+	"bigoffsetY": -3,
+	"bigoffsetX": 6,
+
+	"bigquadwidth": 25,
+	"bigquadheight": 36,
+	"bigimgwidth": 675,
+	"bigimgheight": 144
+
+}

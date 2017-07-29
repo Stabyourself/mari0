@@ -5,6 +5,8 @@ gellifetime = 2
 bulletbilllifetime = 20
 playertypelist = {"portal", "minecraft", "gelcannon"}
 
+spawnarea = {1, 1, 1, 1}
+
 joystickdeadzone = 0.2
 joystickaimdeadzone = 0.5
 
@@ -36,19 +38,18 @@ firepoints = {	goomba = 100,
 				bulletbill = 200}
 
 yacceleration = 80 --gravity
+mariogravity = yacceleration
 yaccelerationjumping = 30 --gravity while jumping (Only for mario)
 maxyspeed = 100 --SMB: 14
---minportalspeedy = 3 --Things exiting floor portals can't be slower than this (REPLACED WITH OBJECT'S HEIGHT (SEE PHYSICS.LUA FUNC "PORTALCOORDS" UP->UP))
 jumpforce = 16--SMB: 16, Smaller(For portal?): 12.1
-jumpforceadd = 1.9 --how much jumpforce is added at top speed (linear)
+jumpforceadd = 1.9 --how much jumpforce is added at top speed (linear from 0 to topspeed)
 headforce = 2 --how fast mario will be sent back down when hitting a block with his head
---bounceforce = 12 --when jumping on an enemy, speedy will be set to this to make mario bounce (negative)
 bounceheight = 14/16 --when jumping on enemy, the height that mario will fly up
 passivespeed = 4 --speed that mario is moved against the pointing direction when inside blocks (by crouch sliding under low blocks and standing up for example)
 
 --Variables that are different for underwater
-uwwalkacceleration = 8
 
+uwwalkacceleration = 8
 uwrunacceleration = 16
 uwwalkaccelerationair = 8
 uwmaxairwalkspeed = 5
@@ -63,6 +64,9 @@ uwjumpforceadd = 0
 uwyacceleration = 9
 uwyaccelerationjumping = 12
 
+waterdamping = 0.2
+waterjumpforce = 13
+
 uwmaxheight = 2.5
 uwpushdownspeed = 3
 
@@ -75,6 +79,11 @@ gelmaxrunspeed = 50
 gelmaxwalkspeed = 25
 gelrunacceleration = 25
 gelwalkacceleration = 12.5
+
+uwgelmaxrunspeed = 50
+uwgelmaxwalkspeed = 12.5
+uwgelrunacceleration = 12.5
+uwgelwalkacceleration = 6.25
 
 horbouncemul = 1.5
 horbouncespeedy = 20
@@ -92,17 +101,6 @@ mariostarblinkrateslow = 0.16 --/disco
 mariostarduration = 12
 mariostarrunout = 1 --subtracts, doesn't add.
 
-goombaspeed = 2
-goombaacceleration = 8
-goombaanimationspeed = 0.2
-goombadeathtime = 0.5 --the "stomped" animation of goombas will last this long
-
-koopaspeed = 2
-koopasmallspeed = 12 --speed of turtle shells
-koopaanimationspeed = 0.2
-koopajumpforce = 10
-koopaflyinggravity = 30
-
 bowseranimationspeed = 0.5
 bowserspeedbackwards = 1.875
 bowserspeedforwards = 0.875
@@ -115,12 +113,6 @@ bowserhammertable = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.5, 1, 2
 bowserhammerdrawtime = 0.5
 
 bowserhealth = 5
-
-cheepwhitespeed = 1
-cheepredspeed = 1.8
-cheepyspeed = 0.3
-cheepheight = 1
-cheepanimationspeed = 0.35
 
 platformverdistance = 8.625
 platformhordistance = 3.3125
@@ -136,17 +128,6 @@ seesawspeed = 4
 seesawgravity = 30
 seesawfriction = 4
 
-koopaflyingdistance = 7.5
-koopaflyingtime = 7
-
-lakitothrowtime = 4
-lakitorespawn = 16
-lakitospace = 4
-lakitodistancetime = 1.5
-lakitohidetime = 0.5
-lakitopassivex = 18-4/16 --from the flag (or axe (or right end of map))
-lakitopassivespeed = 3
-
 -- loiters between 4 blocks behind and 4 blocks ahead of you (total 9 blocks he goes above)
 -- spawns only 3 of the hedgehog things and then hides until they're offscreen/dead
 -- in 4-1 he disappears when you touch the first step (not stand on, touch from side while on the ground)
@@ -154,7 +135,7 @@ lakitopassivespeed = 3
 -- the spiky dudes turn towards you after they fall down
 
 fireballspeed = 15
-fireballjumpforce = 10
+fireballjumpforce = 12
 maxfireballs = 2
 fireanimationtime = 0.11
 
@@ -185,7 +166,6 @@ runanimationspeed = 10
 swimanimationspeed = 10
 
 spriteset = 1
-background = 1
 speed = 1
 speedtarget = 1
 speedmodifier = 10
@@ -215,7 +195,7 @@ emanceimgwidth = 64
 emancelinecolor = {100, 100, 255, 10}
 
 boxfriction = 20
-boxfrictionair = 8
+boxfrictionair = 0
 
 faithplatetime = 0.3
 
@@ -240,9 +220,12 @@ hammerbropreparetime = 0.5
 hammerbrotime = {0.6, 1.6}
 hammerbrospeed = 1.5
 hammerbroanimationspeed = 0.15
+
+
 hammerbrojumptime = 3
 hammerbrojumpforce = 19
 hammerbrojumpforcedown = 6
+
 
 hammerspeed = 4
 hammerstarty = 8
@@ -259,7 +242,6 @@ firespeed = 4.69
 fireverspeed = 2
 fireanimationdelay = 0.05
 
-upfirestarty = 8 --not used
 upfireforce = 19
 upfiregravity = 20
 
@@ -350,11 +332,10 @@ castleanimationmariomove = 1.07 --time when mario starts moving after bowser sta
 castleanimationcameraaccelerate = 1.83 -- time when camera starts moving faster than mario, relative to start of his move
 castleanimationmariostop = 2.3 -- when mario stops next to toad, relative to start of his move
 castleanimationtextfirstline = 3.2 -- when camera stops and first line of text appears, relative to the start of his move
-castleanimationtextsecondline = 5.3 --second line appears
-castleanimationnextlevel = 9.47 -- splash screen for next level appears
--- first bowser is white goomba - see http://www.mariowiki.com/False_Bowser
--- first bowser takes 5 fireflower hits and dies as goomba
--- when fireflower killing boss, axe doesn't make bridge disappear
+--castleanimationtextsecondline = 5.3 --second line appears
+castleanimationtextsecondline = 4
+--castleanimationnextlevel = 9.47 -- splash screen for next level appears
+castleanimationnextlevel = 11 -- Timetrials tt
 
 endanimationtextfirstline = 3.2 -- when camera stops and first line of text appears, relative to the start of his move
 endanimationtextsecondline = 7.4 --second line appears
@@ -377,8 +358,20 @@ rainboomearthquake = 50
 
 backgroundstripes = 24
 
-konami = {"up", "up", "down", "down", "left", "right", "left", "right", "b", "a"}
-konamii = 1
+--With this you can figure out the new Konami code:
+
+--SY
+
+--LRUD
+
+--Have fun.
+
+konamilength = 8
+konamihash = "77142fa935c17bfe8ee967af58dac259e8d3f8c1"
+konamitable = {}
+for i = 1, konamilength do
+	konamitable[i] = ""
+end
 
 earthquakespeed = 40
 bullettime = false
@@ -401,3 +394,76 @@ mappackhorscrollrange = 220
 
 maximumbulletbills = 5
 coinblocktime = 4
+
+funnelspeed = 3
+funnelforce = 5
+funnelmovespeed = 4
+excursionbaseanimationtime = 0.1
+funnelbuildupspeed = 50
+
+yscrollingrate = 10
+userscrolltime = 1
+userscrollspeed = 13
+userscrollrange = 5
+
+--Rightclickmenu values
+funnelminspeed = 1
+funnelmaxspeed = 10
+
+linktoolfadeouttimefast = 0.1
+linktoolfadeouttimeslow = 0.5
+
+emancipateanimationtime = 0.6
+emancipatefadeouttime = 0.2
+
+emancipationfizzletime = 0.4
+emancipationfizzledelay = 0.05
+
+pedestaltime = 1
+
+--Functions, functions everywhere.
+
+--[[ Oh noes this shit sucks
+platformwidthfunction = function (i) return math.floor(i*18+2)/2 end
+platformspeedfunction = function (i) return i*9.5+0.5 end	
+platformspawndelayfunc = function (i) return i*9+1 end
+
+scaffoldwidthfunction = function (i) return math.floor(i*18+2)/2 end
+scaffoldspeedfunction = function (i) return i*9.5+0.5 end
+scaffolddistancefunction = function (i) return i*14.5+.5 end
+scaffoldtimefunction = function (i) return i*10 end
+
+faithplatexfunction = function (i) return (i-.5)*100 end
+faithplateyfunction = function (i) return i*45+5 end
+
+timerfunction = function (i) return i*9+1 end
+
+seesawdistancefunction = function (i) return math.floor(i*8+2) end
+seesawheightfunction = function (i) return math.floor(i*9+1) end
+
+castlefirelengthfunction = function (i) return math.floor(i*15+1) end
+castlefiredelayfunction = function (i) return i*0.97+0.03 end
+
+rgbfunction = function (i) return math.floor(i*255) end
+
+squarewavetimefunction = function (i) return i*9.9+0.1 end
+
+upfireheightfunction = function (i) return i*14.5+.5 end
+upfirewaitfunction = function (i) return i*5.9+.1 end
+upfirerandomfunction = function (i) return i*6 end
+
+platformdistancefunction = function (i) return i*14.5+.5 end
+platformtimefunction = function (i) return i*9+1 end 
+--]]
+
+arcadeexittime = 2
+arcadeblinkrate = 1.7
+arcadetimeout = 15
+
+raccoonstarttime = 1
+raccoontime = 4
+raccoonascendspeed = 8
+raccoonbuttondelay = 0.25
+raccoondescendspeed = 4
+raccoontailwagdelay = 0.08
+raccoonspindelay = 0.1

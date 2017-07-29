@@ -1,16 +1,61 @@
 platform = class:new()
 
-function platform:init(x, y, dir, size)
+function platform:init(x, y, r)
+	self.size = 2
+	self.dir = "left" --(Right, up, Justup, Justdown, justright(bonus stage), fall)
+	self.speed = platformjustspeed
+	
+	--Input list
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--DIRECTION
+	if #self.r > 0 then
+		self.dir = self.r[1]
+		table.remove(self.r, 1)
+	end
+	
+	if self.dir == "left" then
+		self.distance = platformhordistance
+		self.time = platformhortime
+	elseif self.dir == "down" then
+		self.distance = platformverdistance
+		self.time = platformvertime
+	end
+	
+	--SIZE
+	if #self.r > 0 then
+		self.size = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	
+	--Distance
+	if #self.r > 0 then
+		self.distance = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	
+	--Time
+	if #self.r > 0 then
+		self.time = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	
+	--SPEED
+	if #self.r > 0 then
+		self.speed = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+
 	--PHYSICS STUFF
-	self.size = size or 2
 	if (self.size ~= math.floor(self.size)) then
-		self.x = x-self.size/2-0.5
+		self.x = x-1.25
 	else
 		self.x = x-1
 	end	
 	self.y = y-15/16
 	self.startx = self.x
-	self.starty = self.y
+	self.starty = self.y+15/16
 	self.speedx = 0 --!
 	self.speedy = 0
 	self.width = self.size
@@ -26,42 +71,42 @@ function platform:init(x, y, dir, size)
 	
 	self.rotation = 0
 	
-	self.dir = dir --(Right, up, Justup, Justdown, justright(bonus stage), fall)
 	self.timer = 0
 	
 	if self.dir == "justup" then
-		self.speedy = -platformjustspeed
+		self.speedy = -self.speed
 	elseif self.dir == "justdown" then
-		self.speedy = platformjustspeed
+		self.speedy = self.speed
 	end
 end
 
-function platform:func(i) -- 0-1 in please
+function platform:func(i) --0-1 in please
 	return (-math.cos(i*math.pi*2)+1)/2
 end
 
 function platform:update(dt)
-	if self.dir == "right" or self.dir == "up" then
+	dt = math.max(0.00000000001, dt)
+	if self.dir == "left" or self.dir == "down" then
 		self.timer = self.timer + dt
 		
-		if self.dir == "right" then
-			while self.timer > platformhortime do
-				self.timer = self.timer - platformhortime
+		if self.dir == "left" then
+			while self.timer > self.time do
+				self.timer = self.timer - self.time
 			end
-			local newx = (self.startx) - self:func(self.timer/platformhortime)*platformhordistance
+			local newx = (self.startx) - self:func(self.timer/self.time)*self.distance
 			self.speedx = (newx-self.x)/dt
 		end
 		
-		if self.dir == "up" then
-			while self.timer > platformvertime do
-				self.timer = self.timer - platformvertime
+		if self.dir == "down" then
+			while self.timer > self.time do
+				self.timer = self.timer - self.time
 			end
-			local newy = self:func(self.timer/platformvertime)*platformverdistance + (self.starty-15/16)
+			local newy = self:func(self.timer/self.time)*self.distance + (self.starty-15/16)
 			self.speedy = (newy-self.y)/dt
 		end
 	end
 	
-	if self.dir == "right" or self.dir == "justright" then
+	if self.dir == "left" or self.dir == "justright" then
 		self.x = self.x + self.speedx*dt
 		local checktable = {}
 		for i, v in pairs(enemies) do
@@ -82,9 +127,9 @@ function platform:update(dt)
 				end
 			end
 		end
-	elseif self.dir == "up" or self.dir == "justup" or self.dir == "justdown" then
+	elseif self.dir == "down" or self.dir == "justup" or self.dir == "justdown" then
 		if self.dir == "justup" then
-			self.speedy = -platformjustspeed
+			self.speedy = -self.speed
 		end
 	
 		local checktable = {}
@@ -132,6 +177,10 @@ function platform:update(dt)
 		self.speedy = numberofobjects*4
 		
 		self.y = self.y + self.speedy*dt
+		
+		if self.y > mapheight then
+			self.y = self.starty-15/16
+		end
 	end
 	
 	if self.dir == "justup" and self.y < -1 then
@@ -146,14 +195,14 @@ end
 function platform:draw()
 	for i = 1, self.size do
 		if self.dir ~= "justright" then
-			love.graphics.draw(platformimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+			love.graphics.draw(platformimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 		else
-			love.graphics.draw(platformbonusimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+			love.graphics.draw(platformbonusimg, math.floor((self.x+i-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 		end
 	end
 	
 	if math.ceil(self.size) ~= self.size then --draw 1 more on the rightest
-		love.graphics.draw(platformimg, math.floor((self.x+self.size-1-xscroll)*16*scale), math.floor((self.y-8/16)*16*scale), 0, scale, scale)
+		love.graphics.draw(platformimg, math.floor((self.x+self.size-1-xscroll)*16*scale), math.floor((self.y-yscroll-8/16)*16*scale), 0, scale, scale)
 	end
 end
 

@@ -13,7 +13,7 @@ seesawtype[8] = {3,3,7,1.5}
 seesawtype[9] = {3,4,7,1.5}
 
 
-function seesaw:init(x, y, t)
+function seesaw:init(x, y, r)
 	self.x = x
 	self.y = y
 	
@@ -24,13 +24,39 @@ function seesaw:init(x, y, t)
 	self.range = seesawtype[t][1]
 	self.dist1 = seesawtype[t][2]
 	self.dist2 = seesawtype[t][3]
+	self.width = seesawtype[t][4]
+	
+	--Input list
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--RANGE
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.range = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	--DIST1
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dist1 = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	--DIST2
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dist2 = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
+	--WIDTH
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.width = tonumber(self.r[1])
+		table.remove(self.r, 1)
+	end
 	
 	self.lcount = 0
 	self.rcount = 0
 	self.falloff = false
 	
-	self.leftplatform = seesawplatform:new(self.x, self.y+self.dist1, seesawtype[t][4], self, "left")
-	self.rightplatform = seesawplatform:new(self.x+self.range, self.y+self.dist2, seesawtype[t][4], self, "right")
+	self.leftplatform = seesawplatform:new(self.x, self.y+self.dist1, self.width, self, "left")
+	self.rightplatform = seesawplatform:new(self.x+self.range, self.y+self.dist2, self.width, self, "right")
 	
 	table.insert(objects["seesawplatform"], self.leftplatform)
 	table.insert(objects["seesawplatform"], self.rightplatform)
@@ -86,26 +112,27 @@ function seesaw:update(dt)
 end
 
 function seesaw:fallingoff(side)
-	self.falloffside = side
-	self.falloff = true
 	self.leftplatform.speedy = 0
 	self.rightplatform.speedy = 0
+	
+	self.falloffside = side
+	self.falloff = true
 end
 
 function seesaw:draw()
 	--left
-	love.graphics.drawq(seesawimg, seesawquad[1], math.floor((self.x-1-xscroll)*16*scale), (self.y-1.5)*16*scale, 0, scale, scale)
+	love.graphics.drawq(seesawimg, seesawquad[1], math.floor((self.x-1-xscroll)*16*scale), (self.y-yscroll-1.5)*16*scale, 0, scale, scale)
 	
 	if self.falloff == false and self.leftplatform.y-self.y >= 0 then
-		love.graphics.setScissor((self.x-1-xscroll)*16*scale, (self.y-0.5)*16*scale, 16*scale, math.floor((self.leftplatform.y-self.y)*16*scale))
+		love.graphics.setScissor((self.x-1-xscroll)*16*scale, (self.y-yscroll-0.5)*16*scale, 16*scale, math.floor((self.leftplatform.y-self.y)*16*scale))
 		for i = 1, math.ceil(self.leftplatform.y-self.y) do
-			love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x-1-xscroll)*16*scale), (self.y+i-1.5)*16*scale, 0, scale, scale)
+			love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x-1-xscroll)*16*scale), (self.y-yscroll+i-1.5)*16*scale, 0, scale, scale)
 		end
 		love.graphics.setScissor()
 	else
 		if self.falloffside == "left" then
 			for i = 1, self.dist1+self.dist2-2 do
-				love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x-1-xscroll)*16*scale), (self.y+i-1.5)*16*scale, 0, scale, scale)
+				love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x-1-xscroll)*16*scale), (self.y-yscroll+i-1.5)*16*scale, 0, scale, scale)
 			end
 		end
 	end
@@ -113,22 +140,22 @@ function seesaw:draw()
 	
 	--middle
 	for i = 1, self.range-1 do
-		love.graphics.drawq(seesawimg, seesawquad[4], math.floor((self.x-1+i-xscroll)*16*scale), (self.y-1.5)*16*scale, 0, scale, scale)
+		love.graphics.drawq(seesawimg, seesawquad[4], math.floor((self.x-1+i-xscroll)*16*scale), (self.y-yscroll-1.5)*16*scale, 0, scale, scale)
 	end
 		
 	--right
-	love.graphics.drawq(seesawimg, seesawquad[2], math.floor((self.x-1+self.range-xscroll)*16*scale), (self.y-1.5)*16*scale, 0, scale, scale)
+	love.graphics.drawq(seesawimg, seesawquad[2], math.floor((self.x-1+self.range-xscroll)*16*scale), (self.y-yscroll-1.5)*16*scale, 0, scale, scale)
 	
 	if self.falloff == false and self.rightplatform.y-self.y >= 0 then
-		love.graphics.setScissor((self.x-1+self.range-xscroll)*16*scale, (self.y-0.5)*16*scale, 16*scale, math.floor((self.rightplatform.y-self.y)*16*scale))
+		love.graphics.setScissor((self.x-1+self.range-xscroll)*16*scale, (self.y-yscroll-0.5)*16*scale, 16*scale, math.floor((self.rightplatform.y-self.y)*16*scale))
 		for i = 1, math.ceil(self.rightplatform.y-self.y) do
-			love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x+self.range-1-xscroll)*16*scale), (self.y+i-1.5)*16*scale, 0, scale, scale)
+			love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x+self.range-1-xscroll)*16*scale), (self.y-yscroll+i-1.5)*16*scale, 0, scale, scale)
 		end
 		love.graphics.setScissor()
 	else
 		if self.falloffside == "right" then
 			for i = 1, self.dist1+self.dist2-2 do
-				love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x+self.range-1-xscroll)*16*scale), (self.y+i-1.5)*16*scale, 0, scale, scale)
+				love.graphics.drawq(seesawimg, seesawquad[3], math.floor((self.x+self.range-1-xscroll)*16*scale), (self.y-yscroll+i-1.5)*16*scale, 0, scale, scale)
 			end
 		end
 	end

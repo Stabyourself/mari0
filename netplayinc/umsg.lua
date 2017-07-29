@@ -9,11 +9,15 @@ function usermessage:initialize(name,message)
 end
 
 function usermessage:send(id)
+	local lid
+	if id then
+		lid = id - 1
+	end
 	if(SERVER) then
 		if self.message == nil then
-			MyServer:send("#UMSG#"..self.name, id)
+			MyServer:send("#UMSG#"..self.name, lid)
 		else
-			MyServer:send("#UMSG#"..self.name.."~"..self.message, id)
+			MyServer:send("#UMSG#"..self.name.."~"..self.message, lid)
 		end
 	end
 	if(CLIENT) then
@@ -31,6 +35,16 @@ function umsg.hook(hookname,hookfunction)
 end
 
 function umsg.recv(data, id)
+	clienttimeouttimer = 0
+	
+	if lagtime == 0 then
+		umsg.recv2(data, id)
+	else
+		table.insert(lagtable, 1, {0, data, id})
+	end
+end
+
+function umsg.recv2(data, id)
 	if(string.sub(data,1,6) == "#UMSG#") then
 		data = string.sub(data,7)
 		if string.find(data, "~") == nil then
@@ -45,10 +59,10 @@ function umsg.recv(data, id)
 			end
 		end
 		if(SERVER) then
-			um.sender = id
+			um.sender = id+1
 		end
 		if (CLIENT) then
-			um.sender = 0
+			um.sender = 1
 		end
 		for i,v in pairs(umsg.hooknames) do
 			if v == um.name then

@@ -1,0 +1,47 @@
+{
+	"quadcount": 2,
+	
+	"spawnoffsety": -0.25,
+	"spawnoffsetx": -0.25,
+	
+	"kills": true,
+	
+	"animationtype": "frames",
+	"animationspeed": 0.05,
+	"animationstart": 1,
+	"animationframes": 2,
+	
+	"nospritesets": true,
+	
+	"speedx": -4.69,
+	
+	"width": 1.5,
+	"height": 0.5,
+	
+	"static": false,
+	"active": true,
+	
+	"gravity": 0,
+	
+	"category": 17,
+	"mask": [	true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+				
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 0,
+	"offsetY": 8,
+	"quadcenterX": 0,
+	"quadcenterY": 0,
+	
+	"portalable": false,
+	"resistsstar": true,
+	"spawnsound": "fire"
+}

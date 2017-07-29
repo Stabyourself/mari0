@@ -1,0 +1,46 @@
+{
+	"quadcount": 2,
+	
+	"gravity": 20,
+	
+	"killsonsides": true,
+	"killsonbottom": true,
+	
+	"speedy": -23,
+	
+	"stompable": true,
+	
+	"animationtype": "frames",
+	"animationframes": 2,
+	"animationstart": 1,
+	"animationspeed": 0.35,
+	
+	"nospritesets": true,
+	
+	"quadno": 1,
+	
+	"width": 0.75,
+	"height": 0.75,
+	
+	"static": false,
+	"active": true,
+	
+	"category": 27,
+	
+	"mask": [	true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, false, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true,
+				true, true, true, true, true],
+					
+	
+	"emancipatecheck": true,
+	"autodelete": true,
+	
+	"offsetX": 6,
+	"offsetY": 3,
+	"quadcenterX": 8,
+	"quadcenterY": 8
+}

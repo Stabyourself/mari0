@@ -1,10 +1,8 @@
 laser = class:new()
 
-function laser:init(x, y, dir, r)
+function laser:init(x, y, r)
 	self.cox = x
 	self.coy = y
-	self.dir = dir
-	self.r = r
 	
 	self.blocked = false
 	self.lasertable = {}
@@ -12,33 +10,59 @@ function laser:init(x, y, dir, r)
 	
 	self.framestart = 0
 	
-	self.enabled = true
-end
-
-function laser:link()
-	self.outtable = {}
-	if #self.r > 2 then
-		for j, w in pairs(outputs) do
-			for i, v in pairs(objects[w]) do
-				if tonumber(self.r[4]) == v.cox and tonumber(self.r[5]) == v.coy then
-					v:addoutput(self)
-					self.enabled = false
-				end
-			end
+	self.power = true
+	self.input1state = "off"
+	
+	self.dir = "right"
+	
+	--Input list
+	self.input1state = "off"
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--DIRECTION
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dir = self.r[1]
+		table.remove(self.r, 1)
+	end
+	
+	--POWER
+	if #self.r > 0 and self.r[1] ~= "link" then
+		if self.r[1] == "true" then
+			self.power = false
 		end
+		table.remove(self.r, 1)
 	end
 end
 
-function laser:input(t)
-	if t == "on" then
-		self.enabled = true
+function laser:link()
+	while #self.r > 3 do
+		for j, w in pairs(outputs) do
+			for i, v in pairs(objects[w]) do
+				if tonumber(self.r[3]) == v.cox and tonumber(self.r[4]) == v.coy then
+					v:addoutput(self, self.r[2])
+				end
+			end
+		end
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+	end
+end
+
+function laser:input(t, input)
+	if input == "power" then
+		if t == "on" and self.input1state == "off" then
+			self.power = not self.power
+		elseif t == "off" and self.input1state == "on" then
+			self.power = not self.power
+		elseif t == "toggle" then
+			self.power = not self.power
+		end
 		self:updaterange()
-	elseif t == "off" then
-		self.enabled = false
-		self:updaterange()
-	else
-		self.enabled = not self.enabled
-		self:updaterange()
+		
+		self.input1state = t
 	end
 end
 
@@ -57,84 +81,12 @@ function laser:update(dt)
 			y = self.lasertable[i+2]-0.5625
 			width = -self.lasertable[i+3]+1
 			height = 2/16
-			
-			local rectcol = checkrect(x, y, width, height, {"player", "box", "goomba", "koopa"})
-			
-			if #rectcol > 0 then
-				col = true
-				self.blocked = true
-			
-				local biggestx = -1
-				local biggesti
-			
-				for j = 1, #rectcol, 2 do
-					if objects[rectcol[j]][rectcol[j+1]].x > biggestx then
-						biggestx = objects[rectcol[j]][rectcol[j+1]].x
-						biggesti = j
-					end
-				end
-				
-				obj = objects[rectcol[biggesti]][rectcol[biggesti+1]]
-				
-				if obj.laser then
-					obj:laser("right")
-				end
-				
-				local newtable = {}
-				for k = 1, i*5 do
-					table.insert(newtable, self.lasertable[k])
-				end
-				
-				newtable[i+3] = obj.x - newtable[i+1] + obj.width+1
-				
-				self.lasertable = newtable
-				
-				self:updateoutputs()
-				break
-			end
-			
 		elseif self.lasertable[i] == "right" then
 			
 			x = self.lasertable[i+1]-1
 			y = self.lasertable[i+2]-0.5625
 			width = self.lasertable[i+3]+1
 			height = 2/16
-			
-			local rectcol = checkrect(x, y, width, height, {"player", "box", "goomba", "koopa"})
-			
-			if #rectcol > 0 then
-				col = true
-				self.blocked = true
-			
-				local smallestx = mapwidth+1
-				local smallesti
-			
-				for j = 1, #rectcol, 2 do
-					if objects[rectcol[j]][rectcol[j+1]].x < smallestx then
-						smallestx = objects[rectcol[j]][rectcol[j+1]].x
-						smallesti = j
-					end
-				end
-				
-				obj = objects[rectcol[smallesti]][rectcol[smallesti+1]]
-				
-				if obj.laser then
-					obj:laser("left")
-				end
-				
-				local newtable = {}
-				for k = 1, i*5 do
-					table.insert(newtable, self.lasertable[k])
-				end
-				
-				newtable[i+3] = obj.x - newtable[i+1]
-				
-				self.lasertable = newtable
-				
-				self:updateoutputs()
-				break
-			end
-			
 		elseif self.lasertable[i] == "up" then
 			
 			x = self.lasertable[i+1]-0.5625
@@ -142,82 +94,68 @@ function laser:update(dt)
 			width = 2/16
 			height = -self.lasertable[i+4]+1
 			
-			local rectcol = checkrect(x, y, width, height, {"player", "box", "goomba", "koopa"})
-			
-			if #rectcol > 0 then
-				col = true
-				self.blocked = true
-			
-				local biggesty = 0
-				local biggesti
-			
-				for j = 1, #rectcol, 2 do
-					if objects[rectcol[j]][rectcol[j+1]].y > biggesty then
-						biggesty = objects[rectcol[j]][rectcol[j+1]].y
-						biggesti = j
-					end
-				end
-				
-				obj = objects[rectcol[biggesti]][rectcol[biggesti+1]]
-				
-				if obj.laser then
-					obj:laser("down")
-				end
-				
-				local newtable = {}
-				for k = 1, i*5 do
-					table.insert(newtable, self.lasertable[k])
-				end
-				
-				newtable[i+4] = obj.y - newtable[i+2]+1
-				
-				self.lasertable = newtable
-				
-				self:updateoutputs()
-				break
-			end
-			
 		elseif self.lasertable[i] == "down" then
 			
 			x = self.lasertable[i+1]-0.5625
 			y = self.lasertable[i+2]-1
 			width = 2/16
 			height = self.lasertable[i+4]+1
+		end
+				
+		local rectcol = checkrect(x, y, width, height, {"player", "box", "enemy"})
+		
+		if #rectcol > 0 then
+			col = true
+			self.blocked = true
+		
+			local biggestx = -1
+			local biggesti
+		
+			for j = 1, #rectcol, 2 do
+				if objects[rectcol[j]][rectcol[j+1]].x > biggestx then
+					biggestx = objects[rectcol[j]][rectcol[j+1]].x
+					biggesti = j
+				end
+			end
 			
-			local rectcol = checkrect(x, y, width, height, {"player", "box", "goomba", "koopa"})
+			obj = objects[rectcol[biggesti]][rectcol[biggesti+1]]
 			
-			if #rectcol > 0 then
-				col = true
-				self.blocked = true
+			local newtable = {}
+			for k = 1, i*5 do
+				table.insert(newtable, self.lasertable[k])
+			end
 			
-				local smallesty = 16
-				local smallesti
-			
-				for j = 1, #rectcol, 2 do
-					if objects[rectcol[j]][rectcol[j+1]].y < smallesty then
-						smallesty = objects[rectcol[j]][rectcol[j+1]].y
-						smallesti = j
-					end
+			if self.lasertable[i] == "left" then
+				if obj.laser then
+					obj:laser("right")
 				end
 				
-				obj = objects[rectcol[smallesti]][rectcol[smallesti+1]]
+				newtable[i+3] = obj.x - newtable[i+1] + obj.width+1
+			elseif self.lasertable[i] == "right" then
+				if obj.laser then
+					obj:laser("left")
+				end
 				
+				newtable[i+3] = obj.x - newtable[i+1]
+			elseif self.lasertable[i] == "up" then
+				if obj.laser then
+					obj:laser("down")
+				end
+				
+				newtable[i+4] = obj.y - newtable[i+2]+1
+			elseif self.lasertable[i] == "down" then
 				if obj.laser then
 					obj:laser("up")
 				end
 				
-				local newtable = {}
-				for k = 1, i*5 do
-					table.insert(newtable, self.lasertable[k])
-				end
 				
 				newtable[i+4] = obj.y - newtable[i+2] + 1 - obj.height+1-1
-				
-				self.lasertable = newtable
-				
-				self:updateoutputs()
-				break
 			end
+			
+			self.lasertable = newtable
+			
+			self:updateoutputs()
+			break
 		end
 	end
 	
@@ -234,22 +172,22 @@ function laser:updateoutputs()
 		if self.lasertable[i] == "left" then
 			for x = self.lasertable[i+1], math.ceil(self.lasertable[i+1]+self.lasertable[i+3])-1, -1 do
 				local y = self.lasertable[i+2]
-				self:checktile(x, y)
+				self:checktile(x, y, "left")
 			end
 		elseif self.lasertable[i] == "right" then
 			for x = self.lasertable[i+1], math.floor(self.lasertable[i+1]+self.lasertable[i+3])+1 do
 				local y = self.lasertable[i+2]
-				self:checktile(x, y)
+				self:checktile(x, y, "right")
 			end
 		elseif self.lasertable[i] == "up" then
 			for y = self.lasertable[i+2], self.lasertable[i+2]+self.lasertable[i+4]-1, -1 do
 				local x = self.lasertable[i+1]
-				self:checktile(x, y)
+				self:checktile(x, y, "up")
 			end
 		elseif self.lasertable[i] == "down" then
 			for y = self.lasertable[i+2], self.lasertable[i+2]+self.lasertable[i+4]+1 do
 				local x = self.lasertable[i+1]
-				self:checktile(x, y)
+				self:checktile(x, y, "down")
 			end
 		end
 	end
@@ -259,35 +197,45 @@ function laser:updateoutputs()
 	end
 end
 
-function laser:checktile(x, y)
+function laser:checktile(x, y, dir)
 	--check if block is a detector
 	for i, v in pairs(objects["laserdetector"]) do
-		if x == v.cox and y == v.coy and (v.cox ~= self.r[4] or v.coy ~= self.r[5]) then
-			table.insert(self.outtable, v)
-			v:input("on")
-		end
+		--if (dir == "left" and v.dir == "right") or (dir == "right" and v.dir == "left") or (dir == "up" and v.dir == "down") or (dir == "down" and v.dir == "up") then
+			if x == v.cox and y == v.coy and (v.cox ~= self.r[4] or v.coy ~= self.r[5]) then
+				table.insert(self.outtable, v)
+				v:input("on")
+			end
+		--end
 	end
 end
 
 function laser:draw()	
 	for i = 1, #self.lasertable, 5 do
 		if self.lasertable[i] == "left" then
-			love.graphics.setScissor(math.floor((self.lasertable[i+1]+self.lasertable[i+3]-xscroll-1)*16*scale), (self.lasertable[i+2]-1.5)*16*scale, math.max((-self.lasertable[i+3]+1)*16*scale, 0), 16*scale)
-			for x = self.lasertable[i+1], math.floor(self.lasertable[i+1]+self.lasertable[i+3])-1, -1 do
-				love.graphics.draw(laserimg, math.floor((x-xscroll-1)*16*scale), (self.lasertable[i+2]-20/16)*16*scale, 0, scale, scale)
+			if self.lasertable[i+3] < 1 then
+				love.graphics.setScissor(math.floor((self.lasertable[i+1]+self.lasertable[i+3]-xscroll-1)*16*scale), (self.lasertable[i+2]-yscroll-1.5)*16*scale, (-self.lasertable[i+3]+1)*16*scale, 16*scale)
+				local b = 0
+				for x = self.lasertable[i+1], math.floor(self.lasertable[i+1]+self.lasertable[i+3])-1, -1 do
+					b = b + 1
+					love.graphics.draw(laserimg, math.floor((x-xscroll-1)*16*scale), (self.lasertable[i+2]-yscroll-20/16)*16*scale, 0, scale, scale)
+				end
 			end
 		elseif self.lasertable[i] == "right" then
-			love.graphics.setScissor(math.floor((self.lasertable[i+1]-xscroll-1)*16*scale), (self.lasertable[i+2]-1.5)*16*scale, math.max((self.lasertable[i+3]+1)*16*scale, 0), 16*scale)
-			for x = self.lasertable[i+1], math.ceil(self.lasertable[i+1]+self.lasertable[i+3])+1 do
-				love.graphics.draw(laserimg, math.floor((x-xscroll-1)*16*scale), (self.lasertable[i+2]-20/16)*16*scale, 0, scale, scale)
+			if self.lasertable[i+3] > -1 then
+				love.graphics.setScissor(math.floor((self.lasertable[i+1]-xscroll-1)*16*scale), (self.lasertable[i+2]-yscroll-1.5)*16*scale, (self.lasertable[i+3]+1)*16*scale, 16*scale)
+					local b = 0
+				for x = self.lasertable[i+1], math.ceil(self.lasertable[i+1]+self.lasertable[i+3])+1 do
+					b = b + 1
+					love.graphics.draw(laserimg, math.floor((x-xscroll-1)*16*scale), (self.lasertable[i+2]-yscroll-20/16)*16*scale, 0, scale, scale)
+				end
 			end
 		elseif self.lasertable[i] == "up" then
 			for y = self.lasertable[i+2], self.lasertable[i+2]+self.lasertable[i+4], -1 do
-				love.graphics.draw(laserimg, math.floor((self.lasertable[i+1]-xscroll-5/16)*16*scale), (y-1)*16*scale, math.pi/2, scale, scale, 8, 1)
+				love.graphics.draw(laserimg, math.floor((self.lasertable[i+1]-xscroll-5/16)*16*scale), (y-yscroll-1)*16*scale, math.pi/2, scale, scale, 8, 1)
 			end
 		elseif self.lasertable[i] == "down" then
 			for y = self.lasertable[i+2], self.lasertable[i+2]+self.lasertable[i+4] do
-				love.graphics.draw(laserimg, math.floor((self.lasertable[i+1]-xscroll-5/16)*16*scale), (y-1)*16*scale, math.pi/2, scale, scale, 8, 1)
+				love.graphics.draw(laserimg, math.floor((self.lasertable[i+1]-xscroll-5/16)*16*scale), (y-yscroll-1)*16*scale, math.pi/2, scale, scale, 8, 1)
 			end
 		end
 		
@@ -303,12 +251,12 @@ function laser:draw()
 		rot = math.pi
 	end
 
-	love.graphics.draw(lasersideimg, math.floor((self.cox-xscroll-.5)*16*scale), (self.coy-1)*16*scale, rot, scale, scale, 8, 8)
+	love.graphics.draw(lasersideimg, math.floor((self.cox-xscroll-.5)*16*scale), (self.coy-yscroll-1)*16*scale, rot, scale, scale, 8, 8)
 end
 
 function laser:updaterange()
 	self.lasertable = {}
-	if self.enabled == false then
+	if self.power == false then
 		self:updateoutputs()
 		return
 	end
@@ -320,7 +268,7 @@ function laser:updaterange()
 	
 	local firstcheck = true
 	local quit = false
-	while x >= 1 and x <= mapwidth and y >= 1 and y <= 15 and tilequads[map[x][y][1]].collision == false and (x ~= startx or y ~= starty or dir ~= self.dir or firstcheck == true) and quit == false do
+	while x >= 1 and x <= mapwidth and y >= 1 and y <= mapheight and (tilequads[map[x][y][1]].collision == false or tilequads[map[x][y][1]].grate) and (x ~= startx or y ~= starty or dir ~= self.dir or firstcheck == true) and quit == false do
 		firstcheck = false
 		
 		if dir == "right" then
@@ -338,7 +286,16 @@ function laser:updaterange()
 		end
 		
 		--check if current block is a portal
-		local portalx, portaly, portalfacing, infacing = getPortal(x, y)
+		local opp = "left"
+		if dir == "left" then
+			opp = "right"
+		elseif dir == "up" then
+			opp = "down"
+		elseif dir == "down" then
+			opp = "up"
+		end
+		
+		local portalx, portaly, portalfacing, infacing = getPortal(x, y, opp)
 		
 		if portalx ~= false and ((dir == "left" and infacing == "right") or (dir == "right" and infacing == "left") or (dir == "up" and infacing == "down") or (dir == "down" and infacing == "up")) then
 			
