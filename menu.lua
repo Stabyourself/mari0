@@ -56,7 +56,7 @@ function menu_load()
 	if (arcade or mkstation) and firstload then
 		firstload = false
 		if arcade then
-			mappack = "smb"
+			mappack = "Time Trial"
 		elseif mkstation then
 		--	mappack = "portal"
 		end

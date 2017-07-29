@@ -29,6 +29,7 @@ function game_load(suspended)
 		
 		portaltriggervalues = {}
 		ttentrybuttonvalue = 0
+		ttentrybuttonvalueh = "c"
 		arcadetimeouttimers = {}
 		
 		for i = 1, 4 do
@@ -224,6 +225,16 @@ function game_update(dt)
 	end
 	
 	if ttstate == "entry" then
+		--hat
+		if ttentrybuttonvalueh == "c" then
+			if love.joystick.getHat(1, 1) == "ru" or love.joystick.getHat(1, 1) == "u"  or love.joystick.getHat(1, 1) == "lu" then
+				ttentryup()
+			elseif love.joystick.getHat(1, 1) == "rd" or love.joystick.getHat(1, 1) == "d"  or love.joystick.getHat(1, 1) == "ld" then
+				ttentrydown()
+			end
+		end
+		ttentrybuttonvalueh = love.joystick.getHat(1, 1)
+
 		if math.abs(love.joystick.getAxis(1, 2)) > 0.5 and math.abs(ttentrybuttonvalue) <= 0.5 then
 			if love.joystick.getAxis(1, 2) > 0 then
 				ttentrydown()
@@ -5576,7 +5587,7 @@ function checkkey(s)
 	if s[1] == "joy" then
 		if s[3] == "hat" then
 			--arcade hack
-			if arcade then
+			if arcade or true then
 				if s[5] == "r" then
 					if love.joystick.getAxis(s[2], 1) > joystickdeadzone then
 						return true

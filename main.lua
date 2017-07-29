@@ -1459,13 +1459,13 @@ function defaultconfig()
 	controls = {}
 	
 	local i = 1
-	controls[i] = {}
-	controls[i]["right"] = {"d"}
-	controls[i]["left"] = {"a"}
-	controls[i]["down"] = {"s"}
-	controls[i]["up"] = {"w"}
-	controls[i]["run"] = {"lshift"}
-	controls[i]["jump"] = {" "}
+	controls[i] = {}		
+	controls[i]["right"] = {"joy", 1, "hat", 1, "r"}
+	controls[i]["left"] = {"joy", 1, "hat", 1, "l"}
+	controls[i]["down"] = {"joy", 1, "hat", 1, "d"}
+	controls[i]["up"] = {"joy", 1, "hat", 1, "u"}
+	controls[i]["run"] = {"joy", 1, "but", 2}
+	controls[i]["jump"] = {"joy", 1, "but", 1}
 	controls[i]["aimx"] = {""} --mouse aiming, so no need
 	controls[i]["aimy"] = {""}
 	controls[i]["portal1"] = {""}
@@ -1537,7 +1537,7 @@ function defaultconfig()
 	--options
 	scale = 2
 	volume = 1
-	mappack = "smb"
+	mappack = "Time Trial"
 	vsync = true
 	currentshaderi1 = 1
 	currentshaderi2 = 1
