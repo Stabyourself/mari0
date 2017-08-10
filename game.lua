@@ -174,6 +174,12 @@ function game_load(suspended)
 		music:load(custommusic)
 	end--]]
 	
+	-- set up replays
+	replays = {}
+	for _, v in ipairs(replaydata) do
+		table.insert(replays, replay:new(v))
+	end
+	
 	--FINALLY LOAD THE DAMN LEVEL
 	levelscreen_load("initial")
 end
@@ -200,6 +206,10 @@ function game_update(dt)
 		end
 	else
 		ttidletimer = 0
+	end
+	
+	for _, v in ipairs(replays) do
+		v:tick()
 	end
 
 	--------
@@ -385,7 +395,6 @@ function game_update(dt)
 			ttstate = "playing"
 			playmusic()
 			tttime = 0
-			livereplaytimer = love.timer.getTime()
 			objects["player"][1].controlsenabled = true
 		end
 	end
@@ -409,18 +418,12 @@ function game_update(dt)
 	end
 	
 	if replaysystem then
-		for j = 1, #replaydata do
-			if replaydata[j].data then
-				replaytimer[j] = replaytimer[j] + dt
-				while replaydata[j].data[replayi[j]].time < replaytimer[j] and replayi[j] < #replaydata[j].data do
-					replayi[j] = replayi[j] + 1
-				end
-			end
-		end
+		replayi = replayi + 1
 	end
 	
 	if ttstate == "demo" and #replaydata >= 1 then
-		if replaytimer[1] > replaydata[1].data[#replaydata[1].data].time + 5 then
+		
+		if replayi > replaydata[1].frames+600 then
 			game_load()
 			return
 		end
@@ -1460,11 +1463,12 @@ function game_draw()
 				if levelfinishedmisc == 2 then
 					properprint("time:", math.floor(((mapwidth-12.5-xscroll)*16-1)*scale), (axey-2.5-yscroll)*16*scale) --say what
 					
+					local finaltime = objects.player[1].replayFrames/targetdt
 					
 					local t = ""
-					local m = math.floor(ttfinaltime/60)
-					local s = math.floor(math.mod(ttfinaltime, 60))
-					local micro = string.sub(math.floor(math.mod(ttfinaltime, 1)*100)/100, 3)
+					local m = math.floor(finaltime/60)
+					local s = math.floor(math.mod(finaltime, 60))
+					local micro = string.sub(math.floor(math.mod(finaltime, 1)*100)/100, 3)
 					
 					t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. micro
 					
@@ -1615,10 +1619,8 @@ function game_draw()
 		--replays
 		love.graphics.setColor(255, 255, 255)
 		if replaysystem and drawreplays and (timetrialstarted or ttstate == "demo") then
-			for i=#replaydata, 1, -1 do
-				if replaydata[i].data then
-					drawreplay(i, math.max(1, replayi[i]))
-				end
+			for _, v in ipairs(replays) do
+				v:draw()
 			end
 		end
 		
@@ -2686,136 +2688,6 @@ function game_draw()
 	end
 end
 
-function drawreplay(j, i)
-	local newdata = replaydata[j].data[i]
-	
-	for someletter = lastreplaydraw[j], i do
-		for k, v in pairs(replaydata[j].data[someletter]) do
-			replaydrawtable[j][k] = v
-		end
-	end
-	
-	lastreplaydraw[j] = i
-	
-	local self = replaydrawtable[j]
-	
-	local angleframe = 1
-	
-	if not self.drawable then
-		return
-	end
-	
-	if self.level ~= mariolevel or self.world ~= marioworld or self.sublevel ~= mariosublevel then
-		return
-	end
-	
-	local char = replaychar[j]
-	
-	if j == 1 and firstreplayblue then
-		replaychar[j] = characters.mario
-	end
-	
-	if replaychar[j].nopointing then
-		angleframe = 1
-	else
-		angleframe = getAngleFrame(self.pointingangle, self.rotation)
-	end
-	
-	local animationstate = self.animationstate
-	local size = self.size
-	local quad
-	
-	
-	
-	
-	if size == 1 then
-		if self.infunnel then
-			quad = replaychar[j].jump[angleframe][self.jumpframe]
-		elseif self.underwater and (self.animationstate == "jumping" or self.animationstate == "falling") then
-			quad = replaychar[j].swim[angleframe][self.swimframe]
-		elseif animationstate == "running" or animationstate == "falling" then
-			quad = replaychar[j].run[angleframe][self.runframe]
-		elseif animationstate == "idle" then
-			quad = replaychar[j].idle[angleframe]
-		elseif animationstate == "sliding" then
-			quad = replaychar[j].slide[angleframe]
-		elseif animationstate == "jumping" then
-			quad = replaychar[j].jump[angleframe][self.jumpframe]
-		elseif animationstate == "climbing" then
-			quad = replaychar[j].climb[angleframe][self.climbframe]
-		elseif animationstate == "dead" then
-			quad = replaychar[j].die[angleframe]
-		elseif animationstate == "grow" then
-			quad = replaychar[j].grow[angleframe]
-		end
-	elseif size > 1 then
-		if self.infunnel then
-			quad = replaychar[j].bigjump[angleframe][self.jumpframe]
-		elseif self.underwater and (self.animationstate == "jumping" or self.animationstate == "falling") then
-			quad = replaychar[j].bigswim[angleframe][self.swimframe]
-		elseif self.ducking then
-			quad = replaychar[j].bigduck[angleframe]
-		elseif self.fireanimationtimer < fireanimationtime then
-			quad = replaychar[j].bigfire[angleframe]
-		else
-			if animationstate == "running" or animationstate == "falling" then
-				quad = replaychar[j].bigrun[angleframe][self.runframe]
-			elseif animationstate == "idle" then
-				quad = replaychar[j].bigidle[angleframe]
-			elseif animationstate == "sliding" then
-				quad = replaychar[j].bigslide[angleframe]
-			elseif animationstate == "climbing" then
-				quad = replaychar[j].bigclimb[angleframe][self.climbframe]
-			elseif animationstate == "jumping" then
-				quad = replaychar[j].bigjump[angleframe][self.jumpframe]
-			end
-		end
-	end
-	
-	if not quad then quad = replaychar[j].idle[angleframe] end
-	
-	local graphic
-	local biggraphic = replaychar[j].nogunbiganimations
-	if self.size == 1 then
-		graphic = replaychar[j].nogunanimations
-	else
-		graphic = replaychar[j].nogunbiganimations
-	end
-	
-	if ttstate == "demo" or (j == 1 and firstreplayblue) then
-		self.hats = {1}
-	else
-		self.hats = {}
-	end
-	
-	self.shot = false
-	self.upsidedown = false
-	self.colors = {{224,  32,   0}, {136, 112,   0}, {252, 152,  56}}
-	self.lastportal = 1
-	self.portal1color = {60, 188, 252}
-	self.portal2color = {232, 130, 30}
-	
-	if j == 1 and firstreplayblue then
-		self.colors = {{ 32,  56, 236}, {  0, 128, 136}, {252, 152,  56}}
-	end
-	
-	
-	if self.customscissor then
-		love.graphics.setScissor(math.floor((self.customscissor[1]-xscroll)*16*scale), math.floor((self.customscissor[2]-.5-yscroll)*16*scale), self.customscissor[3]*16*scale, self.customscissor[4]*16*scale)
-	end
-	
-	if true then
-		self.pointingangle = -math.pi
-		if self.animationdirection == "left" then
-			self.pointingangle = math.pi
-		end
-	end
-	
-	drawplayer(nil, (self.x-xscroll+6/16)*16, self.y*16, scale, self.offsetX, self.offsetY, self.rotation, self.quadcenterX, self.quadcenterY, self.animationstate, self.underwater, self.ducking, self.hats, graphic, quad, self.pointingangle, self.shot, self.upsidedown, self.colors, self.lastportal, self.portal1color, self.portal2color, self.runframe, self.swimframe, self.climbframe, self.jumpframe, biggraphic, self.fireanimationtimer, replaychar[j])
-	love.graphics.setScissor()
-	replaychar[j] = char
-end
-
 function drawplayer(i, x, y, cscale,     offsetX, offsetY, rotation, quadcenterX, quadcenterY, animationstate, underwater, ducking, hats, graphic, quad, pointingangle, shot, upsidedown, colors, lastportal, portal1color, portal2color, runframe, swimframe, climbframe, jumpframe, biggraphic, fireanimationtimer, char)
 	x = x-6
 
@@ -3071,9 +2943,8 @@ function loadlevel(level)
 	lastreplaydraw = {}
 	replaydrawtable = {}
 	
+	replayi = 0
 	for i = 1, #replaydata do
-		replaytimer[i] = 0
-		replayi[i] = 1
 		replaychar[i] = characters.mario
 		lastreplaydraw[i] = 1
 		replaydrawtable[i] = {}
@@ -3479,14 +3350,13 @@ function loadlevel(level)
 end
 
 function ttlosetime()
-	tttime = tttime + 3
 	mariotime = mariotime - 7.5
-	livereplaytimer = livereplaytimer - 3
 	table.insert(scrollingtexts, scrollingtext:new("-3sec", objects["player"][1].x-0.7, objects["player"][1].y))
-
-	for j = 1, #replaydata do
-		replaytimer[j] = replaytimer[j] + 3
-	end
+	
+	local framesLost = 3*(1/targetdt)
+	
+	objects.player[1].replayFrames = objects.player[1].replayFrames + framesLost
+	objects.player[1].noChangeFrames = objects.player[1].noChangeFrames + framesLost
 end
 
 function ttentrydown()
@@ -5678,9 +5548,9 @@ function game_joystickpressed( joystick, button )
 			lastreplaydraw = {}
 			replaydrawtable = {}
 			
+			replayi = 0
+			
 			for i = 1, #replaydata do
-				replayi[i] = 1
-				replaytimer[i] = 0
 				replaychar[i] = characters.mariogrey
 				lastreplaydraw[i] = 1
 				replaydrawtable[i] = {}

@@ -297,9 +297,8 @@ function love.load(arg)
 		replayi = {}
 		replaychar = {}
 		local i = 1
-		while love.filesystem.exists("replay" .. i .. ".txt") do
-			print("loading " .. i)
-			replaydata[i] = JSON:decode(love.filesystem.read("replay" .. i .. ".txt"))
+		while love.filesystem.exists(i .. ".json") do
+			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
 			replaytimer[i] = 0
 			replayi[i] = 1
 			replaychar[i] = characters.mario
@@ -307,7 +306,7 @@ function love.load(arg)
 			i = i + 1
 		end
 	end
-	table.sort(replaydata, function(a, b) return a.finaltime < b.finaltime end)
+	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 	
 	local toload = 200
 	
@@ -505,6 +504,7 @@ function love.load(arg)
 	require "animationtrigger"
 	require "dialogbox"
 	require "itemanimation"
+	require "replay"
 	
 	require "enemy"
 	require "enemies"
@@ -1049,7 +1049,7 @@ function love.update(dt)
 			
 			print(stats_curr)
 			if replaydata[stats_curr] then
-				print(stats_curr, stats_currletter, replaydata[stats_curr].finaltime, replaydata[stats_curr].name)
+				print(stats_curr, stats_currletter, replaydata[stats_curr].frames, replaydata[stats_curr].name)
 			end--]]
 			
 			stats_currlettertimer = stats_currlettertimer + dt
@@ -1060,9 +1060,9 @@ function love.update(dt)
 			
 			
 			local string1, string2
-			if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].finaltime and replaydata[stats_prev].finaltime then
-				string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].finaltime, 2) .. " sec"
-				string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].finaltime, 2) .. " sec"
+			if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].frames and replaydata[stats_prev].frames then
+				string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames, 2) .. " sec"
+				string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames, 2) .. " sec"
 			else
 				string1 = ""
 				string2 = ""
@@ -1175,9 +1175,9 @@ function love.draw()
 		
 		
 		local string1, string2
-		if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].finaltime and replaydata[stats_prev].finaltime then
-			string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].finaltime, 2) .. " sec"
-			string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].finaltime, 2) .. " sec"
+		if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].frames and replaydata[stats_prev].frames then
+			string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames, 2) .. " sec"
+			string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames, 2) .. " sec"
 		else
 			string1 = ""
 			string2 = ""
@@ -1715,6 +1715,8 @@ function changescale(s, init)
 		end
 	end
 	
+	fullscreen = false
+	
 	if fullscreen then
 		love.graphics.setMode(desktopsize.width, desktopsize.height+22, false, vsync, fsaa)
 	else
@@ -2020,6 +2022,7 @@ function print_r (t, indent) --Not by me
 	end
 end
 
+print_r({pony= true})
 function love.focus(f)
 	--[[if not f and gamestate == "game"and not editormode and not levelfinished and not everyonedead  then
 		pausemenuopen = true

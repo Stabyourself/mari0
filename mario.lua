@@ -243,6 +243,12 @@ function mario:init(x, y, i, animation, size, t)
 		end
 	end
 	
+	self.lastx = false
+	self.lasty = false
+	self.lasta = false
+	self.noChangeFrames = 0
+	self.replayFrames = 0
+	
 	if not drawplayers then
 		self.drawable = false
 	end
@@ -254,53 +260,55 @@ function mario:adddata()
 		return
 	end
 	
-	--i, x, y, cscale,     offsetX, offsetY, rotation, quadcenterX, quadcenterY, animationstate, underwater, ducking, hats, graphic, quad, pointingangle, shot, upsidedown, colors, lastportal, portal1color, portal2color)
+	self.replayFrames = self.replayFrames + 1
 	
-	--local colors = {}
-	--for i = 1, #self.colors do
-	--	colors[i] = {unpack(self.colors[i])}
-	--end
+	local x = round(self.x*16)
+	local y = round(self.y*16)
 	
-	table.insert(livereplaydata[self.playernumber], {time=love.timer.getTime()-livereplaytimer})
+	--animationframe
+	local a = 0
+	if self.animationstate == "idle" then
+		a = 0
+	elseif self.animationstate == "running" or self.animationstate == "falling" then
+		a = self.runframe
+	elseif self.animationstate == "sliding" then
+		a = 4
+	elseif self.animationstate == "jumping" then
+		a = 5
+	end
 	
-	local data = {
-		x=self.x,
-		y=self.y,
-		offsetX=self.offsetX,
-		offsetY=self.offsetY,
-		rotation=self.rotation,
-		quadcenterX=self.quadcenterX,
-		quadcenterY=self.quadcenterY,
-		animationstate=self.animationstate,
-		underwater=self.underwater,
-		ducking=self.ducking,
-		--hats={unpack(self.hats)}, --!
-		pointingangle=self.pointingangle,
-		--shot=self.shot, --!
-		--upsidedown=self.upsidedown, --!
-		colors=self.colors, --!
-		--lastportal=self.lastportal, --!
-		--portal1color={unpack(self.portal1color)}, --!
-		--portal2color={unpack(self.portal2color)}, --!
-		runframe=self.runframe,
-		jumpframe=self.jumpframe,
-		climbframe=self.climbframe,
-		swimframe=self.swimframe,
-		fireanimationtimer=self.fireanimationtimer,
-		size=self.size,
-		drawable=self.drawable,
-		customscissor=self.customscissor,
-		world=marioworld,
-		level=mariolevel,
-		sublevel=mariosublevel,
-		animationdirection=self.animationdirection
-	}
+	if self.animationdirection == "left" then
+		a = a + 6
+	end
 	
-	for i, v in pairs(data) do
-		if livereplaystored[self.playernumber][i] == nil or livereplaystored[self.playernumber][i] ~= v then
-			livereplaydata[self.playernumber][#livereplaydata[self.playernumber]][i] = v
-			livereplaystored[self.playernumber][i] = v
+	if x == self.lastx and y == self.lasty and a == self.lasta then
+		self.noChangeFrames = self.noChangeFrames + 1
+	else
+		local frameData = {}
+		
+		if x ~= self.lastx then
+			frameData.x = x
 		end
+		
+		if y ~= self.lasty then
+			frameData.y = y
+		end
+		
+		if a ~= self.lasta then
+			frameData.a = a
+		end
+		
+		if self.noChangeFrames > 0 then
+			table.insert(livereplaydata[self.playernumber], self.noChangeFrames)
+			self.noChangeFrames = 0
+		end
+		
+		table.insert(livereplaydata[self.playernumber], frameData)
+		
+		self.lastx = x
+		self.lasty = y
+		self.lasta = a
+		
 	end
 end
 
@@ -1039,7 +1047,7 @@ function mario:update(dt)
 	end
 	
 	if self.controlsenabled then
-		--check for pipe pipe pipe²
+		--check for pipe pipe pipeï¿½
 		if inmap(math.floor(self.x+30/16), math.floor(self.y+self.height+20/16)) and downkey(self.playernumber) and self.falling == false and self.jumping == false then
 			local t2 = map[math.floor(self.x+30/16)][math.floor(self.y+self.height+20/16)][2]
 			if t2 and entityquads[t2] and entityquads[t2].t == "pipe" then
@@ -3522,23 +3530,19 @@ end
 
 function mario:savereplaydata()
 	local i = 1
-	while love.filesystem.exists("replay" .. i .. ".txt") do
+	while love.filesystem.exists(i .. ".json") do
 		i = i + 1
 	end
 	
-	local rep = {finaltime=ttfinaltime, name=ttname, data=livereplaydata[self.playernumber]}
+	if self.noChangeFrames > 0 then
+		table.insert(livereplaydata[self.playernumber], self.noChangeFrames)
+		self.noChangeFrames = 0
+	end
+	
+	local rep = {frames=self.replayFrames, name=ttname, data=livereplaydata[self.playernumber]}
 	
 	local s = JSON:encode(rep)
-	love.filesystem.write("replay" .. i .. ".txt", s)
-	
-	
-	for j = 2, #rep.data do
-		for k, v in pairs(rep.data[j-1]) do
-			if rep.data[j][k] == nil then
-				rep.data[j][k] = v
-			end
-		end
-	end
+	love.filesystem.write(i .. ".json", s)
 	
 	if #replaydata > 300 then
 		if ttrank <= 300 then
@@ -3550,17 +3554,11 @@ function mario:savereplaydata()
 	
 	table.insert(replaydata, rep)
 	
-	table.sort(replaydata, function(a, b) return a.finaltime < b.finaltime end)
+	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 	
 	replaydrawtable[#replaydata] = {}
-	replaytimer[#replaydata] = 0
-	replayi[#replaydata] = 0
 	lastreplaydraw[#replaydata] = 1
 	replaychar[#replaydata] = characters.mario
-	
-	for i = 1, #replaydata do
-		replayi[i] = 1
-	end
 end
 
 function mario:flag()	
@@ -3638,12 +3636,11 @@ function mario:axe()
 	end
 	
 	ttstate = "endanimation"
-	ttfinaltime = tttime
 	
 	--get ttrank
 	ttrank = #replaydata + 1
 	for i, v in ipairs(replaydata) do
-		if ttfinaltime < v.finaltime then
+		if self.replayFrames < v.frames then
 			ttrank = i
 			break
 		end
