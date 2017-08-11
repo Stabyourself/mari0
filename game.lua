@@ -207,10 +207,6 @@ function game_update(dt)
 	else
 		ttidletimer = 0
 	end
-	
-	for _, v in ipairs(replays) do
-		v:tick()
-	end
 
 	--------
 	--GAME--
@@ -396,6 +392,10 @@ function game_update(dt)
 			playmusic()
 			tttime = 0
 			objects["player"][1].controlsenabled = true
+
+			for _, v in ipairs(replays) do
+				v:reset()
+			end
 		end
 	end
 	
@@ -406,6 +406,12 @@ function game_update(dt)
 			mariolivecount = 1
 			love.audio.stop()
 			levelscreen_load("death")
+		end
+	end
+
+	if ttstate == "playing" or ttstate == "endanimation" or ttstate == "entry" then
+		for _, v in ipairs(replays) do
+			v:tick()
 		end
 	end
 	
@@ -420,9 +426,10 @@ function game_update(dt)
 	if replaysystem then
 		replayi = replayi + 1
 	end
+
+
 	
 	if ttstate == "demo" and #replaydata >= 1 then
-		
 		if replayi > replaydata[1].frames+600 then
 			game_load()
 			return

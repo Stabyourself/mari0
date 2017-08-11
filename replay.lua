@@ -1,5 +1,15 @@
 replay = class:new()
 
+replayImg = love.graphics.newImage("graphics/replay.png")
+
+replayQuads = {}
+
+for y = 1, 2 do
+	for x = 1, 6 do
+		table.insert(replayQuads, love.graphics.newQuad((x-1)*20, (y-1)*20, 20, 20, replayImg:getWidth(), replayImg:getHeight()))
+	end
+end
+
 --[[
     
 	if j == 1 and firstreplayblue then
@@ -11,7 +21,11 @@ function replay:init(replaydata)
     self.data = replaydata.data
 	self.frames = replaydata.frames
 	self.name = replaydata.name
-	
+
+	self:reset()
+end
+
+function replay:reset()
 	self.waited = 0
 	self.i = 0
 	
@@ -30,6 +44,7 @@ function replay:tick()
 		
 		if self.waited >= self.data[self.i] then
 			self:next()
+			self.waited = 0
 		end
 	end
 end
@@ -45,4 +60,5 @@ function replay:next()
 end
 
 function replay:draw()
+	love.graphics.drawq(replayImg, replayQuads[self.a+1], (self.x-5-xscroll*16)*scale, (self.y-13)*scale, 0, scale, scale)
 end
