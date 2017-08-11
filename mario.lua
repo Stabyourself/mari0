@@ -260,7 +260,9 @@ function mario:adddata()
 		return
 	end
 	
-	self.replayFrames = self.replayFrames + 1
+	if self.animation ~= "axe" then
+		self.replayFrames = self.replayFrames + 1
+	end
 	
 	local x = round(self.x*16)
 	local y = round(self.y*16)
@@ -3640,6 +3642,7 @@ function mario:axe()
 	--get ttrank
 	ttrank = #replaydata + 1
 	for i, v in ipairs(replaydata) do
+		print(self.replayFrames, v.frames)
 		if self.replayFrames < v.frames then
 			ttrank = i
 			break

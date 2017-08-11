@@ -32,19 +32,21 @@ function replay:reset()
 	self:tick()
 end
 
-function replay:tick()
-	if self.i == #self.data then
-		return
-	end
-	
-	if self.i == 0 or type(self.data[self.i]) == "table" then
-		self:next()
-	else
-		self.waited = self.waited + 1
+function replay:tick(amount)
+	for i = 1, (amount or 1) do
+		if self.i == #self.data then
+			return
+		end
 		
-		if self.waited >= self.data[self.i] then
+		if self.i == 0 or type(self.data[self.i]) == "table" then
 			self:next()
-			self.waited = 0
+		else
+			self.waited = self.waited + 1
+			
+			if self.waited >= self.data[self.i] then
+				self:next()
+				self.waited = 0
+			end
 		end
 	end
 end
