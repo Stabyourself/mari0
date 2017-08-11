@@ -423,7 +423,7 @@ function game_update(dt)
 
 	
 	if ttstate == "demo" and #replaydata >= 1 then
-		if replayi > replaydata[1].frames+600 then
+		if replayi == replaydata[1].frames+600 then
 			game_load()
 			return
 		end
@@ -786,8 +786,8 @@ function game_update(dt)
 	
 	if ttstate == "demo" then
 		for i = 1, #replaydata do
-			if replaydrawtable[i].x then
-				xscroll = math.max(xscroll, replaydrawtable[i].x-16)
+			if replays[1].x then
+				xscroll = math.max(xscroll, replays[1].x/16-16)
 			end
 		end
 	end
@@ -2940,15 +2940,7 @@ function loadlevel(level)
 	
 	ttidletimer = 0
 	
-	lastreplaydraw = {}
-	replaydrawtable = {}
-	
 	replayi = 0
-	for i = 1, #replaydata do
-		replaychar[i] = characters.mario
-		lastreplaydraw[i] = 1
-		replaydrawtable[i] = {}
-	end
 	
 	mariosizes[1] = 1
 
@@ -5557,16 +5549,9 @@ function game_joystickpressed( joystick, button )
 	if button == 4 or button == 1 or button == 2 then
 		if ttstate == "demo" then
 			ttstate = "idle"
-			lastreplaydraw = {}
-			replaydrawtable = {}
 			
 			replayi = 0
 			
-			for i = 1, #replaydata do
-				replaychar[i] = characters.mariogrey
-				lastreplaydraw[i] = 1
-				replaydrawtable[i] = {}
-			end
 			xscroll = 0
 			objects["player"][1].drawable = true
 			objects["enemy"] = {}

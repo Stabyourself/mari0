@@ -3557,10 +3557,6 @@ function mario:savereplaydata()
 	table.insert(replaydata, rep)
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
-	
-	replaydrawtable[#replaydata] = {}
-	lastreplaydraw[#replaydata] = 1
-	replaychar[#replaydata] = characters.mario
 end
 
 function mario:flag()	
