@@ -174,11 +174,6 @@ function game_load(suspended)
 		music:load(custommusic)
 	end--]]
 	
-	-- set up replays
-	replays = {}
-	for _, v in ipairs(replaydata) do
-		table.insert(replays, replay:new(v))
-	end
 	
 	--FINALLY LOAD THE DAMN LEVEL
 	levelscreen_load("initial")
@@ -206,10 +201,6 @@ function game_update(dt)
 		end
 	else
 		ttidletimer = 0
-	end
-	
-	for _, v in ipairs(replays) do
-		v:tick()
 	end
 
 	--------
@@ -394,18 +385,26 @@ function game_update(dt)
 			timetrialstarted = true
 			ttstate = "playing"
 			playmusic()
-			tttime = 0
 			objects["player"][1].controlsenabled = true
+
+			for _, v in ipairs(replays) do
+				v:reset()
+			end
 		end
 	end
 	
 	if ttstate == "playing" then
-		tttime = tttime + dt
-		if tttime >= 160 then
+		if objects.player[1].replayFrames >= 9600 then
 			mariolives[1] = 0
 			mariolivecount = 1
 			love.audio.stop()
 			levelscreen_load("death")
+		end
+	end
+
+	if ttstate == "demo" or ttstate == "playing" or ttstate == "endanimation" or ttstate == "entry" then
+		for _, v in ipairs(replays) do
+			v:tick()
 		end
 	end
 	
@@ -420,10 +419,11 @@ function game_update(dt)
 	if replaysystem then
 		replayi = replayi + 1
 	end
+
+
 	
 	if ttstate == "demo" and #replaydata >= 1 then
-		
-		if replayi > replaydata[1].frames+600 then
+		if replayi == replaydata[1].frames+600 then
 			game_load()
 			return
 		end
@@ -786,8 +786,8 @@ function game_update(dt)
 	
 	if ttstate == "demo" then
 		for i = 1, #replaydata do
-			if replaydrawtable[i].x then
-				xscroll = math.max(xscroll, replaydrawtable[i].x-16)
+			if replays[1].x then
+				xscroll = math.max(xscroll, replays[1].x/16-16)
 			end
 		end
 	end
@@ -1463,14 +1463,14 @@ function game_draw()
 				if levelfinishedmisc == 2 then
 					properprint("time:", math.floor(((mapwidth-12.5-xscroll)*16-1)*scale), (axey-2.5-yscroll)*16*scale) --say what
 					
-					local finaltime = objects.player[1].replayFrames/targetdt
-					
+					local finaltime = objects.player[1].replayFrames*targetdt
+
 					local t = ""
 					local m = math.floor(finaltime/60)
 					local s = math.floor(math.mod(finaltime, 60))
-					local micro = string.sub(math.floor(math.mod(finaltime, 1)*100)/100, 3)
+					local hundredths = string.sub(math.floor(math.mod(finaltime, 1)*100)/100, 3)
 					
-					t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. micro
+					t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(hundredths, 2)
 					
 					properprint(t, math.floor(((mapwidth-12.5-xscroll)*16-1)*scale), (axey-1.5-yscroll)*16*scale) --bummer.
 
@@ -1628,11 +1628,11 @@ function game_draw()
 		
 		if ttstate == "playing" or ttstate == "endanimation" then
 			local t = ""
-			local m = math.floor(tttime/60)
-			local s = math.floor(math.mod(tttime, 60))
-			local micro = string.sub(math.floor(math.mod(tttime, 1)*100)/100, 3)
+			local m = math.floor(objects.player[1].replayFrames/60)
+			local s = math.floor(math.mod(objects.player[1].replayFrames, 60))
+			local micro = string.sub(math.floor(math.mod(objects.player[1].replayFrames, 1)*100)/100, 3)
 			
-			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. micro
+			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(micro, 2)
 		
 			properprintbackground(t, 135*scale, 200*scale, true, {255, 255, 255}, scale*2)
 		end
@@ -2940,15 +2940,7 @@ function loadlevel(level)
 	
 	ttidletimer = 0
 	
-	lastreplaydraw = {}
-	replaydrawtable = {}
-	
 	replayi = 0
-	for i = 1, #replaydata do
-		replaychar[i] = characters.mario
-		lastreplaydraw[i] = 1
-		replaydrawtable[i] = {}
-	end
 	
 	mariosizes[1] = 1
 
@@ -3347,6 +3339,14 @@ function loadlevel(level)
 		objects["player"][1].controlsenabled = false
 		objects["player"][1].drawable = false
 	end
+
+	
+	-- set up replays
+	print("game load!")
+	replays = {}
+	for _, v in ipairs(replaydata) do
+		table.insert(replays, replay:new(v))
+	end
 end
 
 function ttlosetime()
@@ -3354,6 +3354,10 @@ function ttlosetime()
 	table.insert(scrollingtexts, scrollingtext:new("-3sec", objects["player"][1].x-0.7, objects["player"][1].y))
 	
 	local framesLost = 3*(1/targetdt)
+
+	for _, v in ipairs(replays) do
+		v:tick(framesLost)
+	end
 	
 	objects.player[1].replayFrames = objects.player[1].replayFrames + framesLost
 	objects.player[1].noChangeFrames = objects.player[1].noChangeFrames + framesLost
@@ -5545,16 +5549,9 @@ function game_joystickpressed( joystick, button )
 	if button == 4 or button == 1 or button == 2 then
 		if ttstate == "demo" then
 			ttstate = "idle"
-			lastreplaydraw = {}
-			replaydrawtable = {}
 			
 			replayi = 0
 			
-			for i = 1, #replaydata do
-				replaychar[i] = characters.mariogrey
-				lastreplaydraw[i] = 1
-				replaydrawtable[i] = {}
-			end
 			xscroll = 0
 			objects["player"][1].drawable = true
 			objects["enemy"] = {}

@@ -185,8 +185,11 @@ function love.load(arg)
 	stats_letterspeed = 0.1
 	stats_currletter = 1
 	stats_currlettertimer = 0
-	
-	ttalphabet = "abcdefghijklmnopqrstuvwxyz "
+	stats_randomlettertime = 0.01
+	stats_randomlettertimer = 0
+	stats_randomletter = " "
+
+	ttalphabet = "abcdefghijklmnopqrstuvwxyz0123456789 "
 	
 	--Get biggest screen size
 	
@@ -294,14 +297,12 @@ function love.load(arg)
 	
 	if replaysystem then
 		replaydata = {}
-		replaytimer = {}
 		replayi = {}
 		replaychar = {}
 		local i = 1
 		while love.filesystem.exists(i .. ".json") do
 			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
-			replaytimer[i] = 0
-			replayi[i] = 1
+			print(replaydata[i].frames)
 			replaychar[i] = characters.mario
 			
 			i = i + 1
@@ -1054,16 +1055,24 @@ function love.update(dt)
 			end--]]
 			
 			stats_currlettertimer = stats_currlettertimer + dt
-			if stats_currlettertimer > stats_letterspeed then
+			while stats_currlettertimer > stats_letterspeed do
 				stats_currlettertimer = stats_currlettertimer - stats_letterspeed
 				stats_currletter = stats_currletter + 1
+			end
+
+			stats_randomlettertimer = stats_randomlettertimer + dt
+			while stats_randomlettertimer > stats_randomlettertime do
+				stats_randomlettertimer = stats_randomlettertimer - stats_randomlettertime
+
+				local r = math.random(fontglyphs:len())
+				stats_randomletter = string.sub(fontglyphs, r, r)
 			end
 			
 			
 			local string1, string2
 			if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].frames and replaydata[stats_prev].frames then
-				string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames, 2) .. " sec"
-				string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames, 2) .. " sec"
+				string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames*targetdt, 2) .. " sec"
+				string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames*targetdt, 2) .. " sec"
 			else
 				string1 = ""
 				string2 = ""
@@ -1177,8 +1186,8 @@ function love.draw()
 		
 		local string1, string2
 		if replaydata and replaydata[stats_curr] and replaydata[stats_prev] and replaydata[stats_curr].frames and replaydata[stats_prev].frames then
-			string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames, 2) .. " sec"
-			string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames, 2) .. " sec"
+			string1 = stats_prev .. ": " .. replaydata[stats_prev].name .. " - " .. round(replaydata[stats_prev].frames*targetdt, 2) .. " sec"
+			string2 = stats_curr .. ": " .. replaydata[stats_curr].name .. " - " .. round(replaydata[stats_curr].frames*targetdt, 2) .. " sec"
 		else
 			string1 = ""
 			string2 = ""
@@ -1186,6 +1195,8 @@ function love.draw()
 		
 		local l = math.max(string1:len(), string2:len())
 		
+		local s = ""
+
 		for i = 1, l do
 			local l
 			if i < stats_currletter then
@@ -1193,15 +1204,17 @@ function love.draw()
 			elseif i > stats_currletter then
 				letter = string.sub(string1, i, i)
 			else
-				local r = math.random(fontglyphs:len())
-				letter = string.sub(fontglyphs, r, r)
+				letter = stats_randomletter
 			end
-			properprint(letter, 600+8*scale*i, 960)
+
+			s = s .. letter
 		end
+
+		properprint(s, 600+8*scale, 960)
 		
-			love.graphics.setColor(128, 128, 128)
+		love.graphics.setColor(128, 128, 128)
 		properprint("# of replays: " .. #replaydata, 1120, 1018)
-			love.graphics.setColor(255, 255, 255)
+		love.graphics.setColor(255, 255, 255)
 	end
 	
 	love.graphics.setColor(255, 255,255)
@@ -1716,9 +1729,7 @@ function changescale(s, init)
 		end
 	end
 	
-	fullscreen = false
-	
-	if fullscreen then
+	if fullscreen and false then
 		love.graphics.setMode(desktopsize.width, desktopsize.height+22, false, vsync, fsaa)
 	else
 		uispace = math.floor(width*16*scale/4)
