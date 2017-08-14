@@ -194,6 +194,14 @@ function game_update(dt)
 			if love.joystick.getAxis(1, 1) ~= 0 or love.joystick.getAxis(1, 2) ~= 0 then
 				ttidletimer = 0
 			end
+			
+			if love.joystick.getHat(1, 1) ~= "c" then
+				ttidletimer = 0
+			end
+			
+			if love.keyboard.isDown("d") then
+				ttidletimer = 0
+			end
 		end
 		
 		if ttidletimer >= 15 then
@@ -1627,10 +1635,11 @@ function game_draw()
 		love.graphics.setColor(255, 255, 255)
 		
 		if ttstate == "playing" or ttstate == "endanimation" then
+			local seconds = objects.player[1].replayFrames*targetdt
 			local t = ""
-			local m = math.floor(objects.player[1].replayFrames/60)
-			local s = math.floor(math.mod(objects.player[1].replayFrames, 60))
-			local micro = string.sub(math.floor(math.mod(objects.player[1].replayFrames, 1)*100)/100, 3)
+			local m = math.floor(seconds/60)
+			local s = math.floor(math.mod(seconds, 60))
+			local micro = string.sub(math.floor(math.mod(seconds, 1)*100)/100, 3)
 			
 			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(micro, 2)
 		

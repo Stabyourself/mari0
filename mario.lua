@@ -3558,10 +3558,6 @@ function mario:savereplaydata()
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 	
-	replaydrawtable[#replaydata] = {}
-	lastreplaydraw[#replaydata] = 1
-	replaychar[#replaydata] = characters.mario
-	
 	-- Upload replay data
 	r, e = http.request('http://timetrial.dev/api/replays',
 		"name=" .. ttname .. "&" ..
