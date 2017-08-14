@@ -175,6 +175,7 @@ function love.load(arg)
 	JSON = require "JSON"
 	require "notice"
 	require "sasorgasm"
+	http = require("socket.http")
 	
 	
 	stats_prev = 1

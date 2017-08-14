@@ -3559,6 +3559,16 @@ function mario:savereplaydata()
 	replaydrawtable[#replaydata] = {}
 	lastreplaydraw[#replaydata] = 1
 	replaychar[#replaydata] = characters.mario
+	
+	-- Upload replay data
+	r, e = http.request('http://timetrial.dev/api/replays',
+		"name=" .. ttname .. "&" ..
+		"frames=" .. self.replayFrames .. "&" ..
+		"data=" .. JSON:encode(livereplaydata[self.playernumber]) .. "&" ..
+		"event=" .. "GC2017"
+	)
+	
+	print(r, e)
 end
 
 function mario:flag()	
