@@ -249,6 +249,10 @@ function mario:init(x, y, i, animation, size, t)
 	self.noChangeFrames = 0
 	self.replayFrames = 0
 	
+	
+	self.nameEntered = false
+	self.endReached = false
+	
 	if not drawplayers then
 		self.drawable = false
 	end
@@ -670,6 +674,11 @@ function mario:update(dt)
 			self.speedx = 0
 			self:adddata()
 			self.nomorereplays = true
+			self:replayEndReached()
+				
+			if ttrank <= 10 then
+				highscoreentry()
+			end
 		end
 		
 		if levelfinishedmisc2 == 1 then
@@ -679,16 +688,11 @@ function mario:update(dt)
 			
 			if self.animationtimer - dt < castleanimationtextsecondline and self.animationtimer >= castleanimationtextsecondline then
 				levelfinishedmisc = 2
-				if ttrank <= 10 then
-					highscoreentry()
-				end
 			end
 		
 			if self.animationtimer - dt < castleanimationnextlevel and self.animationtimer >= castleanimationnextlevel then
-				if ttrank <= 10 then
-					
-				else
-					self:savereplaydata()
+				
+				if ttrank > 10 then -- No name entry for you, SLOWPOKE
 					nextlevel()
 				end
 			end
@@ -3530,7 +3534,28 @@ function mario:pipe(x, y, dir, i)
 	self:setquad()
 end
 
+function mario:replayNameEntered()
+	self.nameEntered = true
+	
+	print(1)
+	
+	if self.endReached then
+		self:savereplaydata()
+	end
+end
+
+function mario:replayEndReached()
+	self.endReached = true
+	
+	print(2)
+	
+	if self.nameEntered then
+		self:savereplaydata()
+	end
+end
+
 function mario:savereplaydata()
+	print("Heeey look at me saving replay data!")
 	local i = 1
 	while love.filesystem.exists(i .. ".json") do
 		i = i + 1

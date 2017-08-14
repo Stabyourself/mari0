@@ -5543,7 +5543,7 @@ function game_joystickpressed( joystick, button )
 			playsound("coin")
 			if #ttname >= 2 then
 				ttname = ttname .. string.sub(ttalphabet, ttcurrentletter, ttcurrentletter)
-				objects["player"][1]:savereplaydata()
+				objects["player"][1]:replayNameEntered()
 				ttrestarttimer = 1
 			else
 				ttname = ttname .. string.sub(ttalphabet, ttcurrentletter, ttcurrentletter)
