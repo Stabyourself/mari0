@@ -3582,20 +3582,18 @@ function mario:savereplaydata()
 	table.insert(replaydata, rep)
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
+
+	local short = shortStys[i]
 	
 	local body = "name=" .. ttname .. "&" ..
 		"frames=" .. self.replayFrames .. "&" ..
 		"data=" .. JSON:encode(livereplaydata[self.playernumber]) .. "&" ..
 		"event=" .. "GC2017" .. "&" ..
 		"pass=" .. API_PASS .. "&" .. 
-		"short=" .. "ABCD"
+		"short=" .. short
 
 	-- Upload replay data
 	r, e = http.request('http://timetrial.dev/api/replays', body)
-	
-	print(body)
-
-	print(r, e)
 end
 
 function mario:flag()	

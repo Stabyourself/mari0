@@ -273,13 +273,18 @@ function love.load(arg)
 	
 	if mkstation then
 		width = 26.25
-		fullscreen = false --true
-		scale = 2 --4
+		fullscreen = true
+		scale = 4
 	elseif arcade then
 		width = 24
 		scale = 5
 	end
 	
+	if TESTING then
+		scale = 2
+		fullscreen = false
+	end
+
 	--Calculate relative scaling factor
 	touchfrominsidescaling = math.min(desktopsize.width/(width*16), desktopsize.height/(height*16))
 	touchfrominsidemissing = desktopsize.height-height*16*touchfrominsidescaling
@@ -308,6 +313,8 @@ function love.load(arg)
 			
 			i = i + 1
 		end
+
+		shortStys = JSON:decode(love.filesystem.read("short_stys.json"))
 	end
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 	
