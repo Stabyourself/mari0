@@ -175,6 +175,7 @@ function love.load(arg)
 	JSON = require "JSON"
 	require "notice"
 	require "sasorgasm"
+	require "env"
 	http = require("socket.http")
 	
 	
@@ -272,8 +273,8 @@ function love.load(arg)
 	
 	if mkstation then
 		width = 26.25
-		fullscreen = true
-		scale = 4
+		fullscreen = false --true
+		scale = 2 --4
 	elseif arcade then
 		width = 24
 		scale = 5
