@@ -325,6 +325,11 @@ function mario:update(dt)
 			self:adddata()
 			livereplaydelay[self.playernumber] = livereplaydelay[self.playernumber] - 1/60
 		end
+
+		if self.savereplaydatanextframe then
+			self.savereplaydatanextframe = false
+			self:savereplaydata()
+		end
 	end
 	
 	self.passivemoved = false
@@ -3537,8 +3542,6 @@ end
 function mario:replayNameEntered()
 	self.nameEntered = true
 	
-	print(1)
-	
 	if self.endReached then
 		self:savereplaydata()
 	end
@@ -3547,10 +3550,8 @@ end
 function mario:replayEndReached()
 	self.endReached = true
 	
-	print(2)
-	
 	if self.nameEntered then
-		self:savereplaydata()
+		self.savereplaydatanextframe = true
 	end
 end
 
@@ -3583,7 +3584,7 @@ function mario:savereplaydata()
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 
-	local short = shortStys[i]
+	local short = shortStys[i] or ""
 	
 	local body = "name=" .. ttname .. "&" ..
 		"frames=" .. self.replayFrames .. "&" ..
@@ -3594,6 +3595,26 @@ function mario:savereplaydata()
 
 	-- Upload replay data
 	r, e = http.request('http://timetrial.dev/api/replays', body)
+
+	-- Generate QR code
+	ttlink = QR_LINK:gsub("%[short%]", short)
+	local ok, qr = qrencode.qrcode(ttlink)
+	
+	ttqrimgdata = love.image.newImageData(#qr[1]+2, #qr+2)
+
+	for y = 0, #qr+1 do
+		for x = 0, #qr[1]+1 do
+			local c = 255
+
+			if qr[x] and qr[x][y] and qr[x][y] > 0 then
+				c = 0
+			end
+
+			ttqrimgdata:setPixel(x, y, c, c, c, 255)
+		end
+	end
+
+	ttqrimg = love.graphics.newImage(ttqrimgdata)
 end
 
 function mario:flag()	

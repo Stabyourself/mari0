@@ -1,2 +1,3 @@
 API_PASS = ""
-TESTING = true
+TESTING = false
+QR_LINK = "stys.dev/[short]"

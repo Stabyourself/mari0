@@ -2695,6 +2695,10 @@ function game_draw()
 			end
 		end
 	end
+
+	if ttqrimg then
+		love.graphics.draw(ttqrimg, 0, 0, 0, scale*2, scale*2)
+	end
 end
 
 function drawplayer(i, x, y, cscale,     offsetX, offsetY, rotation, quadcenterX, quadcenterY, animationstate, underwater, ducking, hats, graphic, quad, pointingangle, shot, upsidedown, colors, lastportal, portal1color, portal2color, runframe, swimframe, climbframe, jumpframe, biggraphic, fireanimationtimer, char)

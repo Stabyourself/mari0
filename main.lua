@@ -176,6 +176,7 @@ function love.load(arg)
 	require "notice"
 	require "sasorgasm"
 	require "env"
+	qrencode = require "qr/qrencode"
 	http = require("socket.http")
 	
 	
