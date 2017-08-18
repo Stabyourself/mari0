@@ -177,6 +177,7 @@ function game_load(suspended)
 	replaySB = love.graphics.newSpriteBatch(replayImg, 10000, "stream")
 	
 	--FINALLY LOAD THE DAMN LEVEL
+	ttlink = "<no replay>"
 	levelscreen_load("initial")
 end
 
@@ -184,24 +185,28 @@ function game_update(dt)
 	dt = dt * speed
 	gdt = dt
 	
-	if uploadReplaysNext then
-		uploadReplaysNext = false
-		processUploads()
+	if uploadReplaysNext and uploadReplaysNext > 0 then
+		uploadReplaysNext = uploadReplaysNext - 1
+		if uploadReplaysNext == 0 then
+			processUploads()
+		end
 	end
+	
+	replaycloud.update(dt)
 	
 	if ttstate == "playing" then
 		ttidletimer = ttidletimer + dt
 	
-		for i = 1, 4 do
+		for i = 1, 1 do
 			if love.joystick.isDown(1, i) then
 				ttidletimer = 0
 			end
 			
-			if love.joystick.getAxis(1, 1) ~= 0 or love.joystick.getAxis(1, 2) ~= 0 then
+			if (love.joystick.getAxis(1, 1) and love.joystick.getAxis(1, 1) ~= 0) or (love.joystick.getAxis(1, 2) and love.joystick.getAxis(1, 2) ~= 0) then
 				ttidletimer = 0
 			end
 			
-			if love.joystick.getHat(1, 1) ~= "c" then
+			if love.joystick.getHat(1, 1) ~= "" and love.joystick.getHat(1, 1) ~= "" then
 				ttidletimer = 0
 			end
 			
@@ -1641,7 +1646,6 @@ function game_draw()
 					num = num + 1
 				end
 			end
-			print(num)
 			
 			love.graphics.draw(replaySB, -xscroll*scale*16, 0)
 		end
@@ -1653,7 +1657,7 @@ function game_draw()
 			local t = ""
 			local m = math.floor(seconds/60)
 			local s = math.floor(math.mod(seconds, 60))
-			local micro = string.sub(round(math.mod(seconds, 1), 2), 3)
+			local micro = round(math.mod(seconds, 1), 2)*100
 			
 			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(micro, 2)
 		
@@ -2310,7 +2314,7 @@ function game_draw()
 	
 	love.graphics.setColor(255, 255, 255, 255)
 	if ttstate == "idle" then
-		love.graphics.draw(instrimg, 840-instrimg:getWidth()/2, 50)
+		love.graphics.draw(instrimg, (width*16*scale-instrimg:getWidth()*(scale/4))/2, 12.5*scale, 0, scale/4, scale/4)
 	elseif ttstate == "countdown" then
 		properprintbackground(math.ceil(ttcountdown), 140*scale, 60*scale, true, {255, 255, 255}, scale*13)
 	
@@ -2318,7 +2322,7 @@ function game_draw()
 	
 	if ttstate == "idle" or ttstate == "demo" then
 		if arcadestartblink < arcadeblinkrate*0.8 then
-			properprintbackground("press start", 170*scale, 190*scale, 2*scale)
+			properprintbackground("press start", 170*scale, 204*scale, 2*scale)
 		end
 	end
 	
@@ -2331,7 +2335,7 @@ function game_draw()
 		local s = ttname
 		
 		if #s < 3 then
-			if arcadestartblink < arcadeblinkrate*0.5 then			
+			if arcadestartblink < arcadeblinkrate*0.5 or uploadReplaysNext then			
 				s = s .. string.sub(ttalphabet, ttcurrentletter, ttcurrentletter)
 			else
 				s = s .. " "
@@ -2710,9 +2714,7 @@ function game_draw()
 		end
 	end
 
-	if ttqrimg then
-		love.graphics.draw(ttqrimg, 0, 0, 0, scale*2, scale*2)
-	end
+	replaycloud.draw()
 end
 
 function drawplayer(i, x, y, cscale,     offsetX, offsetY, rotation, quadcenterX, quadcenterY, animationstate, underwater, ducking, hats, graphic, quad, pointingangle, shot, upsidedown, colors, lastportal, portal1color, portal2color, runframe, swimframe, climbframe, jumpframe, biggraphic, fireanimationtimer, char)
@@ -2951,6 +2953,7 @@ function reachedx(currentx)
 end
 
 function loadlevel(level)
+			replaycloudtargetpos = 1
 	collectgarbage("collect")
 	love.audio.stop()
 	animationsystem_load()
@@ -5579,6 +5582,7 @@ function game_joystickpressed( joystick, button )
 	if button == 4 or button == 1 or button == 2 then
 		if ttstate == "demo" then
 			ttstate = "idle"
+			replaycloudtargetpos = 0
 			
 			replayi = 0
 			

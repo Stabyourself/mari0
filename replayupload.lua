@@ -12,12 +12,10 @@ function addToUpload(short, name, json, frames)
 end
 
 function processUploads()
-    local toRemove = {}
+    local delete = {}
     print("Processing " .. #toUpload .. " uploads.")
     
-    for _, v in ipairs(toUpload) do
-        print(v.name, v.frames, type(v.json), API_PASS, v.short)
-        
+    for i, v in ipairs(toUpload) do
         local body = "name=" .. v.name .. "&" ..
             "frames=" .. v.frames .. "&" ..
             "data=" .. v.json .. "&" ..
@@ -27,13 +25,11 @@ function processUploads()
 
         -- Upload replay data
         if http.request('http://timetrial.dev/api/replays', body) then
-            table.insert(toRemove, i)
+            table.insert(delete, i)
         else
             break
         end
     end
-    
-	local delete = {}
 	
 	table.sort(delete, function(a,b) return a>b end)
 	

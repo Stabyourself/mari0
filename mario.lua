@@ -681,6 +681,7 @@ function mario:update(dt)
 			self.nomorereplays = true
 			self:replayEndReached()
 				
+				print(ttrank)
 			if ttrank <= 10 then
 				highscoreentry()
 			else
@@ -3558,12 +3559,6 @@ function mario:replayEndReached()
 end
 
 function mario:savereplaydata()
-	print("Heeey look at me saving replay data!")
-	local i = 1
-	while love.filesystem.exists(i .. ".json") do
-		i = i + 1
-	end
-	
 	if self.noChangeFrames > 0 then
 		table.insert(livereplaydata[self.playernumber], self.noChangeFrames)
 		self.noChangeFrames = 0
@@ -3572,11 +3567,11 @@ function mario:savereplaydata()
 	local rep = {frames=self.replayFrames, name=ttname, data=livereplaydata[self.playernumber]}
 	
 	local s = JSON:encode(rep)
-	love.filesystem.write(i .. ".json", s)
+	love.filesystem.write(tti .. ".json", s)
 	
-	if #replaydata > 300 then
-		if ttrank <= 300 then
-			replaydata[301].data = nil
+	if #replaydata > MAXREPLAYS then
+		if ttrank <= MAXREPLAYS then
+			replaydata[MAXREPLAYS+1].data = nil
 		else
 			rep.data = nil
 		end
@@ -3586,33 +3581,10 @@ function mario:savereplaydata()
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 
-	local short = shortStys[i] or ""
 	local json = JSON:encode(livereplaydata[self.playernumber])
 	
-	addToUpload(short, ttname, json, self.replayFrames)
-	uploadReplaysNext = true
-
-	-- Generate QR code
-	ttlink = QR_LINK:gsub("%[short%]", short)
-	local ok, qr = qrencode.qrcode(ttlink)
-	
-	local safeZone = 4
-	
-	ttqrimgdata = love.image.newImageData(#qr[1]+safeZone*2, #qr+safeZone*2)
-
-	for y = 1, #qr+safeZone*2 do
-		for x = 1, #qr[1]+safeZone*2 do
-			local c = 255
-
-			if qr[x-safeZone] and qr[x-safeZone][y-safeZone] and qr[x-safeZone][y-safeZone] > 0 then
-				c = 0
-			end
-
-			ttqrimgdata:setPixel((x-1), (y-1), c, c, c, 255)
-		end
-	end
-
-	ttqrimg = love.graphics.newImage(ttqrimgdata)
+	addToUpload(ttshort, ttname, json, self.replayFrames)
+	uploadReplaysNext = 2
 end
 
 function mario:flag()	
@@ -3677,6 +3649,19 @@ function mario:flag()
 end
 
 function mario:axe()
+	tti = 1
+	while love.filesystem.exists(tti .. ".json") do
+		tti = tti + 1
+	end
+	
+	-- Generate QR code
+	ttshort = shortStys[tti] or ""
+	ttlink = QR_LINK:gsub("%[short%]", ttshort)
+
+	replaycloud.makeqr(ttlink)
+	
+	replaycloudtargetpos = 1
+
 	if levelfinished then
 		return
 	end

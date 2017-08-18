@@ -49,29 +49,32 @@ function love.run()
 
         -- Call update and draw
         love.update(dt) -- will pass 0 if love.timer is disabled
-		love.graphics.clear()
 		
-		--Fullscreen hack
-		if not mkstation and fullscreen and gamestate ~= "intro" then
-			completecanvas:clear()
-			love.graphics.setScissor()
-			completecanvas:renderTo(love.draw)
-			love.graphics.setScissor()
-			if fullscreenmode == "full" then
-				love.graphics.draw(completecanvas, 0, 0, 0, desktopsize.width/(width*16*scale), desktopsize.height/(height*16*scale))
+		if drawframe then
+			love.graphics.clear()
+			
+			--Fullscreen hack
+			if not mkstation and fullscreen and gamestate ~= "intro" then
+				completecanvas:clear()
+				love.graphics.setScissor()
+				completecanvas:renderTo(love.draw)
+				love.graphics.setScissor()
+				if fullscreenmode == "full" then
+					love.graphics.draw(completecanvas, 0, 0, 0, desktopsize.width/(width*16*scale), desktopsize.height/(height*16*scale))
+				else
+					love.graphics.draw(completecanvas, 0, touchfrominsidemissing/2, 0, touchfrominsidescaling/scale, touchfrominsidescaling/scale)
+					love.graphics.setColor(0, 0, 0)
+					love.graphics.rectangle("fill", 0, 0, desktopsize.width, touchfrominsidemissing/2)
+					love.graphics.rectangle("fill", 0, desktopsize.height-touchfrominsidemissing/2, desktopsize.width, touchfrominsidemissing/2)
+					love.graphics.setColor(255, 255, 255, 255)
+				end
 			else
-				love.graphics.draw(completecanvas, 0, touchfrominsidemissing/2, 0, touchfrominsidescaling/scale, touchfrominsidescaling/scale)
-				love.graphics.setColor(0, 0, 0)
-				love.graphics.rectangle("fill", 0, 0, desktopsize.width, touchfrominsidemissing/2)
-				love.graphics.rectangle("fill", 0, desktopsize.height-touchfrominsidemissing/2, desktopsize.width, touchfrominsidemissing/2)
-				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.setScissor()
+				love.draw()
 			end
-		else
-			love.graphics.setScissor()
-			love.draw()
+			
+			love.graphics.present()
 		end
-		
-		love.graphics.present()
 		love.timer.sleep(0.001)
     end
 end
@@ -300,38 +303,6 @@ function love.load(arg)
 	require "characterloader"
 	add("Characterloader")
 	
-	
-	replaysystem = true
-	
-	if replaysystem then
-		replaydata = {}
-		replayi = {}
-		replaychar = {}
-		local i = 1
-		while love.filesystem.exists(i .. ".json") do
-			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
-			print(replaydata[i].frames)
-			replaychar[i] = characters.mario
-			
-			i = i + 1
-		end
-
-		shortStys = JSON:decode(love.filesystem.read("short_stys.json"))
-	end
-	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
-	
-	local toload = 200
-	
-	
-	for i = #replaydata, 1, -1 do
-		if (#replaydata > toload*2 and (math.mod(i+1, math.floor(#replaydata/toload+.5)) ~= 0)) or (#replaydata <= toload*2 and (math.mod(i+1, math.floor(#replaydata/(#replaydata-toload)+.5)) == 0)) then
-			if #replaydata > toload and i > 10 then
-				replaydata[i].data = nil
-				print("REMOVING #" .. i)
-			end
-		end
-	end
-	
 	for i = 1, #mariocharacter do
 		if not characters[mariocharacter[i]] then
 			mariocharacter[i] = "mario"
@@ -520,11 +491,50 @@ function love.load(arg)
 	
 	require "enemy"
 	require "enemies"
+	
+	require "replaycloud"
+	replaycloud.makeqr("stys.eu/asd") -- deleteme
+	
 	add("Requires")
+	
 	
 	http = require("socket.http")
 	http.PORT = 55555
 	http.TIMEOUT = 1
+	
+	
+	
+	replaysystem = true
+	
+	if replaysystem then
+		replaydata = {}
+		replayi = {}
+		replaychar = {}
+		local i = 1
+		while love.filesystem.exists(i .. ".json") do
+			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
+			print(replaydata[i].frames)
+			replaychar[i] = characters.mario
+			
+			i = i + 1
+		end
+
+		shortStys = JSON:decode(love.filesystem.read("short_stys.json"))
+	end
+	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
+	
+	local toload = MAXREPLAYS
+	
+	
+	for i = #replaydata, 1, -1 do
+		if (#replaydata > toload*2 and (math.mod(i+1, math.floor(#replaydata/toload+.5)) ~= 0)) or (#replaydata <= toload*2 and (math.mod(i+1, math.floor(#replaydata/(#replaydata-toload)+.5)) == 0)) then
+			if #replaydata > toload and i > 10 then
+				replaydata[i].data = nil
+				print("REMOVING #" .. i)
+			end
+		end
+	end
+	
 	
 	updatenotification = false
 	if getupdate() then
@@ -1062,8 +1072,11 @@ function love.update(dt)
 		return
 	end
 	
+	drawframe = false
+	
 	while steptimer >= targetdt do
 		steptimer = steptimer - targetdt
+		drawframe = true
 		
 		
 		if mkstation then --Old school stats display for gamescom

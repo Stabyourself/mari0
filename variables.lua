@@ -5,6 +5,8 @@ gellifetime = 2
 bulletbilllifetime = 20
 playertypelist = {"portal", "minecraft", "gelcannon"}
 
+MAXREPLAYS = 100000
+
 spawnarea = {1, 1, 1, 1}
 
 joystickdeadzone = 0.2
