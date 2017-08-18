@@ -174,6 +174,7 @@ function game_load(suspended)
 		music:load(custommusic)
 	end--]]
 	
+	replaySB = love.graphics.newSpriteBatch(replayImg, 10000, "stream")
 	
 	--FINALLY LOAD THE DAMN LEVEL
 	levelscreen_load("initial")
@@ -1632,9 +1633,17 @@ function game_draw()
 		--replays
 		love.graphics.setColor(255, 255, 255)
 		if replaysystem and drawreplays and (timetrialstarted or ttstate == "demo") then
+			replaySB:clear()
+			
+			local num = 0
 			for _, v in ipairs(replays) do
-				v:draw()
+				if v:draw(replaySB) then
+					num = num + 1
+				end
 			end
+			print(num)
+			
+			love.graphics.draw(replaySB, -xscroll*scale*16, 0)
 		end
 		
 		love.graphics.setColor(255, 255, 255)
@@ -3375,7 +3384,9 @@ function ttlosetime()
 	local framesLost = 3*(1/targetdt)
 
 	for _, v in ipairs(replays) do
-		v:tick(framesLost)
+		for i = 1, framesLost do
+			v:tick()
+		end
 	end
 	
 	objects.player[1].replayFrames = objects.player[1].replayFrames + framesLost

@@ -584,6 +584,16 @@ function love.load(arg)
 	instrimg = love.graphics.newImage("graphics/speedrunmari0-instructions.png")
 	tttitle = love.graphics.newImage("graphics/timetrialtitlescreen.png")
 	
+	replayImg = love.graphics.newImage("graphics/replay.png")
+
+	replayQuads = {}
+
+	for y = 1, 4 do
+		for x = 1, 6 do
+			table.insert(replayQuads, love.graphics.newQuad((x-1)*20, (y-1)*20, 20, 20, replayImg:getWidth(), replayImg:getHeight()))
+		end
+	end
+	
 	menuselection = love.graphics.newImage("graphics/menuselect.png")
 	mappackback = love.graphics.newImage("graphics/mappackback.png")
 	mappacknoicon = love.graphics.newImage("graphics/mappacknoicon.png")
@@ -1191,7 +1201,6 @@ function love.draw()
 		end
 		love.graphics.setColor(255, 255,255)
 		properprint("highscore #", 70*scale, 240*scale)
-		--love.graphics.draw(mari0imgsmall, gamewidth/2-380, 896, 0, 1, 1, mari0imgsmall:getWidth()/2, 0)
 		
 		
 		local string1, string2
