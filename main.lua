@@ -1183,13 +1183,13 @@ function love.draw()
 	
 	if mkstation then
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("fill", 0, 896, 1680, 154)
+		love.graphics.rectangle("fill", 0*scale, 224*scale, 420*scale, 38.5*scale)
 		if ttstate == "demo" then
 			love.graphics.setColor(128, 128, 128)
-			properprint("play and your replay will be saved and shown!", 30*scale, 920)
+			properprint("play and your replay will be saved and shown!", 30*scale, 230*scale)
 		end
 		love.graphics.setColor(255, 255,255)
-		properprint("highscore #", 280, 960)
+		properprint("highscore #", 70*scale, 240*scale)
 		--love.graphics.draw(mari0imgsmall, gamewidth/2-380, 896, 0, 1, 1, mari0imgsmall:getWidth()/2, 0)
 		
 		
@@ -1219,10 +1219,10 @@ function love.draw()
 			s = s .. letter
 		end
 
-		properprint(s, 600+8*scale, 960)
+		properprint(s, 158*scale, 240*scale)
 		
 		love.graphics.setColor(128, 128, 128)
-		properprint("# of replays: " .. #replaydata, 1120, 1018)
+		properprint("# of replays: " .. #replaydata, 280*scale, 254.5*scale)
 		love.graphics.setColor(255, 255, 255)
 	end
 	
@@ -1741,8 +1741,14 @@ function changescale(s, init)
 	if fullscreen and false then
 		love.graphics.setMode(desktopsize.width, desktopsize.height+22, false, vsync, fsaa)
 	else
+		local useheight = height*16*scale 
+		
+		if TESTING then
+			useheight = useheight + 38.5*scale
+		end
+		
 		uispace = math.floor(width*16*scale/4)
-		love.graphics.setMode(width*16*scale, height*16*scale, false, vsync, fsaa) --27x14 blocks (15 blocks actual height)
+		love.graphics.setMode(width*16*scale, useheight, false, vsync, fsaa) --27x14 blocks (15 blocks actual height)
 	end
 	
 	completecanvas = love.graphics.newCanvas()
