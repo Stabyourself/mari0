@@ -177,7 +177,6 @@ function game_load(suspended)
 	replaySB = love.graphics.newSpriteBatch(replayImg, 10000, "stream")
 	
 	--FINALLY LOAD THE DAMN LEVEL
-	ttlink = "<no replay>"
 	levelscreen_load("initial")
 end
 

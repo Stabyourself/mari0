@@ -16,6 +16,8 @@ function processUploads()
     print("Processing " .. #toUpload .. " uploads.")
     
     for i, v in ipairs(toUpload) do
+        print(v.name, v.frames, type(v.json), API_PASS, v.short)
+        
         local body = "name=" .. v.name .. "&" ..
             "frames=" .. v.frames .. "&" ..
             "data=" .. v.json .. "&" ..

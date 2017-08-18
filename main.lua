@@ -1029,6 +1029,8 @@ function love.load(arg)
 	
 	musicname = "overworld.ogg"
 	
+	ttlink = "<no replay>"
+	
 	add("Sounds")
 	shaders:init()
 	add("Shaders init")
