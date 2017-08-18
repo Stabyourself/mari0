@@ -1476,7 +1476,7 @@ function game_draw()
 					local t = ""
 					local m = math.floor(finaltime/60)
 					local s = math.floor(math.mod(finaltime, 60))
-					local hundredths = string.sub(math.floor(math.mod(finaltime, 1)*100)/100, 3)
+					local hundredths = string.sub(round(math.mod(finaltime, 1), 2), 3)
 					
 					t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(hundredths, 2)
 					
@@ -1639,7 +1639,7 @@ function game_draw()
 			local t = ""
 			local m = math.floor(seconds/60)
 			local s = math.floor(math.mod(seconds, 60))
-			local micro = string.sub(math.floor(math.mod(seconds, 1)*100)/100, 3)
+			local micro = string.sub(round(math.mod(seconds, 1), 2), 3)
 			
 			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(micro, 2)
 		
