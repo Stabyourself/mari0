@@ -183,6 +183,11 @@ function game_update(dt)
 	dt = dt * speed
 	gdt = dt
 	
+	if uploadReplaysNext then
+		uploadReplaysNext = false
+		processUploads()
+	end
+	
 	if ttstate == "playing" then
 		ttidletimer = ttidletimer + dt
 	
@@ -3146,6 +3151,7 @@ function loadlevel(level)
 	custombackground = false
 	mariotimelimit = 400
 	spriteset = 1
+	uploadReplaysNext = false
 	
 	--LOAD THE MAP
 	if loadmap(level) == false then --make one up

@@ -683,6 +683,8 @@ function mario:update(dt)
 				
 			if ttrank <= 10 then
 				highscoreentry()
+			else
+				self:replayNameEntered()
 			end
 		end
 		
@@ -3585,32 +3587,28 @@ function mario:savereplaydata()
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 
 	local short = shortStys[i] or ""
+	local json = JSON:encode(livereplaydata[self.playernumber])
 	
-	local body = "name=" .. ttname .. "&" ..
-		"frames=" .. self.replayFrames .. "&" ..
-		"data=" .. JSON:encode(livereplaydata[self.playernumber]) .. "&" ..
-		"event=" .. "GC2017" .. "&" ..
-		"pass=" .. API_PASS .. "&" .. 
-		"short=" .. short
-
-	-- Upload replay data
-	r, e = http.request('http://timetrial.dev/api/replays', body)
+	addToUpload(short, ttname, json, self.replayFrames)
+	uploadReplaysNext = true
 
 	-- Generate QR code
 	ttlink = QR_LINK:gsub("%[short%]", short)
 	local ok, qr = qrencode.qrcode(ttlink)
 	
-	ttqrimgdata = love.image.newImageData(#qr[1]+2, #qr+2)
+	local safeZone = 4
+	
+	ttqrimgdata = love.image.newImageData(#qr[1]+safeZone*2, #qr+safeZone*2)
 
-	for y = 0, #qr+1 do
-		for x = 0, #qr[1]+1 do
+	for y = 1, #qr+safeZone*2 do
+		for x = 1, #qr[1]+safeZone*2 do
 			local c = 255
 
-			if qr[x] and qr[x][y] and qr[x][y] > 0 then
+			if qr[x-safeZone] and qr[x-safeZone][y-safeZone] and qr[x-safeZone][y-safeZone] > 0 then
 				c = 0
 			end
 
-			ttqrimgdata:setPixel(x, y, c, c, c, 255)
+			ttqrimgdata:setPixel((x-1), (y-1), c, c, c, 255)
 		end
 	end
 
