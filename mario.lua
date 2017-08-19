@@ -1952,6 +1952,7 @@ function mario:jump(force)
 						end
 					end
 					
+					
 					local force = -jumpforce - (math.abs(self.speedx) / maxrunspeed)*jumpforceadd
 					force = math.max(-jumpforce - jumpforceadd, force)
 					

@@ -405,7 +405,10 @@ function game_update(dt)
 			playmusic()
 			objects["player"][1].controlsenabled = true
 			
+			print(love.keyboard.isDown(controls[1]["jump"][1]))
+			
 			if (controls[1]["jump"][1] == "joy" and love.joystick.isDown(1, tonumber(controls[1]["jump"][4]))) or (love.keyboard.isDown(controls[1]["jump"][1])) then
+				objects["player"][1].falling = false
 				objects["player"][1]:jump()
 			end
 
@@ -2343,7 +2346,7 @@ function game_draw()
 		local s = ttname
 		
 		if #s < 3 then
-			if arcadestartblink < arcadeblinkrate*0.5 or uploadReplaysNext then			
+			if arcadestartblink < arcadeblinkrate*0.5 or uploadReplaysNext > 0 then			
 				s = s .. string.sub(ttalphabet, ttcurrentletter, ttcurrentletter)
 			else
 				s = s .. " "
