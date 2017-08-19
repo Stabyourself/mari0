@@ -404,6 +404,10 @@ function game_update(dt)
 			ttstate = "playing"
 			playmusic()
 			objects["player"][1].controlsenabled = true
+			
+			if (controls[1]["jump"][1] == "joy" and love.joystick.isDown(1, tonumber(controls[1]["jump"][4]))) or (love.keyboard.isDown(controls[1]["jump"][1])) then
+				objects["player"][1]:jump()
+			end
 
 			for _, v in ipairs(replays) do
 				v:reset()
