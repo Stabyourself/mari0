@@ -21,7 +21,7 @@ function replaycloud.draw()
     
     love.graphics.setColor(0, 0, 0)
     
-    if #toUpload > 0 then
+    if uploadReplaysNext > 0 then
         properprint(" uploading..", l+60*scale, 12*scale)
     else
         properprint("  view your", l+60*scale, 12*scale)

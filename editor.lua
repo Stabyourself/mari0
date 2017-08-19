@@ -1290,9 +1290,7 @@ function saveanimation()
 		end
 	end
 	
-	print_r(out)
 	local json = JSON:encode_pretty(out)
-	print(json)
 	love.filesystem.write(animations[currentanimation].filepath, json)
 end
 

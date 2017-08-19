@@ -513,7 +513,6 @@ function love.load(arg)
 		local i = 1
 		while love.filesystem.exists(i .. ".json") do
 			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
-			print(replaydata[i].frames)
 			replaychar[i] = characters.mario
 			
 			i = i + 1
@@ -1789,6 +1788,10 @@ function changescale(s, init)
 end
 
 function love.keypressed(key, unicode)
+	if key == "u" then
+		uploadfailed = not uploadfailed
+	end
+	
 	if key == "y" then
 		if love.keyboard.isDown("lalt") then
 			recording = not recording

@@ -13,6 +13,10 @@ function replay:init(replaydata)
 	self.name = replaydata.name
 
 	self:reset()
+	
+	self.x = -100
+	self.y = -100
+	self.a = 1
 end
 
 function replay:reset()

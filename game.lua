@@ -2321,7 +2321,12 @@ function game_draw()
 	
 	if ttstate == "idle" or ttstate == "demo" then
 		if arcadestartblink < arcadeblinkrate*0.8 then
-			properprintbackground("press start", 170*scale, 204*scale, 2*scale)
+			local creditDot = ""
+			if #toUpload > 0 then
+				creditDot = "!"
+			end
+			
+			properprintbackground("press start" .. creditDot, 170*scale, 204*scale, 2*scale)
 		end
 	end
 	
@@ -3162,7 +3167,7 @@ function loadlevel(level)
 	custombackground = false
 	mariotimelimit = 400
 	spriteset = 1
-	uploadReplaysNext = false
+	uploadReplaysNext = 0
 	
 	--LOAD THE MAP
 	if loadmap(level) == false then --make one up
