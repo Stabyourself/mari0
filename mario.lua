@@ -672,6 +672,10 @@ function mario:update(dt)
 			playsound("castleend")
 		end
 		
+		if self.x < mapwidth-8 then
+			self.speedx = 4.27
+		end
+		
 		if self.speedx > 0 and self.x >= mapwidth - 8 then
 			self.x = mapwidth - 8
 			self.animationstate = "idle"
