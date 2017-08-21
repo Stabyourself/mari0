@@ -33,13 +33,9 @@ function processUploads()
             "short=" .. json.short
 
         -- Upload replay data
-<<<<<<< HEAD
         local r, e = http.request(POST_LINK, body)
         
         if r == "success" then
-=======
-        if not uploadfailed and http.request('http://timetrial.dev/api/replays', body) then
->>>>>>> d859c9b064e73b0b5eb9e4b16dae9f084f89de6b
             table.insert(delete, i)
             print("Upload was successful!")
         else
