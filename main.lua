@@ -1763,7 +1763,7 @@ function changescale(s, init)
 		end
 	end
 	
-	if fullscreen and false then
+	if fullscreen then
 		love.graphics.setMode(desktopsize.width, desktopsize.height+22, false, vsync, fsaa)
 	else
 		local useheight = height*16*scale 
