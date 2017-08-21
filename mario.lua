@@ -672,6 +672,10 @@ function mario:update(dt)
 			playsound("castleend")
 		end
 		
+		if self.x < mapwidth-8 then
+			self.speedx = 4.27
+		end
+		
 		if self.speedx > 0 and self.x >= mapwidth - 8 then
 			self.x = mapwidth - 8
 			self.animationstate = "idle"
@@ -680,8 +684,7 @@ function mario:update(dt)
 			self:adddata()
 			self.nomorereplays = true
 			self:replayEndReached()
-				
-				print(ttrank)
+			
 			if ttrank <= 10 then
 				highscoreentry()
 			else
@@ -1948,6 +1951,7 @@ function mario:jump(force)
 							playsound("jumpbig")
 						end
 					end
+					
 					
 					local force = -jumpforce - (math.abs(self.speedx) / maxrunspeed)*jumpforceadd
 					force = math.max(-jumpforce - jumpforceadd, force)
@@ -3564,7 +3568,7 @@ function mario:savereplaydata()
 		self.noChangeFrames = 0
 	end
 	
-	local rep = {frames=self.replayFrames, name=ttname, data=livereplaydata[self.playernumber]}
+	local rep = {frames=self.replayFrames, name=ttname, data=livereplaydata[self.playernumber], short=ttshort}
 	
 	local s = JSON:encode(rep)
 	love.filesystem.write(tti .. ".json", s)
@@ -3581,9 +3585,7 @@ function mario:savereplaydata()
 	
 	table.sort(replaydata, function(a, b) return a.frames < b.frames end)
 
-	local json = JSON:encode(livereplaydata[self.playernumber])
-	
-	addToUpload(ttshort, ttname, json, self.replayFrames)
+	addToUpload(tti)
 	uploadReplaysNext = 2
 end
 
@@ -3679,7 +3681,6 @@ function mario:axe()
 	--get ttrank
 	ttrank = #replaydata + 1
 	for i, v in ipairs(replaydata) do
-		print(self.replayFrames, v.frames)
 		if self.replayFrames < v.frames then
 			ttrank = i
 			break

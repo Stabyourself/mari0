@@ -1,14 +1,19 @@
-toUpload = {}
+function loadToUpload()
+    if love.filesystem.exists("toUpload.json") then
+        return JSON:decode(love.filesystem.read("toUpload.json"))
+    else
+        return {}
+    end
+end
 
-function addToUpload(short, name, json, frames)
-    local repData = {
-        short = short,
-        name = name,
-        json = json,
-        frames = frames,
-    }
-    
-    table.insert(toUpload, repData)
+toUpload = loadToUpload()
+
+function saveToUpload()
+    love.filesystem.write("toUpload.json", JSON:encode(toUpload))
+end
+
+function addToUpload(i)
+    table.insert(toUpload, i)
 end
 
 function processUploads()
@@ -16,19 +21,25 @@ function processUploads()
     print("Processing " .. #toUpload .. " uploads.")
     
     for i, v in ipairs(toUpload) do
-        print(v.name, v.frames, type(v.json), API_PASS, v.short, POST_LINK)
+        local json = JSON:decode(love.filesystem.read(v .. ".json"))
+    
+        print(v, json.name, json.frames, type(json.data), API_PASS, json.short, POST_LINK)
         
-        local body = "name=" .. v.name .. "&" ..
-            "frames=" .. v.frames .. "&" ..
-            "data=" .. v.json .. "&" ..
+        local body = "name=" .. json.name .. "&" ..
+            "frames=" .. json.frames .. "&" ..
+            "data=" .. JSON:encode(json.data) .. "&" ..
             "event=" .. "GC2017" .. "&" ..
             "pass=" .. API_PASS .. "&" .. 
-            "short=" .. v.short
+            "short=" .. json.short
 
         -- Upload replay data
+<<<<<<< HEAD
         local r, e = http.request(POST_LINK, body)
         
         if r == "success" then
+=======
+        if not uploadfailed and http.request('http://timetrial.dev/api/replays', body) then
+>>>>>>> d859c9b064e73b0b5eb9e4b16dae9f084f89de6b
             table.insert(delete, i)
             print("Upload was successful!")
         else
@@ -42,4 +53,6 @@ function processUploads()
 	for _, v in ipairs(delete) do
 		table.remove(toUpload, v)
 	end
+    
+    saveToUpload()
 end

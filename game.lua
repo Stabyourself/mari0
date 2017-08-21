@@ -404,6 +404,13 @@ function game_update(dt)
 			ttstate = "playing"
 			playmusic()
 			objects["player"][1].controlsenabled = true
+			
+			print(love.keyboard.isDown(controls[1]["jump"][1]))
+			
+			if (controls[1]["jump"][1] == "joy" and love.joystick.isDown(1, tonumber(controls[1]["jump"][4]))) or (love.keyboard.isDown(controls[1]["jump"][1])) then
+				objects["player"][1].falling = false
+				objects["player"][1]:jump()
+			end
 
 			for _, v in ipairs(replays) do
 				v:reset()
@@ -2321,7 +2328,12 @@ function game_draw()
 	
 	if ttstate == "idle" or ttstate == "demo" then
 		if arcadestartblink < arcadeblinkrate*0.8 then
-			properprintbackground("press start", 170*scale, 204*scale, 2*scale)
+			local creditDot = ""
+			if #toUpload > 0 then
+				creditDot = "!"
+			end
+			
+			properprintbackground("press start" .. creditDot, 170*scale, 204*scale, 2*scale)
 		end
 	end
 	
@@ -2334,7 +2346,7 @@ function game_draw()
 		local s = ttname
 		
 		if #s < 3 then
-			if arcadestartblink < arcadeblinkrate*0.5 or uploadReplaysNext then			
+			if arcadestartblink < arcadeblinkrate*0.5 or uploadReplaysNext > 0 then			
 				s = s .. string.sub(ttalphabet, ttcurrentletter, ttcurrentletter)
 			else
 				s = s .. " "
@@ -3162,7 +3174,7 @@ function loadlevel(level)
 	custombackground = false
 	mariotimelimit = 400
 	spriteset = 1
-	uploadReplaysNext = false
+	uploadReplaysNext = 0
 	
 	--LOAD THE MAP
 	if loadmap(level) == false then --make one up

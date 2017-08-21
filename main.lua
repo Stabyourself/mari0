@@ -513,7 +513,6 @@ function love.load(arg)
 		local i = 1
 		while love.filesystem.exists(i .. ".json") do
 			replaydata[i] = JSON:decode(love.filesystem.read(i .. ".json"))
-			print(replaydata[i].frames)
 			replaychar[i] = characters.mario
 			
 			i = i + 1
