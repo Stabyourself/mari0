@@ -11,12 +11,12 @@ function replay:init(replaydata)
     self.data = replaydata.data
 	self.frames = replaydata.frames
 	self.name = replaydata.name
-
-	self:reset()
 	
 	self.x = -100
 	self.y = -100
 	self.a = 1
+
+	self:reset()
 end
 
 function replay:reset()
