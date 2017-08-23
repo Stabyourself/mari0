@@ -29,6 +29,8 @@ function love.run()
 
     love.load(arg)
 
+	dtpassed = 0
+
     -- Main loop time.
     while true do
         -- Process events.
@@ -47,35 +49,17 @@ function love.run()
 		love.timer.step()
 		local dt = love.timer.getDelta()
 
+		dt = math.min(dt, 0.5)
+
         -- Call update and draw
         love.update(dt) -- will pass 0 if love.timer is disabled
+	
+		love.graphics.clear()
+
+		love.graphics.setScissor()
+		love.draw()
 		
-		if drawframe then
-			love.graphics.clear()
-			
-			--Fullscreen hack
-			if not mkstation and fullscreen and gamestate ~= "intro" then
-				completecanvas:clear()
-				love.graphics.setScissor()
-				completecanvas:renderTo(love.draw)
-				love.graphics.setScissor()
-				if fullscreenmode == "full" then
-					love.graphics.draw(completecanvas, 0, 0, 0, desktopsize.width/(width*16*scale), desktopsize.height/(height*16*scale))
-				else
-					love.graphics.draw(completecanvas, 0, touchfrominsidemissing/2, 0, touchfrominsidescaling/scale, touchfrominsidescaling/scale)
-					love.graphics.setColor(0, 0, 0)
-					love.graphics.rectangle("fill", 0, 0, desktopsize.width, touchfrominsidemissing/2)
-					love.graphics.rectangle("fill", 0, desktopsize.height-touchfrominsidemissing/2, desktopsize.width, touchfrominsidemissing/2)
-					love.graphics.setColor(255, 255, 255, 255)
-				end
-			else
-				love.graphics.setScissor()
-				love.draw()
-			end
-			
-			love.graphics.present()
-		end
-		love.timer.sleep(0.001)
+		love.graphics.present()
     end
 end
 
@@ -181,7 +165,6 @@ function love.load(arg)
 	require "env"
 	require "replayupload"
 	qrencode = require "qr/qrencode"
-	http = require("socket.http")
 	
 	
 	stats_prev = 1
@@ -499,7 +482,6 @@ function love.load(arg)
 	
 	
 	http = require("socket.http")
-	http.PORT = 55555
 	http.TIMEOUT = 1
 	
 	
@@ -1057,28 +1039,13 @@ function love.update(dt)
 	if music then
 		music:update()
 	end
-	realdt = dt
-	dt = math.min(0.5, dt) --ignore any dt higher than half a second
 	
-	if recording then
-		dt = recordtarget
-	end
-	
-	steptimer = steptimer + dt
-	dt = targetdt
 	
 	if skipupdate then
-		steptimer = 0
 		skipupdate = false
 		return
 	end
 	
-	drawframe = false
-	
-	while steptimer >= targetdt do
-		steptimer = steptimer - targetdt
-		drawframe = true
-		
 		
 		if mkstation then --Old school stats display for gamescom
 			--[[ debug lol
@@ -1183,7 +1150,6 @@ function love.update(dt)
 		notice.update(dt)
 		
 		love.graphics.setCaption(love.timer.getFPS())
-	end
 end
 
 function love.draw()

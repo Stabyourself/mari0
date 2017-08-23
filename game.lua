@@ -428,8 +428,15 @@ function game_update(dt)
 	end
 
 	if ttstate == "demo" or ttstate == "playing" or ttstate == "endanimation" or ttstate == "entry" then
-		for _, v in ipairs(replays) do
-			v:tick()
+		ttdelay = ttdelay + dt
+
+		while ttdelay > targetdt do
+			ttdelay = ttdelay - targetdt
+			replayi = replayi + 1
+
+			for _, v in ipairs(replays) do
+				v:tick()
+			end
 		end
 	end
 	
@@ -441,10 +448,6 @@ function game_update(dt)
 		end
 	end
 	
-	if replaysystem then
-		replayi = replayi + 1
-	end
-
 
 	
 	if ttstate == "demo" and #replaydata >= 1 then
@@ -3175,6 +3178,8 @@ function loadlevel(level)
 	mariotimelimit = 400
 	spriteset = 1
 	uploadReplaysNext = 0
+
+	ttdelay = 0
 	
 	--LOAD THE MAP
 	if loadmap(level) == false then --make one up
