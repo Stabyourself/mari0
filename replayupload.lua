@@ -6,8 +6,6 @@ function loadToUpload()
     end
 end
 
-toUpload = loadToUpload()
-
 function saveToUpload()
     love.filesystem.write("toUpload.json", JSON:encode(toUpload))
 end
@@ -20,7 +18,8 @@ function processUploads()
     local delete = {}
     print("Processing " .. #toUpload .. " uploads.")
     
-    for i, v in ipairs(toUpload) do
+    for i = #toUpload, 1, -1 do
+        local v = toUpload[i]
         local json = JSON:decode(love.filesystem.read(v .. ".json"))
     
         print(v, json.name, json.frames, type(json.data), API_PASS, json.short, POST_LINK)
@@ -40,6 +39,7 @@ function processUploads()
             print("Upload was successful!")
         else
             print("Upload failed...")
+            print(r)
             break
         end
     end
@@ -52,3 +52,6 @@ function processUploads()
     
     saveToUpload()
 end
+
+toUpload = loadToUpload()
+processUploads()

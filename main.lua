@@ -159,6 +159,10 @@ function love.load(arg)
 	lastline = debug.getinfo(1).currentline
 	starttime = love.timer.getTime()
 	totaltime = 0
+	
+	http = require("socket.http")
+	http.TIMEOUT = 4
+
 	JSON = require "JSON"
 	require "notice"
 	require "sasorgasm"
@@ -481,10 +485,6 @@ function love.load(arg)
 	add("Requires")
 	
 	
-	http = require("socket.http")
-	http.TIMEOUT = 1
-	
-	
 	
 	replaysystem = true
 	
@@ -521,7 +521,6 @@ function love.load(arg)
 	if getupdate() then
 		updatenotification = true
 	end
-	http.TIMEOUT = 4
 	
 	playertypei = 1
 	playertype = playertypelist[playertypei] --portal, minecraft
