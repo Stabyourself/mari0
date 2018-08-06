@@ -82,14 +82,14 @@ vec4 grid_color( vec2 coords )
 {
 		vec2 snes = floor( coords * textureSize );
 		if ( (mod(snes.x, 3.0) == 0.0) && (mod(snes.y, 3.0) == 0.0) )
-				return texture2D(_tex0_, coords);
+				return texture2D(texture, coords);
 		else
 				return vec4(0.0);
 }
 #define TEX2D(coords)   GAMMA_IN( grid_color( coords ) )
 
 #else // DEBUG
-#define TEX2D(coords)   GAMMA_IN( texture2D(_tex0_, coords) )
+#define TEX2D(coords)   GAMMA_IN( texture2D(texture, coords) )
 
 #endif // DEBUG
 

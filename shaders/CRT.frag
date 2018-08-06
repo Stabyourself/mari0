@@ -17,7 +17,7 @@
         barrel distortion code was taken from the Curvature shader, which is
         under the GPL."
     )
-    
+
     modified by slime73 for use with love2d and mari0
 */
 
@@ -59,9 +59,9 @@ extern vec2 textureSize;
 #endif
 
 #ifdef LINEAR_PROCESSING
-#	define TEX2D(c) pow(LEVELS(checkTexelBounds(_tex0_, (c))), vec4(inputGamma))
+#	define TEX2D(c) pow(LEVELS(checkTexelBounds(texture, (c))), vec4(inputGamma))
 #else
-#	define TEX2D(c) LEVELS(checkTexelBounds(_tex0_, (c)))
+#	define TEX2D(c) LEVELS(checkTexelBounds(texture, (c)))
 #endif
 
 
@@ -73,14 +73,14 @@ vec2 radialDistortion(vec2 coord, const vec2 ratio)
 	float offsety = 1.0 - ratio.y;
 	coord.y -= offsety;
 	coord /= ratio;
-	
+
 	vec2 cc = coord - 0.5;
 	float dist = dot(cc, cc) * distortion;
 	vec2 result = coord + cc * (1.0 + dist) * dist;
-	
+
 	result *= ratio;
 	result.y += offsety;
-	
+
 	return result;
 }
 
@@ -88,7 +88,7 @@ vec2 radialDistortion(vec2 coord, const vec2 ratio)
 vec4 checkTexelBounds(Image texture, vec2 coords)
 {
 	vec2 ss = step(coords, vec2(bounds.x, 1.0)) * step(vec2(0.0, bounds.y), coords);
-	
+
 	return Texel(texture, coords) * ss.x * ss.y;
 	// return texcolor;
 }
@@ -129,7 +129,7 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 {
 	vec2 one = 1.0 / textureSize;
 	float mod_factor = texCoord.x * textureSize.x * outputSize.x / inputSize.x;
-	
+
 	// Here's a helpful diagram to keep in mind while trying to
 	// understand the code:
 	//
@@ -207,16 +207,16 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 	// the current pixel.
 	vec4 weights  = scanlineWeights(uv_ratio.y, col);
 	vec4 weights2 = scanlineWeights(1.0 - uv_ratio.y, col2);
-	
+
 	vec4 mul_res_f = (col * weights + col2 * weights2);
 	vec3 mul_res = mul_res_f.rgb;
-	
+
 
 #else
-	
+
 	vec4 mul_res_f = TEX2D(xy);
 	vec3 mul_res = mul_res_f.rgb;
-	
+
 #endif
 
 

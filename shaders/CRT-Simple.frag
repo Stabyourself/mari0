@@ -7,7 +7,7 @@
     under the terms of the GNU General Public License as published by the Free
     Software Foundation; either version 2 of the License, or (at your option)
     any later version.
-    
+
     modified by slime73 for use with love2d and mari0
 */
 
@@ -33,7 +33,7 @@ extern vec2 textureSize;
 #define outputGamma 2.2
 
 // Macros.
-#define TEX2D(c) pow(checkTexelBounds(_tex0_, (c)), vec4(inputGamma))
+#define TEX2D(c) pow(checkTexelBounds(texture, (c)), vec4(inputGamma))
 #define PI 3.141592653589
 
 
@@ -44,21 +44,21 @@ vec2 radialDistortion(vec2 coord, const vec2 ratio)
 	float offsety = 1.0 - ratio.y;
 	coord.y -= offsety;
 	coord /= ratio;
-	
+
 	vec2 cc = coord - 0.5;
 	float dist = dot(cc, cc) * distortion;
 	vec2 result = coord + cc * (1.0 + dist) * dist;
-	
+
 	result *= ratio;
 	result.y += offsety;
-	
+
 	return result;
 }
 
 #ifdef CURVATURE
 vec4 checkTexelBounds(Image texture, vec2 coords)
 {
-	vec2 ss = step(coords, vec2(bounds.x, 1.0)) * step(vec2(0.0, bounds.y), coords);	
+	vec2 ss = step(coords, vec2(bounds.x, 1.0)) * step(vec2(0.0, bounds.y), coords);
 	return Texel(texture, coords) * ss.x * ss.y;
 }
 #else
@@ -73,13 +73,13 @@ vec4 checkTexelBounds(Image texture, vec2 coords)
 vec4 checkTexelBounds(Image texture, vec2 coords)
 {
 	vec2 bounds = vec2(inputSize.x / textureSize.x, 1.0 - inputSize.y / textureSize.y);
-	
+
 	vec4 color;
 	if (coords.x > bounds.x || coords.x < 0.0 || coords.y > 1.0 || coords.y < bounds.y)
 		color = vec4(0.0, 0.0, 0.0, 1.0);
 	else
 		color = Texel(texture, coords);
-		
+
 	return color;
 }
 */
@@ -114,8 +114,8 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 {
 	vec2 one = 1.0 / textureSize;
 	float mod_factor = texCoord.x * textureSize.x * outputSize.x / inputSize.x;
-	
-	
+
+
 	// Here's a helpful diagram to keep in mind while trying to
 	// understand the code:
 	//
@@ -163,14 +163,14 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 	// the current pixel.
 	vec4 weights  = scanlineWeights(uv_ratio.y, col);
 	vec4 weights2 = scanlineWeights(1.0 - uv_ratio.y, col2);
-	
+
 	vec4 mul_res_f = (col * weights + col2 * weights2);
 	vec3 mul_res  = mul_res_f.rgb;
 
 #else
 	vec3 mul_res_f = TEX2D(xy);
 	vec3 mul_res = mul_res_f.rgb;
-	
+
 #endif
 
 	// dot-mask emulation:
