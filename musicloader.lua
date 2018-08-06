@@ -39,7 +39,7 @@ function music:play(name)
 			self:onLoad(name, source)
 		end
 		if self.loaded[name] then
-			playsound(self.loaded[name])
+			self.loaded[name]:play()
 		end
 	end
 end

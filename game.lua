@@ -2663,7 +2663,7 @@ function game_keypressed(key, unicode)
 		elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 			if pausemenuoptions[pausemenuselected] == "resume" then
 				pausemenuopen = false
-				love.audio.resume()
+				playmusic()
 			elseif pausemenuoptions[pausemenuselected] == "suspend" then
 				suspendprompt = true
 				pausemenuselected2 = 1
@@ -2676,7 +2676,7 @@ function game_keypressed(key, unicode)
 			end
 		elseif key == "escape" then
 			pausemenuopen = false
-			love.audio.resume()
+			playmusic()
 		elseif (key == "right" or key == "d") then
 			if pausemenuoptions[pausemenuselected] == "volume" then
 				if volume < 1 then
