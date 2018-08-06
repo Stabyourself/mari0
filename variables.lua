@@ -1,4 +1,4 @@
---SETABLE VARS--	
+--SETABLE VARS--
 --almost all vars are in "blocks", "blocks per second" or just "seconds". Should be obvious enough what's what.
 portalgundelay = 0.2
 gellifetime = 2
@@ -212,7 +212,7 @@ portalprojectileparticledelay = 0.002
 emanceparticlespeed = 3
 emanceparticlespeedmod = 0.3
 emanceimgwidth = 64
-emancelinecolor = {100, 100, 255, 10}
+emancelinecolor = {0.4, 0.4, 1, 0.04}
 
 boxfriction = 20
 boxfrictionair = 8

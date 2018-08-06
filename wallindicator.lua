@@ -4,7 +4,7 @@ function wallindicator:init(x, y, r)
 	self.x = x
 	self.y = y
 	self.r = r
-	
+
 	self.lighted = false
 end
 
@@ -26,12 +26,12 @@ function wallindicator:update()
 end
 
 function wallindicator:draw()
-	love.graphics.setColor(255, 255, 255)
+	love.graphics.setColor(1, 1, 1)
 	local quad = 1
 	if self.lighted then
 		quad = 2
 	end
-	
+
 	love.graphics.draw(wallindicatorimg, wallindicatorquad[quad], math.floor((self.x-1-xscroll)*16*scale), ((self.y-1)*16-8)*scale, 0, scale, scale)
 end
 

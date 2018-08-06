@@ -26,7 +26,7 @@ end
 
 local function getfilename(name)
 	local filename = name:match("%.[mo][pg][3g]$") and name or musicpath:format(name) -- mp3 or ogg
-	if love.filesystem.exists(filename) and love.filesystem.isFile(filename) then
+	if love.filesystem.getInfo(filename).type == "file" then
 		return filename
 	else
 		print(string.format("thread can't load \"%s\": not a file!", filename))

@@ -6,7 +6,7 @@ function walltimer:init(x, y, t, r)
 	self.cox = x
 	self.coy = y
 	self.r = r
-	
+
 	self.outtable = {}
 	self.lighted = false
 	self.time = t
@@ -43,7 +43,7 @@ function walltimer:update(dt)
 				self.quad = i+1
 			end
 		end
-		
+
 		if self.timer >= self.time then
 			self:out("off")
 			self.timer = self.time
@@ -52,8 +52,8 @@ function walltimer:update(dt)
 end
 
 function walltimer:draw()
-	love.graphics.setColor(255, 255, 255)
-	
+	love.graphics.setColor(1, 1, 1)
+
 	love.graphics.draw(walltimerimg, walltimerquad[self.quad], math.floor((self.x-1-xscroll)*16*scale), ((self.y-1)*16-8)*scale, 0, scale, scale)
 end
 

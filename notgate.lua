@@ -6,7 +6,7 @@ function notgate:init(x, y, r)
 	self.cox = x
 	self.coy = y
 	self.r = r
-	
+
 	self.outtable = {}
 	self.state = "on"
 	self.initial = true
@@ -38,8 +38,8 @@ function notgate:update(dt)
 end
 
 function notgate:draw()
-	love.graphics.setColor(255, 255, 255)
-	
+	love.graphics.setColor(1, 1, 1)
+
 	love.graphics.draw(entitiesimg, entityquads[84].quad, math.floor((self.x-1-xscroll)*16*scale), ((self.y-1)*16-8)*scale, 0, scale, scale)
 end
 

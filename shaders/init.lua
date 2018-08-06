@@ -13,12 +13,12 @@ local function CreateShaderPass()
 		xres = love.graphics.getWidth(),
 		yres = love.graphics.getHeight(),
 	}
-	
+
 	function pass:useCanvas()
 		local po2xr = shaders.xres
 		local po2yr = shaders.yres
 		local c = self.canvas_npo2
-		
+
 		if not c or c.canvas:getWidth() ~= po2xr or c.canvas:getHeight() ~= po2yr then
 			c = {}
 			local status, canvas = pcall(love.graphics.newCanvas, po2xr, po2yr)
@@ -36,7 +36,7 @@ local function CreateShaderPass()
 		elseif self.xres ~= shaders.xres or self.yres ~= shaders.yres then
 			c.quad = love.graphics.newQuad(0, 0, shaders.xres, shaders.yres, po2xr, po2yr)
 		end
-		
+
 		self.xres, self.yres = shaders.xres, shaders.yres
 
 		self.defs = {
@@ -49,7 +49,7 @@ local function CreateShaderPass()
 
 		self.canvas = c
 	end
-	
+
 	function pass:predraw()
 		if self.on and self.canvas then
 			love.graphics.setCanvas(self.canvas.canvas)
@@ -57,7 +57,7 @@ local function CreateShaderPass()
 			return self.canvas.canvas
 		end
 	end
-	
+
 	function pass:postdraw()
 		local effect = shaders.effects[self.cureffect]
 		if self.on and self.cureffect and effect and self.canvas then
@@ -82,7 +82,7 @@ local function CreateShaderPass()
 			love.graphics.draw(self.canvas.canvas, self.canvas.quad, 0, 0)
 		end
 	end
-	
+
 	return pass
 end
 
@@ -94,14 +94,14 @@ shaders.passes = {}
 -- numpasses is the max number of concurrent shaders (default 2)
 function shaders:init(numpasses)
 	numpasses = numpasses or 2
-	
+
 	local files = love.filesystem.getDirectoryItems("shaders")
-	
+
 	for i,v in ipairs(files) do
 		local filename, filetype = v:match("(.+)%.(.-)$")
 		if filetype == "frag" then
 			local name = "shaders".."/"..v
-			if love.filesystem.isFile(name) then
+			if love.filesystem.getInfo(name).type == "file" then
 				local str = love.filesystem.read(name)
 				local success, effect = pcall(love.graphics.newShader, str)
 				if success then
@@ -116,11 +116,11 @@ function shaders:init(numpasses)
 			end
 		end
 	end
-	
+
 	for i=1, numpasses do
 		self.passes[i] = CreateShaderPass()
 	end
-	
+
 	self:refresh()
 end
 
@@ -134,7 +134,7 @@ function shaders:set(i, shadername)
 	i = i or 1
 	local pass = self.passes[i]
 	if not pass then return end
-	
+
 	if shadername == nil or not self.effects[shadername] then
 		pass.on = false
 		pass.cureffect = nil
@@ -164,15 +164,15 @@ function shaders:refresh()
 	or not self.xres or not self.yres
 	or self.xres ~= love.graphics.getWidth() or self.yres ~= love.graphics.getHeight() then
 		self.scale = scale
-		
+
 		self.xres, self.yres = love.graphics.getWidth(), love.graphics.getHeight()
 		self.po2xres, self.po2yres = FindNextPO2(self.xres), FindNextPO2(self.yres)
-		
+
 		for i,v in ipairs(self.passes) do
 			self:set(i, v.cureffect)
 		end
 	end
-	
+
 	collectgarbage("collect")
 end
 
@@ -195,20 +195,20 @@ end
 -- call in love.draw after drawing whatever you want post-processed
 function shaders:postdraw()
 	if not self.curcanvas then return end
-	
+
 	local blendmode, alphamode = love.graphics.getBlendMode()
 	love.graphics.setBlendMode("alpha", "premultiplied")
-	love.graphics.setColor(255, 255, 255)
-	
+	love.graphics.setColor(1, 1, 1)
+
 	local activepasses = {}
-	
+
 	for i = self.curcanvas.index, #self.passes do
 		local pass = self.passes[i]
 		if pass.on and pass.canvas then
 			table.insert(activepasses, pass)
 		end
 	end
-	
+
 	for i,v in ipairs(activepasses) do
 		if i < #activepasses then
 			activepasses[i+1]:predraw()

@@ -160,7 +160,7 @@ function lube.client:Init(socktype)
 	if socktype then
 		if self[socktype] then
 			self.socktype = socktype
-		elseif love.filesystem.exists(socktype .. ".sock") then
+		elseif love.filesystem.getInfo(socktype .. ".sock") then
 			love.filesystem.require(socktype .. ".sock")
 			self[socktype] = _G[socktype]
 			self.socktype = socktype
@@ -373,7 +373,7 @@ function lube.server:Init(port, socktype)
 	if socktype then
 		if self[socktype] then
 			self.socktype = socktype
-		elseif love.filesystem.exists(socktype .. ".sock") then
+		elseif love.filesystem.getInfo(socktype .. ".sock") then
 			love.filesystem.require(socktype .. ".sock")
 			self[socktype] = _G[socktype]
 			self.socktype = socktype

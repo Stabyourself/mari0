@@ -5,9 +5,9 @@ function lightbridge:init(x, y, dir, r)
 	self.coy = y
 	self.dir = dir
 	self.r = r
-	
+
 	self.childtable = {}
-	
+
 	self.enabled = true
 	self:updaterange()
 end
@@ -40,7 +40,7 @@ function lightbridge:input(t)
 end
 
 function lightbridge:update(dt)
-	
+
 end
 
 function lightbridge:draw()
@@ -61,20 +61,20 @@ function lightbridge:updaterange()
 		v.destroy = true
 	end
 	self.childtable = {}
-	
+
 	if self.enabled == false then
 		return
 	end
-	
+
 	local dir = self.dir
 	local startx, starty = self.cox, self.coy
 	local x, y = self.cox, self.coy
-	
+
 	local firstcheck = true
 	local quit = false
 	while x >= 1 and x <= mapwidth and y >= 1 and y <= 15 and tilequads[map[x][y][1]].collision == false and (x ~= startx or y ~= starty or dir ~= self.dir or firstcheck == true) and quit == false do
 		firstcheck = false
-		
+
 		if dir == "right" then
 			x = x + 1
 			table.insert(objects["lightbridgebody"], lightbridgebody:new(self, x-1, y, "hor"))
@@ -88,13 +88,13 @@ function lightbridge:updaterange()
 			y = y + 1
 			table.insert(objects["lightbridgebody"], lightbridgebody:new(self, x, y-1, "ver"))
 		end
-		
+
 		--check if current block is a portal
 		local portalx, portaly, portalfacing, infacing = getPortal(x, y)
 		if portalx ~= false and ((dir == "left" and infacing == "right") or (dir == "right" and infacing == "left") or (dir == "up" and infacing == "down") or (dir == "down" and infacing == "up")) then
 			x, y = portalx, portaly
 			dir = portalfacing
-			
+
 			if dir == "right" then
 				x = x + 1
 			elseif dir == "left" then
@@ -105,7 +105,7 @@ function lightbridge:updaterange()
 				y = y + 1
 			end
 		end
-		
+
 		--doors
 		for i, v in pairs(objects["door"]) do
 			if v.active then
@@ -152,9 +152,9 @@ function lightbridgebody:init(parent, x, y, dir)
 	self.static = true
 	self.active = true
 	self.category = 28
-	
+
 	self.mask = {true}
-	
+
 	self:pushstuff()
 end
 
@@ -203,8 +203,8 @@ function lightbridgebody:update(dt)
 end
 
 function lightbridgebody:draw()
-	love.graphics.setColor(255, 255, 255)
-	
+	love.graphics.setColor(1, 1, 1)
+
 	if self.dir == "hor" then
 		love.graphics.draw(lightbridgeimg, math.floor((self.cox-xscroll-1)*16*scale), (self.coy-20/16)*16*scale, 0, scale, scale)
 	else
