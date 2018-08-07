@@ -56,7 +56,7 @@ end
 function menu_update(dt)
 	--coinanimation
 	coinanimation = coinanimation + dt*6.75
-	while coinanimation > 6 do
+	while coinanimation >= 6 do
 		coinanimation = coinanimation - 5
 	end
 
@@ -209,7 +209,7 @@ function menu_draw()
 	elseif math.floor(coinanimation) == 5 then
 		coinframe = 1
 	else
-		coinframe = math.floor(coinanimation)
+		coinframe = math.max(1, math.floor(coinanimation))
 	end
 
 	for y = 1, 15 do
