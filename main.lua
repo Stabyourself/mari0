@@ -1233,9 +1233,7 @@ function love.keypressed(key, unicode)
 		if key == konami[konamii] then
 			konamii = konamii + 1
 			if konamii == #konami+1 then
-				if konamisound:isStopped() then
-					playsound(konamisound)
-				end
+				playsound(konamisound)
 				gamefinished = true
 				saveconfig()
 				konamii = 1
