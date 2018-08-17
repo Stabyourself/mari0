@@ -1,0 +1,4 @@
+name=a portal tribute
+author=alphaorionis
+description=speedy thing goes in .../...speedy thing comes out
+lives=0
