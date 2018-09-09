@@ -3879,7 +3879,9 @@ function checkkey(s)
 	local joysticks = love.joystick.getJoysticks()
 
 	if s[1] == "joy" then
-		if s[3] == "hat" then
+		if joysticks[s[2]] == nil then
+			return false
+		elseif s[3] == "hat" then
 			if joysticks[s[2]]:getHat(s[4]) == s[5] then
 				return true
 			else
