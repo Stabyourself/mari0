@@ -2044,6 +2044,14 @@ function menu_joystickreleased(joystick, button)
 
 end
 
+function menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
+
+end
+
+function menu_joystickhat(joystick, hat, direction)
+
+end
+
 function keypromptenter(t, ...)
 	local arg = {...}
 	if t == "key" and (arg[1] == ";" or arg[1] == "," or arg[1] == "," or arg[1] == "-") then
@@ -2051,7 +2059,7 @@ function keypromptenter(t, ...)
 	end
 	buttonerror = false
 	axiserror = false
-	local buttononly = {"run", "jump", "reload", "use", "portal1", "portal2"}
+	local buttononly = {"run", "jump", "reload", "use"}
 	local axisonly = {"aimx", "aimy"}
 	if t ~= "key" or arg[1] ~= "escape" then
 		if t == "key" then
