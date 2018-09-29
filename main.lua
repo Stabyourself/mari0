@@ -1,10 +1,7 @@
 --[[
-	STEAL MY SHIT AND I'LL FUCK YOU UP
-	PRETTY MUCH EVERYTHING BY MAURICE GU�GAN AND IF SOMETHING ISN'T BY ME THEN IT SHOULD BE OBVIOUS OR NOBODY CARES
+	PRETTY MUCH EVERYTHING BY MAURICE GUÉGAN AND IF SOMETHING ISN'T BY ME THEN IT SHOULD BE OBVIOUS OR NOBODY CARES
 
-	THIS AWESOME PIECE OF CELESTIAL AMBROSIA IS RELEASED AS NON-COMMERCIAL, SHARE ALIKE, WHATEVER. YOU MAY PRINT OUT THIS CODES AND USE IT AS WALLPAPER IN YOUR BATHROOM.
-	FOR SPECIFIC LICENSE (I know you linux users get a hard on when it comes to licenses) SEE http://creativecommons.org/licenses/by-nc-sa/3.0/
-	NOW GO AWAY (or stay and modify shit. I don't care as long as you stick to the above license.)
+	Licensed under MIT. You should not have received a copy of the MIT license with this program because just google for it, cmon.
 ]]
 
 function love.load()
@@ -1364,11 +1361,11 @@ function love.joystickaxis(joystick, axis, value)
 			break
 		end
 	end
-	
+
 	if found then
 		local stickmoved = false
 		local shouldermoved = false
-		
+
 		--If this axis is a stick, get whether it just moved out of its deadzone
 		if math.abs(value) > joystickaimdeadzone and axisDeadZones[joystick][axis]["stick"] then
 			stickmoved = true
@@ -1398,7 +1395,7 @@ function love.joystickhat(joystick, hat, direction)
 			break
 		end
 	end
-	
+
 	if found then
 		if gamestate == "menu" or gamestate == "options" then
 			menu_joystickhat(joystick, hat, direction)
