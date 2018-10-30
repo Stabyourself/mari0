@@ -138,5 +138,5 @@ function portalprojectileparticle:draw()
 	local r, g, b = unpack(self.color)
 	love.graphics.setColor(r, g, b, self.alpha)
 
-	love.graphics.draw(portalprojectileparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 2, 2)
+	love.graphics.draw(portalprojectileparticleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 0.5, 0.5)
 end
