@@ -233,13 +233,6 @@ function game_update(dt)
 		return
 	end
 
-	--portalgundelay
-	for i = 1, players do
-		if portaldelay[i] > 0 then
-			portaldelay[i] = math.max(0, portaldelay[i] - dt/speed)
-		end
-	end
-
 	--coinblockanimation
 	local delete = {}
 
@@ -1965,9 +1958,9 @@ function startlevel(level)
 	pausemenuselected = 1
 	coinblocktimers = {}
 
-	portaldelay = {}
+	portaltime = {}
 	for i = 1, players do
-		portaldelay[i] = 0
+		portaltime[i] = 0
 	end
 
 	--Minecraft
@@ -2886,10 +2879,11 @@ function shootportal(plnumber, i, sourcex, sourcey, direction)
 		return
 	end
 	--portalgun delay
-	if portaldelay[plnumber] > 0 then
+	local t = love.timer.getTime()
+	if t - portaltime[plnumber] < portalgundelay then
 		return
 	else
-		portaldelay[plnumber] = portalgundelay
+		portaltime[plnumber] = t
 	end
 
 	local otheri = 1
