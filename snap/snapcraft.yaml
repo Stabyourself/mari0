@@ -1,0 +1,111 @@
+%YAML 1.1
+---
+# Snapcraft Recipe for Mari0
+# ------------------------------
+# This file is in the YAML data serialization format:
+# http://yaml.org
+# For the spec. of writing this file refer the following documentation:
+# * The snapcraft format
+#   https://docs.snapcraft.io/the-snapcraft-format/8337
+# * Snap Documentation
+#   https://docs.snapcraft.io
+# * Topics under the doc category in the Snapcraft Forum
+#   https://forum.snapcraft.io/c/doc
+# For support refer to the snapcraft section in the Snapcraft Forum:
+# https://forum.snapcraft.io/c/snapcraft
+name: mari0
+title: Mari0
+summary: Mario + Portal platformer
+description: |
+  Two genre defining games from completely different eras: Nintendo's Super Mario Bros. and Valve's Portal. These two games managed to give Platformers and First-Person Puzzle Games a solid place in the video game world. But what if Nintendo teamed up with Valve and recreated the famous Mario game with Portal gun mechanics?
+
+  A complete from scratch recreation of Super Mario Bros. with a focus on perfectly imitating the feel the 1985 classic gave us. Then give Mario a portal gun, add puzzle game mechanics from Portal and there you go. And if that wasn't crazy enough, play 4-player coop, with everyone having their own Portal gun!
+
+  ## Features ##
+  -   Complete recreation of SMB
+  -   Elements from Portal
+  -   Portal gun that shoots portals
+  -   4-player simultaneous coop
+  -   Level Editor that was used to create the levels in the game
+  -   33 different hats
+  -   Downloadable Mappacks
+  -   Game modifiers for extra fun
+
+# Snap Store requires icon greater than 256x256px
+icon: _DO_NOT_INCLUDE/icon.png
+license: MIT
+adopt-info: mari0
+
+base: core18
+confinement: strict
+grade: stable
+
+# Currently the love snap doesn't build in s390x architecture
+# https://bugs.launchpad.net/love-snap/+bug/1818424
+architectures:
+- build-on: i386
+- build-on: amd64
+- build-on: armhf
+- build-on: arm64
+- build-on: ppc64el
+
+parts:
+  # Launcher programs to fix problems at runtime
+  launchers:
+    source: snap/local/launchers
+    plugin: dump
+    organize:
+      '*-launch': bin/
+
+  mari0:
+    source: .
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version \
+        "$(git describe --always --dirty --tags)"
+
+    plugin: dump
+    organize:
+      '*': mari0/
+
+  love:
+    plugin: nil
+    stage-snaps:
+    - love-brlin
+
+apps:
+  mari0:
+    adapter: full
+    command: bin/love $SNAP/mari0
+    command-chain:
+    - bin/workaround-snap-arch-triplet-launch
+    - bin/locales-launch
+    - bin/love-launch
+    - bin/mari0-launch
+
+plugs:
+  # For snaps with a graphical user interface:
+  desktop:
+  desktop-legacy:
+  x11:
+  unity7:
+  wayland:
+
+  # Storage access
+  home:
+  removable-media: # Non-A/C
+
+  # Joystick access
+  joystick:
+
+  # Graphics rendering
+  opengl:
+
+  # Audio
+  pulseaudio:
+
+  # For inhibiting screensavor
+  screen-inhibit-control:
+
+  # For DLC download feature
+  network:
