@@ -31,25 +31,14 @@ function mushroom:init(x, y)
 	self.quadcenterY = 8
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	self.uptimer = 0
 	
 	self.falling = false
 end
 
 function mushroom:update(dt)
-	--rotate back to 0 (portals)
-	self.rotation = math.fmod(self.rotation, math.pi*2)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
-	end
+	self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
 	
 	if self.uptimer < mushroomtime then
 		self.uptimer = self.uptimer + dt
@@ -71,54 +60,58 @@ function mushroom:update(dt)
 	end
 end
 
+function mushroom:eat(a, b, c, d, overwrite)
+	if SERVER or CLIENT then
+		if not b.remote then
+			local um = usermessage:new( "net_mushroomeat", c .. "~" .. d)
+			um:send()
+		elseif not overwrite then
+			return
+		end
+	end
+	
+	b:grow()
+	self.active = false
+	self.destroy = true
+	self.drawable = false
+end
+
 function mushroom:draw()
 	if self.uptimer < mushroomtime and not self.destroy then
 		--Draw it coming out of the block.
-		love.graphics.draw(entitiesimg, entityquads[2].quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor((self.y*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
+		love.graphics.drawq(entitiesimg, entityquads[2].quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor(((self.y-yscroll)*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
 	end
 end
 
-function mushroom:leftcollide(a, b)
+function mushroom:leftcollide(a, b, c, d)
 	self.speedx = mushroomspeed
 	
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end
 	
 	return false
 end
 
-function mushroom:rightcollide(a, b)
+function mushroom:rightcollide(a, b, c, d)
 	self.speedx = -mushroomspeed
 	
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end
 	
 	return false
 end
 
-function mushroom:floorcollide(a, b)
+function mushroom:floorcollide(a, b, c, d)
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end	
 end
 
-function mushroom:ceilcollide(a, b)
+function mushroom:ceilcollide(a, b, c, d)
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end	
 end
 

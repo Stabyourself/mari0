@@ -1,8 +1,8 @@
 flyingfish = class:new()
 
 function flyingfish:init()
-	self.y = 15
-	self.x = math.random(math.floor(splitxscroll[1]), math.floor(splitxscroll[1])+width)
+	self.y = mapheight
+	self.x = math.random(math.floor(xscroll), math.floor(xscroll)+width)
 	self.width = 12/16
 	self.height = 12/16
 	self.rotation = 0 --for portals

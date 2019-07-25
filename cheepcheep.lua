@@ -7,6 +7,7 @@ function cheepcheep:init(x, y, color)
 	self.width = 12/16
 	self.height = 12/16
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	
 	if math.random(2) == 1 then
 		self.verticalmoving = true
@@ -54,18 +55,7 @@ function cheepcheep:init(x, y, color)
 end
 
 function cheepcheep:update(dt)
-	--rotate back to 0 (portals)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
-	end
+	self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
 	
 	if self.shot then
 		self.speedy = self.speedy + shotgravity*dt

@@ -1,3 +1,0 @@
-name=the lost levels
-author=nintendo
-description=the japanese     version of smb2. made by renhoex.

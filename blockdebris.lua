@@ -27,7 +27,7 @@ function blockdebris:update(dt)
 	self.y = self.y + self.speedy*dt
 	
 	
-	if self.y > 15 then
+	if self.y > mapheight then
 		return true
 	end
 	
@@ -35,5 +35,5 @@ function blockdebris:update(dt)
 end
 
 function blockdebris:draw()
-	love.graphics.draw(blockdebrisimage, blockdebrisquads[spriteset][self.frame], math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 4, 4)
+	love.graphics.drawq(blockdebrisimg, blockdebrisquads[spriteset][self.frame], math.floor((self.x-xscroll)*16*scale), math.floor((self.y-yscroll-.5)*16*scale), 0, scale, scale, 4, 4)
 end

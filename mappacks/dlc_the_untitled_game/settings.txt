@@ -1,4 +1,0 @@
-name=the untitled game
-author=fartzilla
-description=choose your own adventure map pack watch for traps!
-lives=0

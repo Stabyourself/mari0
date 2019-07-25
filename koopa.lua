@@ -1,7 +1,5 @@
 koopa = class:new()
 
---combo: 500, 800, 1000, 2000, 4000, 5000
-
 function koopa:init(x, y, t)
 	--PHYSICS STUFF
 	self.x = x-6/16
@@ -33,23 +31,31 @@ function koopa:init(x, y, t)
 	--IMAGE STUFF
 	self.drawable = true
 	if self.t == "red" then
-		self.graphic = kooparedimage
+		self.graphic = kooparedimg
 	elseif self.t == "redflying" then
-		self.graphic = kooparedimage
+		self.graphic = kooparedimg
 		self.flying = true
 		self.gravity = 0
 		self.quad = koopaquad[spriteset][4]
 		self.speedx = 0
 		self.timer = 0
+	elseif self.t == "flying2" then
+		self.flying = true
+		self.gravity = 0
+		self.quad = koopaquad[spriteset][4]
+		self.graphic = koopaimg
+		self.speedy = 0
+		self.speedx = 0
+		self.timer = 0
 	elseif self.t == "flying" then
 		self.flying = true
 		self.quad = koopaquad[spriteset][4]
-		self.graphic = koopaimage
+		self.graphic = koopaimg
 		self.gravity = koopaflyinggravity
 	elseif self.t == "beetle" then
-		self.graphic = beetleimage
+		self.graphic = beetleimg
 	else
-		self.graphic = koopaimage
+		self.graphic = koopaimg
 	end
 	self.offsetX = 6
 	self.offsetY = 0
@@ -57,6 +63,7 @@ function koopa:init(x, y, t)
 	self.quadcenterY = 19
 	
 	self.rotation = 0
+	self.gravitydirection = math.pi/2
 	self.direction = "left"
 	self.animationdirection = "right"
 	self.animationtimer = 0
@@ -67,6 +74,10 @@ function koopa:init(x, y, t)
 	self.falling = false
 	
 	self.shot = false
+	self.upsidedown = false
+	self.resettimer = 0
+	self.wiggletimer = 0
+	self.wiggleleft = true
 end	
 
 function koopa:func(i) -- 0-1 in please
@@ -74,20 +85,19 @@ function koopa:func(i) -- 0-1 in please
 end
 
 function koopa:update(dt)
-	--rotate back to 0 (portals)
-	self.rotation = math.fmod(self.rotation, math.pi*2)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
+	self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
+	
+	--Funnels and fuck
+	if self.funnel and not self.infunnel then
+		self:enteredfunnel(true)
 	end
 	
+	if self.infunnel and not self.funnel then
+		self:enteredfunnel(false)
+	end
+	
+	self.funnel = false
+		
 	if self.shot then
 		self.speedy = self.speedy + shotgravity*dt
 		
@@ -96,7 +106,10 @@ function koopa:update(dt)
 		
 		return false
 		
+	elseif self.kickedupsidedown then
+		
 	else
+		
 		if self.speedx > 0 then
 			self.animationdirection = "left"
 		else
@@ -129,6 +142,16 @@ function koopa:update(dt)
 			self.y = newy
 		end
 	
+		if self.flying == true and self.t == "flying2" then
+			self.timer = self.timer + dt
+			
+			while self.timer > koopaflyingtime do
+				self.timer = self.timer - koopaflyingtime
+			end
+			local newx = self:func(self.timer/koopaflyingtime)*koopaflyingdistance + self.startx
+			self.x = newx
+		end
+	
 		if self.small == false then
 			self.animationtimer = self.animationtimer + dt
 			while self.animationtimer > koopaanimationspeed do
@@ -147,9 +170,41 @@ function koopa:update(dt)
 					end
 				end
 			end
+		else
+			if math.abs(self.speedx) < 0.0001 then
+				self.resettimer = self.resettimer + dt
+				if self.resettimer > kooparesettime then
+					self.offsetY = 0
+					self.quadcenterY = 19
+					self.quad = koopaquad[spriteset][1]
+					self.small = false
+					self.mask = {	true, 
+									false, false, false, false, true,
+									false, true, false, true, false,
+									false, false, true, false, false,
+									true, true, false, false, true,
+									false, true, true, false, false,
+									true, false, true, true, true}
+					self.speedx = -koopaspeed
+					self.resettimer = 0
+				elseif self.resettimer > kooparesettime-koopawiggletime then
+					self.wiggletimer = self.wiggletimer + dt
+					while self.wiggletimer > koopawiggledelay do
+						self.wiggletimer = self.wiggletimer - koopawiggledelay
+						if self.wiggleleft then
+							self.x = self.x + 1/16
+						else
+							self.x = self.x - 1/16
+						end
+						self.wiggleleft = not self.wiggleleft
+					end
+				end
+			else
+				self.resettimer = 0
+			end
 		end
 		
-		if self.t ~= "redflying" or self.flying == false then
+		if (self.t ~= "redflying" and self.t ~= "flying2") or self.flying == false then
 			if self.small == false then
 				if self.speedx > 0 then
 					if self.speedx > koopaspeed then
@@ -229,9 +284,19 @@ function koopa:stomp(x, b)
 		if self.x > x then
 			self.speedx = koopasmallspeed
 			self.x = x+12/16+koopasmallspeed*gdt
+			if b then
+				self.size = b.size
+			else
+				self.size = 1
+			end
 		else
 			self.speedx = -koopasmallspeed
 			self.x = x-self.width-koopasmallspeed*gdt
+			if b then
+				self.size = b.size
+			else
+				self.size = 1
+			end
 		end
 	else
 		self.speedx = 0
@@ -239,21 +304,26 @@ function koopa:stomp(x, b)
 	end
 end
 
-function koopa:shotted(dir) --fireball, star, turtle
+function koopa:shotted(dir, below) --fireball, star, turtle
 	playsound(shotsound)
-	self.shot = true
 	self.small = true
 	self.quad = koopaquad[spriteset][3]
-	self.quadcenterY = 19
-	self.offsetY = 0
 	self.speedy = -shotjumpforce
 	self.direction = dir or "right"
-	self.active = false
 	self.gravity = shotgravity
 	if self.direction == "left" then
 		self.speedx = -shotspeedx
 	else
 		self.speedx = shotspeedx
+	end
+	
+	if below then
+		self.upsidedown = true
+		self.kickedupsidedown = true
+		self.offsetY = 4
+	else
+		self.shot = true
+		self.active = false
 	end
 end
 
@@ -267,7 +337,7 @@ function koopa:leftcollide(a, b)
 			self.speedx = -self.speedx
 			local x, y = b.cox, b.coy
 			if a == "tile" then
-				hitblock(x, y, {size=2})
+				hitblock(x, y, self)
 			else
 				playsound(blockhitsound)
 			end
@@ -310,7 +380,7 @@ function koopa:rightcollide(a, b)
 			self.speedx = -self.speedx
 			local x, y = b.cox, b.coy
 			if a == "tile" then
-				hitblock(x, y, {size=2})
+				hitblock(x, y, self)
 			else
 				playsound(blockhitsound)
 			end
@@ -372,6 +442,16 @@ function koopa:floorcollide(a, b)
 		end
 		self.speedy = -koopajumpforce
 	end
+	
+	if self.kickedupsidedown then
+		self.speedx = 0
+		self.kickedupsidedown = false
+	end	
+end
+
+function koopa:escapeshell()
+	self.upsidedown = false
+	self.kickedupsidedown = false
 end
 
 function koopa:ceilcollide(a, b)
@@ -386,4 +466,13 @@ end
 
 function koopa:startfall()
 	self.falling = true
+end
+
+function koopa:enteredfunnel(inside)
+	if inside then
+		self.infunnel = true
+	else
+		self.infunnel = false
+		self.gravity = nil
+	end
 end

@@ -160,7 +160,7 @@ function lube.client:Init(socktype)
 	if socktype then
 		if self[socktype] then
 			self.socktype = socktype
-		elseif love.filesystem.getInfo(socktype .. ".sock") then
+		elseif love.filesystem.exists(socktype .. ".sock") then
 			love.filesystem.require(socktype .. ".sock")
 			self[socktype] = _G[socktype]
 			self.socktype = socktype
@@ -373,7 +373,7 @@ function lube.server:Init(port, socktype)
 	if socktype then
 		if self[socktype] then
 			self.socktype = socktype
-		elseif love.filesystem.getInfo(socktype .. ".sock") then
+		elseif love.filesystem.exists(socktype .. ".sock") then
 			love.filesystem.require(socktype .. ".sock")
 			self[socktype] = _G[socktype]
 			self.socktype = socktype
@@ -527,7 +527,7 @@ function lube.server:update(dt)
 	local data, ip, port = self:receive()
 	while data do
 		local index = 0
-		for i, v in ipairs(self.clients) do
+		for i, v in pairs(self.clients) do
 			if v[1] == ip and v[2] == port then
 				index = i
 				break

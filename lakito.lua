@@ -46,7 +46,7 @@ function lakito:update(dt)
 			self.timer = self.timer + dt
 			if self.timer > lakitorespawn then
 				self.y = self.starty - 12/16
-				self.x = splitxscroll[#splitxscroll] + width
+				self.x = xscroll + width
 				self.timer = 0
 				self.shot = false
 				self.active = true
@@ -77,28 +77,34 @@ function lakito:update(dt)
 		--movement
 		--get nearest player (relative to that player's position in 1 second)
 		local nearestplayer = 1
-		local nearestplayerx = objects["player"][1].x + objects["player"][1].speedx * lakitodistancetime
-		for i = 2, players do
-			local v = objects["player"][i]
-			if math.abs(self.x - (v.x + v.speedx*lakitodistancetime)) < nearestplayerx and not v.dead then
-				nearestplayer = i
-				nearestplayerx = v.x + v.speedx*lakitodistancetime
+		while objects["player"][nearestplayer] and (objects["player"][nearestplayer].dead or (arcade and not arcadeplaying[nearestplayer])) do
+			nearestplayer = nearestplayer + 1
+		end
+		
+		if objects["player"][nearestplayer] then
+			local nearestplayerx = objects["player"][nearestplayer].x
+			for i = 2, players do
+				local v = objects["player"][i]
+				if v.x > nearestplayerx and not v.dead and (not arcade or arcadeplaying[i]) then
+					nearestplayer = i
+					nearestplayerx = v.x + v.speedx*lakitodistancetime
+				end
 			end
-		end
-		
-		local distance = math.abs(self.x - nearestplayerx)
-		
-		--check if too far in wrong direciton
-		if self.direction == "left" and self.x < nearestplayerx-lakitospace then
-			self.direction = "right"
-		elseif self.direction == "right" and self.x > nearestplayerx+lakitospace then
-			self.direction = "left"
-		end
-		
-		if self.direction == "right" then
-			self.speedx = math.max(2, round((distance-3)*2))
-		else
-			self.speedx = -2
+			
+			local distance = math.abs(self.x - nearestplayerx)
+			
+			--check if too far in wrong direciton
+			if self.direction == "left" and self.x < nearestplayerx-lakitospace then
+				self.direction = "right"
+			elseif self.direction == "right" and self.x > nearestplayerx+lakitospace then
+				self.direction = "left"
+			end
+			
+			if self.direction == "right" then
+				self.speedx = math.max(2, round((distance-3)*2))
+			else
+				self.speedx = -2
+			end
 		end
 	end
 		
@@ -124,7 +130,7 @@ function lakito:draw()
 		quad = 2
 	end
 	
-	love.graphics.draw(lakitoimg, lakitoquad[quad], math.floor((self.x-xscroll-2/16+.5)*16*scale), (self.y-0.5+1/16)*16*scale, 0, horscale, verscale, 8, 12)
+	love.graphics.drawq(lakitoimg, lakitoquad[quad], math.floor((self.x-xscroll-2/16+.5)*16*scale), (self.y-yscroll-0.5+1/16)*16*scale, 0, horscale, verscale, 8, 12)
 end
 
 function lakito:stomp()

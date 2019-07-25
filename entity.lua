@@ -2,6 +2,7 @@ entity = class:new()
 
 entitylist = {	
 	"remove",
+	
 	"mushroom",
 	"oneup",
 	"star",
@@ -18,77 +19,77 @@ entitylist = {
 	"hammerbro",
 	"cheepred",
 	"cheepwhite",
-	"platformup", --my mouse is dying :(
-	"platformright",
+	"platform",
+	"regiontrigger",
 	"box",
 	"pipe",
 	"lakito",
 	"mazestart",
 	"mazeend",
 	"mazegate",
-	"emancehor",
-	"emancever",
-	"doorver",
-	"doorhor",
+	"emance",
+	"scaffold",
+	"door",
+	"pedestal",
 	"wallindicator",
 	"pipespawn",
 	"platformfall",
 	"bulletbillstart",
 	"bulletbillend",
 	"drain",
-	"lightbridgeright",
-	"lightbridgeleft",
-	"lightbridgedown",
-	"lightbridgeup",
+	"lightbridge",
+	"portal1",
+	"portal2",
+	"actionblock",
 	"button",
-	"platformspawnerdown",
-	"platformspawnerup",
+	"platformspawner",
+	"",
 	"groundlightver",
 	"groundlighthor",
 	"groundlightupright",
 	"groundlightrightdown",
 	"groundlightdownleft",
 	"groundlightleftup",
-	"faithplateup",
-	"faithplateright",
-	"faithplateleft",
-	"laserright",
-	"laserdown",
-	"laserleft",
-	"laserup",
-	"laserdetectorright",
-	"laserdetectordown",
-	"laserdetectorleft",
-	"laserdetectorup",
+	"faithplate",
+	"",
+	"",
+	"laser",
+	"",
+	"",
+	"",
+	"laserdetector",
+	"",
+	"",
+	"",
 	"bulletbill",
-	"bluegeldown",
-	"bluegelright",
-	"bluegelleft",
-	"orangegeldown",
-	"orangegelright",
-	"orangegelleft",
+	"geldispenser",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"boxtube",
-	"pushbuttonleft",
-	"pushbuttonright",
+	"pushbutton",
+	"",
 	"plant",
-	"whitegeldown",
-	"whitegelright",
-	"whitegelleft",
+	"",
+	"",
+	"",
 	"timer",
 	"beetle",
 	"beetlehalf",
 	"kooparedflying",
 	"koopaflying",
-	"castlefireccw",
+	"castlefire",
 	"seesaw",
 	"warppipe",
-	"castlefirecw",
+	"squarewave",
 	"lakitoend",
 	"notgate",
-	"geltop",
-	"gelleft",
-	"gelbottom",
-	"gelright",
+	"gel",
+	"orgate",
+	"andgate",
+	"koopaflying2",
 	"firestart",
 	"bowser",
 	"axe",
@@ -100,7 +101,19 @@ entitylist = {
 	"upfire",
 	"spikey",
 	"spikeyhalf",
-	"checkpoint"
+	"checkpoint",
+	"ceilblocker",
+	"",
+	"",
+	"",
+	"funnel",
+	"",
+	"",
+	"",
+	"panel",
+	"textentity",
+	"",
+	""
 }
 
 entitydescriptions = {
@@ -123,14 +136,14 @@ entitydescriptions = {
 	"place on empty underwater tile - cheep cheep fish - white", --"cheepwhite",
 	"place on empty tile - oscillating platform - right click for width", --"platformup", --my mouse is dying :(
 	"place on empty tile - oscillating platform - right click for width", --"platformright",
-	"place on empty tile - companion cube", --"box",
+	"place on empty tile - weighted storage cube", --"box",
 	"place on pipe tile - pipe - right click for destination sublevel", --"pipe",
 	"place on empty tile - lakito - you can also add a lakito end tile", --"lakito",
 	"place on empty tile - logical maze start", --"mazestart",
 	"place on empty tile - logical maze end", --"mazeend",
 	"place on empty tile - maze gate - right click for the gate number", --"mazegate",
 	"place on empty tile - horizontal emancipate grill - stops portals and companion cubes", --"emancehor",
-	"place on empty tile - vertical emancipate grill - stops portals and companion cubes", --"emancever",
+	"",
 	"place on empty tile - vertical door - use link tool", --"doorver",
 	"place on empty tile - horizontal door - use link tool", --"doorhor",
 	"place on a wall - use link tool to show on or off state", --"wallindicator",
@@ -139,10 +152,10 @@ entitydescriptions = {
 	"place anywhere - beginning of bullet zone", --"bulletbillstart",
 	"place anywhere - end of bullet zone", --"bulletbillend",
 	"place at the very bottom in an underwater level - drain - attracts mario down", --"drain",
-	"place on empty tile - light bridge to right", --"lightbridgeright",
-	"place on empty tile - light bridge to left", --"lightbridgeleft",
-	"place on empty tile - light bridge to down", --"lightbridgedown",
-	"place on empty tile - light bridge to up", --"lightbridgeup",
+	"place on empty tile - light bridge", --"lightbridgeright",
+	"", --"lightbridgeleft",
+	"", --"lightbridgedown",
+	"", --"lightbridgeup",
 	"place on empty tile - floor button - use link", --"button",
 	"place on top - down platform spawner - right click for width", --"platformspawnerdown",
 	"place at the bottom - up platform spawner - right click for width", --"platformspawnerup",
@@ -156,9 +169,9 @@ entitydescriptions = {
 	"place on ground wall - faith plate to the right", --"faithplateright",
 	"place on ground wall - faith plate to the left", --"faithplateleft",
 	"place on empty tile - laser to right", --"laserright",
-	"place on empty tile - laser to bottom", --"laserdown",
-	"place on empty tile - laser to left", --"laserleft",
-	"place on empty tile - laser to up", --"laserup",
+	"",
+	"",
+	"",
 	"place on right edge wall or empty tile - will send off signal if laser is detected - use link tool", --"laserdetectorright",
 	"place on down edge wall or empty tile - will send off signal if laser is detected - use link tool", --"laserdetectordown",
 	"place on left edge wall or empty tile - will send off signal if laser is detected - use link tool", --"laserdetectorleft",
@@ -203,32 +216,379 @@ entitydescriptions = {
 	"place anywhere - a lava ball will jump up and down on this line", --"upfire",
 	"place on empty tile - spikey", --"spikey",
 	"place on empty tile - spikey - more to the right", --"spikeyhalf",
-	"place on empty tile - checkpoint - mario will spawn there if he dies after reaching it", --"checkpoint"
+	"place on empty tile - checkpoint - mario will spawn there if he dies after reaching it", --"checkpoint",
+	"place anywhere - makes it impossible to jump over the top row of blocks", --"ceilblocker"
+	"place on empty tile - will produce purple gel to down - purple gel } wallwalk", --"purplegeldown",
+	"place on empty tile - will produce purple gel to right - purple gel } wallwalk", --"purplegelright",
+	"place on empty tile - will produce purple gel to left - purple gel } wallwalk", --"purplegelleft",
+	"fuck",
+	"piss",
+	"ass",
+	"vaginalol",
+	"what",
+	"is",
+	"this",
+	"shit"
 }
 
-rightclickvalues = {}
-rightclickvalues["platformspawnerup"] = {"width", 1.5, 2, 3, 5}
-rightclickvalues["platformspawnerdown"] = {"width", 1.5, 2, 3, 5}
-rightclickvalues["platformup"] = {"width", 1.5, 2, 3, 5}
-rightclickvalues["platformright"] = {"width", 1.5, 2, 3, 5}
-rightclickvalues["platformfall"] = {"width", 1.5, 2, 3, 5}
-rightclickvalues["timer"] = {"time", 1, 2, 4, 8}
-rightclickvalues["seesaw"] = {"type", 1, 2, 3, 4, 5, 6, 7, 8, 9}
+rightclickmenues = {}
 
-rightclickvalues["pipe"] = {"target", 0, 1, 2, 3, 4, 5}
-rightclickvalues["pipespawn"] = {"target", 0, 1, 2, 3, 4, 5}
-rightclickvalues["warppipe"] = {"target", 1, 2, 3, 4, 5, 6, 7, 8}
-rightclickvalues["vine"] = {"target", 0, 1, 2, 3, 4, 5}
+rightclickmenues.seesaw = {
+{t="text", value="distance:"},
+{t="scrollbar", func=seesawdistancefunction, default=.5},
+{t="text", value="left height:"},
+{t="scrollbar", func=seesawheightfunction, default=.5},
+{t="text", value="right height:"},
+{t="scrollbar", func=seesawheightfunction, default=.5},
+{t="text", value="platf. width:"},
+{t="scrollbar", func=platformwidthfunction, default=2/9+0.001},
+}
 
-rightclickvalues["castlefirecw"] = {"length", 6, 12}
-rightclickvalues["castlefireccw"] = {"length", 6, 12}
+rightclickmenues.spawn = {
+	{t="text", value="for players:"},
+	{t="checkbox", text="all", default="true"},
+	{t="checkbox", text="1", default="false"},
+	{t="checkbox", text="2", default="false"},
+	{t="checkbox", text="3", default="false"},
+	{t="checkbox", text="4", default="false"},
+	{t="checkbox", text="the rest", default="false"}
+}
 
-rightclickvalues["mazegate"] = {"gateno", 1, 2, 3, 4, 5}
+rightclickmenues.castlefire = {
+{t="text", value="length:"},
+{t="scrollbar", func=castlefirelengthfunction, default=.35},
+{t="text", value="delay:"},
+{t="scrollbar", func=castlefiredelayfunction, default=.5},
+{},
+{t="checkbox", text="counter-cw", default="false"}
+}
 
-rightclickvalues["geltop"] = {"gelid", 1, 2, 3}
-rightclickvalues["gelleft"] = {"gelid", 1, 2, 3}
-rightclickvalues["gelbottom"] = {"gelid", 1, 2, 3}
-rightclickvalues["gelright"] = {"gelid", 1, 2, 3}
+rightclickmenues.timer = {
+{t="text", value="time:"},
+{t="scrollbar", func=timerfunction, default=0},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.wallindicator = {
+{t="checkbox", text="reversed", default="false"},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.notgate = {
+{t="checkbox", text="visible", default="true"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.orgate = {
+{t="checkbox", text="visible", default="true"},
+{},
+{t="linkbutton", value="link in 1", link="1"},
+{t="linkbutton", value="link in 2", link="2"},
+{t="linkbutton", value="link in 3", link="3"},
+{t="linkbutton", value="link in 4", link="4"}
+}
+
+rightclickmenues.andgate = {
+{t="checkbox", text="visible", default="true"},
+{},
+{t="linkbutton", value="link in 1", link="1"},
+{t="linkbutton", value="link in 2", link="2"},
+{t="linkbutton", value="link in 3", link="3"},
+{t="linkbutton", value="link in 4", link="4"}
+}
+
+rightclickmenues.boxtube = {
+{t="text", value="on load:"},
+{t="checkbox", text="drop box", default="true"},
+{},
+{t="text", value="object:"},
+{t="submenu", entries={"cube", "goomba", "koopa"}, default=1, width=6},
+{},
+{t="linkbutton", value="link drop", link="drop"}
+}
+
+rightclickmenues.laserdetector = {
+{t="text", value="direction:"},
+{t="directionbuttons", left=true, right=true, up=true, down=true, default="right"}
+}
+
+rightclickmenues.pushbutton = {
+{t="text", value="direction:"},
+{t="directionbuttons", left=true, right=true, default="left"},
+{},
+{t="text", value="base:"},
+{t="directionbuttons", left=true, right=true, up=true, down=true, default="down"}
+}
+
+rightclickmenues.platformfall = {
+{t="text", value="width:"},
+{t="scrollbar", func=platformwidthfunction, default=2/9+0.001}
+}
+
+rightclickmenues.pipe = {
+{t="text", value="destination:"},
+{t="submenu", entries={"main", "sub-1", "sub-2", "sub-3", "sub-4", "sub-5"}, default=1, width=5},
+}
+
+rightclickmenues.vine = {
+{t="text", value="destination:"},
+{t="submenu", entries={"main", "sub-1", "sub-2", "sub-3", "sub-4", "sub-5"}, default=1, width=5},
+}
+
+rightclickmenues.mazegate = {
+{t="text", value="gatenumber:"},
+{t="submenu", entries={"main", "gate 1", "gate 2", "gate 3", "gate 4", "gate 5"}, default=1, width=6},
+}
+
+rightclickmenues.pipespawn = {
+{t="text", value="source:"},
+{t="submenu", entries={"main", "sub-1", "sub-2", "sub-3", "sub-4", "sub-5"}, default=1, width=5},
+}
+
+rightclickmenues.warppipe = {
+{t="text", value="destination:"},
+{t="submenu", entries={"world 1", "world 2", "world 3", "world 4", "world 5", "world 6", "world 7", "world 8"}, default=1, width=7},
+}
+
+rightclickmenues.funnel = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, up=true, right=true, down=true, default="right"}, 
+{}, 
+{t="text", value="speed:"}, 
+{t="scrollbar", func=function (i) return (funnelmaxspeed-funnelminspeed)*round(i, 2)+funnelminspeed end, default=2/9}, 
+{}, 
+{t="checkbox", text="reverse", default="false"}, 
+{t="checkbox", text="default off", default="false"}, 
+{},
+{t="linkbutton", value="link reverse", link="reverse"}, 
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.emance = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", hor=true, ver=true, default="ver"}, 
+{}, 
+{t="checkbox", text="default off", default="false"}, 
+{}, 
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.laser = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, up=true, right=true, down=true, default="right"}, 
+{}, 
+{t="checkbox", text="default off", default="false"}, 
+{}, 
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.lightbridge = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, up=true, right=true, down=true, default="right"}, 
+{}, 
+{t="checkbox", text="default off", default="false"}, 
+{}, 
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.platformspawner = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", up=true, down=true, default="up"}, 
+{}, 
+{t="text", value="width:"},
+{t="scrollbar", func=platformwidthfunction, default=2/9+0.001},
+{t="text", value="speed:"},
+{t="scrollbar", func=platformspeedfunction, default=1/3},
+{t="text", value="delay:"},
+{t="scrollbar", func=platformspawndelayfunc, default=1/9}
+}
+
+rightclickmenues.platform = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", down=true, left=true, default="down"}, 
+{}, 
+{t="text", value="width:"},
+{t="scrollbar", func=platformwidthfunction, default=2/9+0.001},
+{t="text", value="distance:"},
+{t="scrollbar", func=platformdistancefunction, default=.5},
+{t="text", value="duration:"},
+{t="scrollbar", func=platformtimefunction, default=.5}
+}
+
+rightclickmenues.scaffold = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", down=true, left=true, right=true, up=true, default="right"},
+{t="checkbox", text="default off", default="false"}, 
+{t="text", value="width:"},
+{t="scrollbar", func=scaffoldwidthfunction, default=2/9+0.001},
+{t="text", value="distance:"},
+{t="scrollbar", func=scaffolddistancefunction, default=.5},
+{t="text", value="speed:"},
+{t="scrollbar", func=scaffoldspeedfunction, default=.5},
+{t="text", value="wait start:"},
+{t="scrollbar", func=scaffoldtimefunction, default=0},
+{t="text", value="wait end:"},
+{t="scrollbar", func=scaffoldtimefunction, default=0},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.faithplate = {
+{t="text", value="velocity x:"},
+{t="scrollbar", func=faithplatexfunction, default=.8},
+{t="text", value="velocity y:"},
+{t="scrollbar", func=faithplateyfunction, default=.5},
+{},
+{t="checkbox", text="default off", default="false"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.door = {
+{t="text", value="direction:"},
+{t="directionbuttons", hor=true, ver=true, default="ver"},
+{},
+{t="checkbox", text="start open", default="false"},
+{t="checkbox", text="force close", default="false"},
+{},
+{t="linkbutton", value="link open", link="open"}
+}
+
+rightclickmenues.gel = {
+{t="text", value="type:"},
+{t="submenu", entries={"blue", "orange", "white", "purple"}, default=1, width=6},
+{},
+{t="text", value="direction:"}, 
+{t="checkbox", text="left", default="false"},
+{t="checkbox", text="top", default="true"},
+{t="checkbox", text="right", default="false"},
+{t="checkbox", text="bottom", default="false"}
+}
+
+rightclickmenues.geldispenser = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, right=true, down=true, up=true, default="down"}, 
+{},
+{t="text", value="type:"},
+{t="submenu", entries={"blue", "orange", "white", "purple"}, default=1, width=6},
+{},
+{t="checkbox", text="default off", default="false"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.panel = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, up=true, right=true, down=true, default="right"}, 
+{}, 
+{t="checkbox", text="start white", default="false"}, 
+{}, 
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.button = {
+{t="text", value="direction:"},
+{t="directionbuttons", left=true, right=true, up=true, down=true, default="down"}
+}
+
+rightclickmenues.textentity = {
+{t="input", default="text", max=50},
+{},
+{t="checkbox", text="default off", default="false"},
+{},
+{t="text", value="red:"},
+{t="scrollbar", func=rgbfunction, default=1},
+{t="text", value="green:"},
+{t="scrollbar", func=rgbfunction, default=1},
+{t="text", value="blue:"},
+{t="scrollbar", func=rgbfunction, default=1},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.squarewave = {
+{t="text", value="off time"},
+{t="scrollbar", func=squarewavetimefunction, default=.5},
+{t="text", value="on time"},
+{t="scrollbar", func=squarewavetimefunction, default=.5},
+{},
+{t="text", value="start time"},
+{t="scrollbar", default=0},
+{},
+{t="checkbox", text="visible", default="true"}
+}
+
+rightclickmenues.upfire = {
+{t="text", value="height:"},
+{t="scrollbar", func=upfireheightfunction, default=.5},
+{},
+{t="text", value="wait time:"},
+{t="scrollbar"; func=upfirewaitfunction, default=.5},
+{t="text", value="random add:"},
+{t="scrollbar"; func=upfirerandomfunction, default=0}
+}
+
+rightclickmenues.regiontrigger = {
+{t="checkbox", text="players only", default="true"},
+{},
+{t="regionselect", value="select region", region="region", default="region:0:0:1:1"}
+}
+
+rightclickmenues.checkpoint = {
+{t="text", value="for players:"},
+{t="checkbox", text="all", default="true"},
+{t="checkbox", text="1", default="false"},
+{t="checkbox", text="2", default="false"},
+{t="checkbox", text="3", default="false"},
+{t="checkbox", text="4", default="false"},
+{t="checkbox", text="the rest", default="false"},
+{},
+{t="checkbox", text="visible", default="false"},
+{},
+{t="regionselect", value="select region", region="region", default="region:0:0:1:1"},
+{},
+{t="linkbutton", value="link trigger", link="trigger"}
+}
+
+rightclickmenues.portal1 = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, right=true, down=true, up=true, default="up"}, 
+{},
+{t="text", value="portal id:"},
+{t="submenu", entries={"1", "2", "3", "4", "5", "6", "7", "8"}, default=1, width=1},
+{},
+{t="checkbox", text="default on", default="false"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.portal2 = {
+{t="text", value="direction:"}, 
+{t="directionbuttons", left=true, right=true, down=true, up=true, default="up"}, 
+{},
+{t="text", value="portal id:"},
+{t="submenu", entries={"1", "2", "3", "4", "5", "6", "7", "8"}, default=1, width=1},
+{},
+{t="checkbox", text="default on", default="false"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+
+rightclickmenues.pedestal = {
+{t="checkbox", text="blue", default="false"},
+{t="checkbox", text="orange", default="false"}
+}
+
+
+groundlighttable = {"groundlightver", "groundlighthor", "groundlightupright", "groundlightrightdown", "groundlightdownleft", "groundlightleftup"}
+for i = 1, #groundlighttable do
+rightclickmenues[groundlighttable[i]] = {
+{t="checkbox", text="default on", default="false"},
+{},
+{t="linkbutton", value="link power", link="power"}
+}
+end
 
 function entity:init(img, x, y, width, height)
 	self.image = img

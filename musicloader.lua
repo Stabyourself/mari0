@@ -1,5 +1,5 @@
 music = {
-	thread = love.thread.newThread("musicloader_thread.lua"),
+	thread = love.thread.newThread("musicthread", "musicloader_thread.lua"),
 	toload = {},
 	loaded = {},
 	list = {},
@@ -13,6 +13,11 @@ function music:init()
 	self.thread:start()
 end
 
+function music:exit()
+	self.thread:set("musiclist", 1) -- sending a number will tell the thread to exit its loop
+	self.thread:wait()
+end
+
 function music:load(musicfile) -- can take a single file string or an array of file strings
 	if type(musicfile) == "table" then
 		for i,v in ipairs(musicfile) do
@@ -22,7 +27,7 @@ function music:load(musicfile) -- can take a single file string or an array of f
 		self:preload(musicfile)
 	end
 	self.stringlist = table.concat(self.toload, ";")
-	love.thread.getChannel("musiclist"):push(self.stringlist)
+	self.thread:set("musiclist", self.stringlist)
 end
 
 function music:preload(musicfile)
@@ -39,7 +44,7 @@ function music:play(name)
 			self:onLoad(name, source)
 		end
 		if self.loaded[name] then
-			self.loaded[name]:play()
+			playsound(self.loaded[name])
 		end
 	end
 end
@@ -62,7 +67,7 @@ end
 
 function music:update()
 	for i,v in ipairs(self.toload) do
-		local source = love.thread.getChannel(v):pop()
+		local source = self.thread:get(v)
 		if source then
 			self:onLoad(v, source)
 		end
@@ -72,7 +77,7 @@ function music:update()
 			source:setPitch(self.pitch)
 		end
 	end
-	local err = self.thread:getError()
+	local err = self.thread:get("error") 
 	if err then print(err) end
 end
 

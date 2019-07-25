@@ -1,4 +1,0 @@
-name=acid trip
-author=raicuparta
-description=we gon sev da prinsass
-lives=3

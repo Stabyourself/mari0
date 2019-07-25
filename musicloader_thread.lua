@@ -1,19 +1,18 @@
+local thisthread = love.thread.getThread()
+
 require("love.filesystem")
 require("love.sound")
 require("love.audio")
 require("love.timer")
-
-love.filesystem.setIdentity("mari0")
 
 local musicpath = "sounds/%s.ogg"
 
 local musiclist = {}
 local musictoload = {} -- waiting to be loaded into memory
 
-local function getmusiclist()
+local function parsemusiclist(musicliststr)
 	-- the music string should have names separated by the ";" character
 	-- music will be loaded in in the same order as they appear in the string
-	local musicliststr = love.thread.getChannel("musiclist"):pop()
 	if musicliststr then
 		for musicname in musicliststr:gmatch("[^;]+") do
 			if not musiclist[musicname] then
@@ -25,11 +24,11 @@ local function getmusiclist()
 end
 
 local function getfilename(name)
-	local filename = name:match("%.[mo][pg][3g]$") and name or musicpath:format(name) -- mp3 or ogg
-	if love.filesystem.getInfo(filename).type == "file" then
+	local filename = (name:match("%.mp3$") or name:match("%.ogg$")) and name or musicpath:format(name) -- mp3 or ogg
+	if love.filesystem.exists(filename) and love.filesystem.isFile(filename) then
 		return filename
 	else
-		print(string.format("thread can't load \"%s\": not a file!", filename))
+		print(string.format("thread can't load %q: can't find file!", filename))
 	end
 end
 
@@ -40,13 +39,19 @@ local function loadmusic()
 		if filename then
 			local source = love.audio.newSource(love.sound.newDecoder(filename, 512 * 1024), "static")
 			--print("thread loaded music", name)
-			love.thread.getChannel(name):push(source)
+			thisthread:set(name, source)
 		end
+		return true
 	end
 end
 
 while true do
-	getmusiclist()
-	loadmusic()
-	love.timer.sleep(1/60)
+	if not loadmusic() then
+		local musicliststr = thisthread:demand("musiclist")
+		if type(musicliststr) == "string" then
+			parsemusiclist(musicliststr)
+		elseif type(musicliststr) == "number" then
+			break -- main thread is telling us it needs to quit, so we exit the loop
+		end
+	end
 end

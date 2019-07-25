@@ -327,9 +327,9 @@ function sha1(msg)
    end
 
    -- now to append the length as a 64-bit number.
-   local B1, R1 = math.fmodf(msg_len_in_bits  / 0x01000000)
-   local B2, R2 = math.fmodf( 0x01000000 * R1 / 0x00010000)
-   local B3, R3 = math.fmodf( 0x00010000 * R2 / 0x00000100)
+   local B1, R1 = math.modf(msg_len_in_bits  / 0x01000000)
+   local B2, R2 = math.modf( 0x01000000 * R1 / 0x00010000)
+   local B3, R3 = math.modf( 0x00010000 * R2 / 0x00000100)
    local B4     =            0x00000100 * R3
 
    local L64 = string.char( 0) .. string.char( 0) .. string.char( 0) .. string.char( 0) -- high 32 bits

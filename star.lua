@@ -32,6 +32,7 @@ function star:init(x, y)
 	self.quadcenterY = 8
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	self.uptimer = 0
 	self.timer = 0
 	self.quadi = 1
@@ -40,19 +41,7 @@ function star:init(x, y)
 end
 
 function star:update(dt)
-	--rotate back to 0 (portals)
-	self.rotation = math.fmod(self.rotation, math.pi*2)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
-	end
+	self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
 	
 	if self.uptimer < mushroomtime then
 		self.uptimer = self.uptimer + dt
@@ -88,7 +77,7 @@ end
 function star:draw()
 	if self.drawable == false then
 		--Draw it coming out of the block.
-		love.graphics.draw(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor((self.y*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
+		love.graphics.drawq(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor(((self.y-yscroll)*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
 	end
 end
 

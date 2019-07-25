@@ -35,9 +35,22 @@ function plant:init(x, y)
 	self.quadnum = 1
 	self.timer1 = 0
 	self.timer2 = plantouttime+1.5
+	
+	self.firstupdate = true
 end
 
 function plant:update(dt)
+	if self.firstupdate then
+		for i = 1, players do
+			local v = objects["player"][i]
+			if inrange(v.x+v.width/2, self.x+self.width/2-3, self.x+self.width/2+3) then --player is near plant
+				self.timer2 = plantouttime+plantintime
+			end
+		end
+		self.firstupdate = false
+	end
+
+
 	self.timer1 = self.timer1 + dt
 	while self.timer1 > plantanimationdelay do
 		self.timer1 = self.timer1 - plantanimationdelay
@@ -59,15 +72,17 @@ function plant:update(dt)
 		self.y = self.y + plantmovespeed*dt
 		if self.y > self.starty then
 			self.y = self.starty
+			self.active = false
 		end
 	else
 		for i = 1, players do
 			local v = objects["player"][i]
-			if inrange(v.x+v.width/2, self.x+self.width/2-3, self.x+self.width/2+3) then --no player near
+			if inrange(v.x+v.width/2, self.x+self.width/2-3, self.x+self.width/2+3) then --player is near plant
 				return
 			end
 		end
 		self.timer2 = 0
+		self.active = true
 	end
 	
 	return self.destroy

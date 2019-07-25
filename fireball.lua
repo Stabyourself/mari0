@@ -41,6 +41,7 @@ function fireball:init(x, y, dir, v)
 	self.fireballthrower = v
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	self.timer = 0
 	self.quadi = 1
 end
@@ -73,7 +74,7 @@ function fireball:update(dt)
 		end
 	end
 	
-	if self.x < xscroll-1 or self.x > xscroll+width+1 or self.y > 15 and self.active then
+	if self.x < xscroll-1 or self.x > xscroll+width+1 or self.y > mapheight and self.active then
 		self.fireballthrower:fireballcallback()
 		self.destroy = true
 	end
@@ -127,6 +128,7 @@ function fireball:hitstuff(a, b)
 		if a ~= "koopa" or b.t ~= "beetle" then
 			b:shotted("right")
 			if a ~= "bowser" then
+				track("enemy_kills")
 				addpoints(firepoints[a], self.x, self.y)
 			end
 		end

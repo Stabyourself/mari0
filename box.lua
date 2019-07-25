@@ -30,14 +30,15 @@ function box:init(x, y)
 	
 	--IMAGE STUFF
 	self.drawable = true
-	self.graphic = boximage
-	self.quad = boxquad
+	self.graphic = boximg
+	self.quad = boxquad[1]
 	self.offsetX = 6
 	self.offsetY = 2
 	self.quadcenterX = 6
 	self.quadcenterY = 6
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	
 	self.falling = false
 	self.destroying = false
@@ -50,6 +51,17 @@ function box:update(dt)
 	if self.falling == false then
 		friction = boxfriction
 	end
+	
+	--Funnels and fuck
+	if self.funnel and not self.infunnel then
+		self:enteredfunnel(true)
+	end
+	
+	if self.infunnel and not self.funnel then
+		self:enteredfunnel(false)
+	end
+	
+	self.funnel = false
 	
 	if not self.pushed then
 		if self.speedx > 0 then
@@ -67,19 +79,7 @@ function box:update(dt)
 		self.pushed = false
 	end
 	
-	--rotate back to 0 (portals)
-	self.rotation = math.fmod(self.rotation, math.pi*2)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
-	end
+	self.rotation = 0
 	
 	if self.parent then
 		local oldx = self.x
@@ -101,6 +101,8 @@ function box:update(dt)
 				end
 			end
 		end
+		
+		self.rotation = self.parent.rotation
 	end
 	
 	self.userect.x = self.x
@@ -177,10 +179,16 @@ function box:startfall()
 end
 
 function box:emancipate()
-	if self.parent then
-		self.parent:cubeemancipate()
+	if not self.destroying then
+		local speedx, speedy = self.speedx, self.speedy
+		if self.parent then
+			self.parent:cubeemancipate()
+			speedx = speedx + self.parent.speedx
+			speedy = speedy + self.parent.speedy
+		end
+		table.insert(emancipateanimations, emancipateanimation:new(self.x, self.y, self.width, self.height, self.graphic, self.quad, speedx, speedy, self.rotation, self.offsetX, self.offsetY, self.quadcenterX, self.quadcenterY))
+		self:destroy()
 	end
-	self:destroy()
 end
 
 function box:destroy()
@@ -188,20 +196,21 @@ function box:destroy()
 	self.destroying = true
 	
 	for i = 1, #self.outtable do
-		if self.outtable[i].input then
-			self.outtable[i]:input("toggle")
+		if self.outtable[i][1].input then
+			self.outtable[i][1]:input("toggle", self.outtable[i][2])
 		end
 	end
 end
 
-function box:addoutput(a)
-	table.insert(self.outtable, a)
+function box:addoutput(a, t)
+	table.insert(self.outtable, {a, t})
 end
 
 function box:used(id)
 	self.parent = objects["player"][id]
 	self.active = false
 	objects["player"][id]:pickupbox(self)
+	track("boxes_picked_up")
 end
 
 function box:dropped()
@@ -211,4 +220,25 @@ end
 
 function box:portaled()
 	self.portaledframe = true
+end
+
+function box:enteredfunnel(inside)
+	if inside then
+		self.infunnel = true
+	else
+		self.infunnel = false
+		self.gravity = nil
+	end
+end
+
+function box:faithplate(dir)
+	self.falling = true
+end
+
+function box:onbutton(s)
+	if s then
+		self.quad = boxquad[2]
+	else
+		self.quad = boxquad[1]
+	end
 end

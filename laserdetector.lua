@@ -1,11 +1,21 @@
 laserdetector = class:new()
 
-function laserdetector:init(x, y, dir)
+function laserdetector:init(x, y, r)
 	self.cox = x
 	self.coy = y
-	self.dir = dir
+	self.dir = "right"
 	
 	self.drawable = false
+	
+	--Input list
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--DIRECTION
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dir = self.r[1]
+		table.remove(self.r, 1)
+	end
 	
 	self.outtable = {}
 	self.allowclear = true
@@ -18,8 +28,8 @@ function laserdetector:update(dt)
 	if self.out ~= self.prevout then
 		self.prevout = self.out
 		for i = 1, #self.outtable do
-			if self.outtable[i].input then
-				self.outtable[i]:input(self.out)
+			if self.outtable[i][1].input then
+				self.outtable[i][1]:input(self.out, self.outtable[i][2])
 			end
 		end
 	end
@@ -41,11 +51,11 @@ function laserdetector:draw()
 	elseif self.dir == "up" then
 		rot = math.pi*1.5
 	end
-	love.graphics.draw(laserdetectorimg, math.floor((self.cox-xscroll-0.5)*16*scale), (self.coy-1)*16*scale, rot, scale, scale, 8, 8)
+	love.graphics.draw(laserdetectorimg, math.floor((self.cox-xscroll-0.5)*16*scale), (self.coy-yscroll-1)*16*scale, rot, scale, scale, 8, 8)
 end
 
-function laserdetector:addoutput(a)
-	table.insert(self.outtable, a)
+function laserdetector:addoutput(a, t)
+	table.insert(self.outtable, {a, t})
 end
 
 function laserdetector:clear()

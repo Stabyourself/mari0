@@ -1,13 +1,34 @@
 door = class:new()
 
-function door:init(x, y, r, dir)
+function door:init(x, y, r)
 	self.cox = x
 	self.coy = y
-	self.r = r
-	self.dir = dir
+	self.dir = "ver"
 	
 	self.open = false
 	self.timer = 0
+	
+	self.input1state = "off"
+	
+	--Input list
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--DIRECTION
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.dir = self.r[1]
+		table.remove(self.r, 1)
+	end
+	--POWER
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.open = (self.r[1] == "true")
+		table.remove(self.r, 1)
+	end
+	--FORCE CLOSE (for the padawans)
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.forceclose = (self.r[1] == "true")
+		table.remove(self.r, 1)
+	end
 	
 	--PHYSICS STUFF
 	if self.dir == "hor" then
@@ -30,44 +51,45 @@ function door:init(x, y, r, dir)
 	
 	self.drawable = false
 	self.firstupdate = true
+	
+	self:closeopen(self.open)
+	self.targetopen = self.open
 end
 
 function door:link()
-	self.outtable = {}
-	if #self.r > 2 then
+	while #self.r > 3 do
 		for j, w in pairs(outputs) do
 			for i, v in pairs(objects[w]) do
-				if tonumber(self.r[4]) == v.cox and tonumber(self.r[5]) == v.coy then
-					v:addoutput(self)
+				if tonumber(self.r[3]) == v.cox and tonumber(self.r[4]) == v.coy then
+					v:addoutput(self, self.r[2])
 				end
 			end
 		end
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
+		table.remove(self.r, 1)
 	end
 end
 
-function door:update(dt)
-	if self.firstupdate then
-		self.firstupdate = false
-		for i, v in pairs(objects["laser"]) do
-			v:updaterange()
-		end
-		for i, v in pairs(objects["lightbridge"]) do
-			v:updaterange()
+function door:update(dt)	
+	if self.targetopen ~= self.open then
+		if self.forceclose then
+			self:closeopen(self.targetopen)
+		else
+			if #checkrect(self.x, self.y, self.width, self.height, {"exclude", self}) == 0 then
+				self:closeopen(self.targetopen)
+			end
 		end
 	end
-		
+	
 	if self.open then
 		if self.timer < 1 then
 			self.timer = self.timer + doorspeed*dt
 			if self.timer >= 1 then
 				self.timer = 1
 				self.active = false
-				for i, v in pairs(objects["laser"]) do
-					v:updaterange()
-				end
-				for i, v in pairs(objects["lightbridge"]) do
-					v:updaterange()
-				end
+				updateranges()
 			end
 		end
 	else
@@ -90,15 +112,15 @@ function door:draw()
 	end
 	
 	if self.dir == "hor" then
-		love.graphics.draw(doorpieceimg, math.floor((self.x+14/16-xscroll-ymod)*16*scale), (self.y-4/16)*16*scale, math.pi*.5, scale, scale, 4, 0)
-		love.graphics.draw(doorpieceimg, math.floor((self.x+18/16-xscroll+ymod)*16*scale), (self.y-4/16)*16*scale, math.pi*1.5, scale, scale, 4, 0)
-		love.graphics.draw(doorcenterimg, math.floor((self.x+16/16-xscroll-ymod)*16*scale), (self.y-4/16)*16*scale, math.pi*.5-rot, scale, scale, 4, 2)
-		love.graphics.draw(doorcenterimg, math.floor((self.x+16/16-xscroll+ymod)*16*scale), (self.y-4/16)*16*scale, math.pi*1.5-rot, scale, scale, 4, 2)
+		love.graphics.draw(doorpieceimg, math.floor((self.x+14/16-xscroll-ymod)*16*scale), (self.y-yscroll-4/16)*16*scale, math.pi*.5, scale, scale, 4, 0)
+		love.graphics.draw(doorpieceimg, math.floor((self.x+18/16-xscroll+ymod)*16*scale), (self.y-yscroll-4/16)*16*scale, math.pi*1.5, scale, scale, 4, 0)
+		love.graphics.draw(doorcenterimg, math.floor((self.x+16/16-xscroll-ymod)*16*scale), (self.y-yscroll-4/16)*16*scale, math.pi*.5-rot, scale, scale, 4, 2)
+		love.graphics.draw(doorcenterimg, math.floor((self.x+16/16-xscroll+ymod)*16*scale), (self.y-yscroll-4/16)*16*scale, math.pi*1.5-rot, scale, scale, 4, 2)
 	else
-		love.graphics.draw(doorpieceimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y+6/16-ymod)*16*scale, math.pi, scale, scale, 4, 0)
-		love.graphics.draw(doorpieceimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y+10/16+ymod)*16*scale, 0, scale, scale, 4, 0)
-		love.graphics.draw(doorcenterimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y+8/16-ymod)*16*scale, rot, scale, scale, 4, 2)
-		love.graphics.draw(doorcenterimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y+8/16+ymod)*16*scale, math.pi+rot, scale, scale, 4, 2)
+		love.graphics.draw(doorpieceimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y-yscroll+6/16-ymod)*16*scale, math.pi, scale, scale, 4, 0)
+		love.graphics.draw(doorpieceimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y-yscroll+10/16+ymod)*16*scale, 0, scale, scale, 4, 0)
+		love.graphics.draw(doorcenterimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y-yscroll+8/16-ymod)*16*scale, rot, scale, scale, 4, 2)
+		love.graphics.draw(doorcenterimg, math.floor((self.x+0.25-xscroll)*16*scale), (self.y-yscroll+8/16+ymod)*16*scale, math.pi+rot, scale, scale, 4, 2)
 	end
 end
 
@@ -122,36 +144,34 @@ function door:pushstuff()
 	end
 end
 
-function door:input(t)
+function door:input(t, input)
+	if input == "open" then
+		if t == "on" and self.input1state == "off" then
+			self.targetopen = not self.targetopen
+		elseif t == "off" and self.input1state == "on" then
+			self.targetopen = not self.targetopen
+		elseif t == "toggle" then
+			self.targetopen = not self.targetopen
+		end
+		
+		self.input1state = t
+	end
+end
+
+function door:closeopen(open)
 	local prev = self.open
-	if t == "on" then
-		self.open = true
+	self.open = open
+	
+	if self.open then
 		if self.timer == 1 then
 			self.active = false
 		end
-	elseif t == "off" then
-		self.open = false
+	else
 		self.active = true
 		self:pushstuff()
-	elseif t == "toggle" then
-		self.open = not self.open
-		
-		if self.open then
-			if self.timer == 1 then
-				self.active = false
-			end
-		else
-			self.active = true
-			self:pushstuff()
-		end
 	end
 	
 	if self.open ~= prev then
-		for i, v in pairs(objects["laser"]) do
-			v:updaterange()
-		end
-		for i, v in pairs(objects["lightbridge"]) do
-			v:updaterange()
-		end
+		updateranges()
 	end
 end

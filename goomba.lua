@@ -25,7 +25,7 @@ function goomba:init(x, y, t)
 	
 	--IMAGE STUFF
 	self.drawable = true
-	self.graphic = goombaimage
+	self.graphic = goombaimg
 	self.quad = goombaquad[spriteset][1]
 	self.offsetX = 6
 	self.offsetY = 3
@@ -33,6 +33,7 @@ function goomba:init(x, y, t)
 	self.quadcenterY = 8
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	
 	self.direction = "left"
 	self.animationtimer = 0
@@ -67,6 +68,7 @@ function goomba:init(x, y, t)
 	self.deathtimer = 0
 	
 	self.shot = false
+	self.outtable = {}
 end
 
 function goomba:update(dt)
@@ -74,18 +76,7 @@ function goomba:update(dt)
 	if self.t == "spikeyfall" then
 		self.rotation = 0
 	else
-		self.rotation = math.fmod(self.rotation, math.pi*2)
-		if self.rotation > 0 then
-			self.rotation = self.rotation - portalrotationalignmentspeed*dt
-			if self.rotation < 0 then
-				self.rotation = 0
-			end
-		elseif self.rotation < 0 then
-			self.rotation = self.rotation + portalrotationalignmentspeed*dt
-			if self.rotation > 0 then
-				self.rotation = 0
-			end
-		end
+		self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
 	end
 	
 	if self.dead then
@@ -105,6 +96,17 @@ function goomba:update(dt)
 		return false
 		
 	else
+		--Funnels and fuck
+		if self.funnel and not self.infunnel then
+			self:enteredfunnel(true)
+		end
+		
+		if self.infunnel and not self.funnel then
+			self:enteredfunnel(false)
+		end
+		
+		self.funnel = false
+	
 		self.animationtimer = self.animationtimer + dt
 		while self.animationtimer > goombaanimationspeed do
 			self.animationtimer = self.animationtimer - goombaanimationspeed
@@ -135,7 +137,7 @@ function goomba:update(dt)
 			end
 		end
 		
-		if self.t ~= "spikeyfall" then
+		if self.t ~= "spikeyfall" then		
 			if self.speedx > 0 then
 				if self.speedx > goombaspeed then
 					self.speedx = self.speedx - friction*dt*2
@@ -163,7 +165,6 @@ function goomba:update(dt)
 			end
 		end
 		
-		--check if goomba offscreen		
 		return false
 	end
 end
@@ -172,6 +173,7 @@ function goomba:stomp()--hehe goomba stomp
 	self.dead = true
 	self.active = false
 	self.quad = goombaquad[spriteset][2]
+	self:output()
 end
 
 function goomba:shotted(dir) --fireball, star, turtle
@@ -186,6 +188,8 @@ function goomba:shotted(dir) --fireball, star, turtle
 	else
 		self.speedx = shotspeedx
 	end
+	
+	self:output()
 end
 
 function goomba:leftcollide(a, b)
@@ -277,10 +281,41 @@ function goomba:passivecollide(a, b)
 	return false
 end
 
+function goomba:autodeleted()
+	self:output()
+end
+
+function goomba:output()
+	for i = 1, #self.outtable do
+		if self.outtable[i][1].input then
+			self.outtable[i][1]:input("toggle", self.outtable[i][2])
+		end
+	end
+end
+
+function goomba:addoutput(a, t)
+	table.insert(self.outtable, {a, t})
+end
+
 function goomba:emancipate(a)
-	self:shotted()
+	table.insert(emancipateanimations, emancipateanimation:new(self.x, self.y, self.width, self.height, self.graphic, self.quad, self.speedx, self.speedy, self.rotation, self.offsetX, self.offsetY, self.quadcenterX, self.quadcenterY))
+
+	self.drawable = false
+	self.dead = true
+	self.deathtimer = goombadeathtime
+	
+	self:output()
 end
 
 function goomba:laser()
 	self:shotted()
+end
+
+function goomba:enteredfunnel(inside)
+	if inside then
+		self.infunnel = true
+	else
+		self.infunnel = false
+		self.gravity = nil
+	end
 end

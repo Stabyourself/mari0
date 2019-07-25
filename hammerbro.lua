@@ -27,6 +27,7 @@ function hammerbro:init(x, y)
 	self.quadcenterY = 21
 	
 	self.rotation = 0 --for portals
+	self.gravitydirection = math.pi/2
 	
 	self.direction = "left"
 	self.animationtimer = 0
@@ -44,19 +45,7 @@ function hammerbro:init(x, y)
 end
 
 function hammerbro:update(dt)
-	--rotate back to 0 (portals)
-	self.rotation = math.fmod(self.rotation, math.pi*2)
-	if self.rotation > 0 then
-		self.rotation = self.rotation - portalrotationalignmentspeed*dt
-		if self.rotation < 0 then
-			self.rotation = 0
-		end
-	elseif self.rotation < 0 then
-		self.rotation = self.rotation + portalrotationalignmentspeed*dt
-		if self.rotation > 0 then
-			self.rotation = 0
-		end
-	end
+	self.rotation = unrotate(self.rotation, self.gravitydirection, dt)
 	
 	if self.shot then
 		self.speedy = self.speedy + shotgravity*dt
@@ -290,7 +279,6 @@ function hammer:init(x, y, dir)
 					true, true, true, false, true,
 					true, true, true, true, true,
 					true, true, true, true, true}
-	self.emancipatecheck = true
 	self.gravity = hammergravity
 	self.autodelete = true
 	

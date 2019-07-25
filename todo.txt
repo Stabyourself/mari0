@@ -1,0 +1,117 @@
+see-saw fix DONE!
+mouse button = use DONE!
+2-3 mk fix DONE!
+hard level DONE!
+use notice DONE?
+
+
+
+make boxes outputs
+portalgun pickup meeeeeeeeeh
+rewrite platforms? meeeeh
+bulletbills customizable like upfires meeeh
+only redo tiles on portal close if there's not another portal on that block
+blinking cursor for text input
+drawentity(x, y)
+portal timestamps for ent closing
+
+BETA 0 (Introducing SE):
+
+Added - Online Multiplayer
+Added - Purple gel, I like to call it "VVVVVV Gel" because it flips the gravity of anything that touches it. So you can still jump and everything but remain "drawn" towards the geled surface
+Added - Proper rightclick menu with lots of options for every entity
+Added - Custom Mapheight, Vertical Scrolling
+Added - Excursion Funnels, these blue tractor beam things
+Added - Support for custom player graphics
+Added - Player markers for coop and online so you can see where your friends are
+Added - Tiles that reflect portals
+Added - Tiles in which water physics reign
+Added - Wall and ceiling mounted heavy duty super colliding super buttons
+Added - Text entity, will display a text with custom color. Supports input
+Added - Customization of faithplates with X and Y velocity
+Added - Visible faithplate trajectory
+Added - Grates through which portals, gels, lightbridges and lasers can go, but the player and enemies can't
+Added - The SMB bug where you can double jump while eating a mushroom
+Added - Entity to stop players from going over the level
+Added - Single fire Bulletbills on non-solid blocks
+Added - Input to Gel Dispensers (On/Off)
+Added - Input for emancipation grills (On/Off)
+Added - Option to pick the background color with RGB sliders
+Added - Platform tiles that you can jump through from the bottom
+Added - Shifting walls, switch between portalable and non-portalable on input
+Added - Bridge tile property, so you can have custom bridge tiles that disappear when the player touches the axe
+Added - Koopa timeout after which they stand back up
+Added - Support for multiple inputs (Like funnels have on/off and reverse inputs)
+Added - Groundlight tool. You can drag a path for the blue/orange dotted lines
+Added - Emancipation Animation for objects (turn to black, fizzle, disappear)
+Added - Support for orange gel underwater
+Added - Customization to those castle fire jumpers (Delay, random-add)
+Added - Customization to rotating fire sticks (Speed, length)
+Added - Customization to platforms (Speed, distance, width)
+Added - Visible platform paths
+Added - Horizontal flying koopas
+Added - Square wave outputs, give out "on" for X seconds, then "off" for Y seconds, repeat
+
+Fixed - Piranha plants killing you from inside when going through a portal on a pipe
+Fixed - Koopas killing you while small if you hit them from below somehow
+Fixed - Koopas now flip around when "killed" through a block from below
+Fixed - Mario controls related bugs
+Fixed - Death when a player comes out of a pipe with a plant when player 1 has 0 lives
+
+
+
+BETA 1 (Request paradise):
+
+Added - Support for portals on the same block
+Added - Spikes
+Added - Boxes and Buttons glowing orange on connection
+Added - Gel support for light bridges
+Added - Upwards gel tubes
+Added - Region Tool
+Added - Region Triggers that give out output if someone's inside
+Added - Option to make doors not force close if blocked
+
+Fixed - Endgame being called in the test level feature
+
+
+
+BETA 2 (I derped the maps):
+
+Fixed - Maps
+
+
+
+BETA 3 (Mapper's dream):
+
+Added - Support for custom mappack graphics
+Added - Updated Checkpoints
+Added - Tiles that stay in the foreground
+Added - Proper background selection
+Added - Foregrounds + Selection
+Added - Some default background colors to chose from
+Added - Support for more than one custom music + selection
+
+Beta 4 (Stuff):
+
+Fixed - Rotating Fire sticks killing you at low fps
+Fixed - Doors stop funnels now
+Fixed - Koopashells giving the correct powerup
+Fixed - Cube rotates with parent
+Fixed - Purple gel fucking big mario up
+Fixed - Invisible lasers
+Fixed - Platforms disappearing on timescale 0
+Fixed - Castle fire things that jump out and burn your ass
+
+Added - Proper gravitydirection handling
+Added - Ability to coat more than 1 side of a block with the gel entity
+Added - 5 frame coin animation instead of 3
+Added - Portal entities! Can replace player's portals or act on their own
+Added - Death on fall out of level upwards
+Added - Animated Tiles
+Added - Wall and ceiling pushbuttons
+
+
+
+reload resetting portals the players doesn't even have.
+mario style blocks that act as buttons
+weird door behavior in 2-4

@@ -1,12 +1,36 @@
 castlefire = class:new()
 
-function castlefire:init(x, y, length, dir)
+function castlefire:init(x, y, r)
 	self.x = x
 	self.y = y+1/16
-	self.length = length or 6
-	self.dir = dir or "cw"
+	self.length = 6
+	self.dir = "cw"
 	self.quadi = 1
 	self.child = {}
+	self.delay = castlefiredelay
+	
+	--Input list
+	self.r = {unpack(r)}
+	table.remove(self.r, 1)
+	table.remove(self.r, 1)
+	--RANGE
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.length = castlefirelengthfunction(tonumber(self.r[1]))
+		table.remove(self.r, 1)
+	end
+	--DELAY
+	if #self.r > 0 and self.r[1] ~= "link" then
+		self.delay = castlefiredelayfunction(tonumber(self.r[1])) 
+		table.remove(self.r, 1)
+	end
+	--DIR
+	if #self.r > 0 and self.r[1] ~= "link" then
+		if self.r[1] == "true" then
+			self.dir = "ccw"
+			table.remove(self.r, 1)
+		end
+	end
+	
 	for i = 1, self.length do
 		local temp = castlefirefire:new()
 		table.insert(objects["castlefirefire"], temp)
@@ -23,11 +47,11 @@ end
 function castlefire:update(dt)
 	self.timer = self.timer + dt
 	
-	while self.timer > castlefiredelay do
-		self.timer = self.timer - castlefiredelay
+	while self.timer > self.delay do
+		self.timer = self.timer - self.delay
 		if self.dir == "cw" then
 			self.angle = self.angle + castlefireangleadd
-			self.angle = math.fmod(self.angle, 360)
+			self.angle = math.mod(self.angle, 360)
 		else
 			self.angle = self.angle - castlefireangleadd
 			while self.angle < 0 do

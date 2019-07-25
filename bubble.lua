@@ -25,9 +25,22 @@ function bubble:update(dt)
 		return true
 	end
 	
+	if not underwater then
+		local x = math.floor(self.x)+1
+		local y = math.floor(self.y)+1
+		
+		if not inmap(x, y) then
+			return true
+		end
+		
+		if not tilequads[map[x][y][1]].water then
+			return true
+		end
+	end
+	
 	return false
 end
 
 function bubble:draw()
-	love.graphics.draw(bubbleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-.5)*16*scale), 0, scale, scale, 2, 2)
+	love.graphics.draw(bubbleimg, math.floor((self.x-xscroll)*16*scale), math.floor((self.y-yscroll-.5)*16*scale), 0, scale, scale, 2, 2)
 end

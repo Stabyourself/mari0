@@ -67,47 +67,51 @@ end
 function flower:draw()
 	if self.uptimer < mushroomtime and not self.destroy then
 		--Draw it coming out of the block.
-		love.graphics.draw(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor((self.y*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
+		love.graphics.drawq(self.graphic, self.quad, math.floor(((self.x-xscroll)*16+self.offsetX)*scale), math.floor(((self.y-yscroll)*16-self.offsetY)*scale), 0, scale, scale, self.quadcenterX, self.quadcenterY)
 	end
 end
 
-function flower:leftcollide(a, b)
+function flower:eat(a, b, c, d, overwrite)
+	if SERVER or CLIENT then
+		if not b.remote then
+			local um = usermessage:new( "net_flowereat", c .. "~" .. d)
+			um:send()
+		elseif not overwrite then
+			return
+		end
+	end
+	
+	b:grow()
+	self.active = false
+	self.destroy = true
+	self.drawable = false
+end
+
+function flower:leftcollide(a, b, c, d)
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end
 	
 	return false
 end
 
-function flower:rightcollide(a, b)
+function flower:rightcollide(a, b, c, d)
 	if a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end
 	
 	return false
 end
 
-function flower:floorcollide(a, b)
+function flower:floorcollide(a, b, c, d)
 	if self.active and a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end	
 end
 
-function flower:ceilcollide(a, b)
+function flower:ceilcollide(a, b, c, d)
 	if self.active and a == "player" then
-		b:grow()
-		self.active = false
-		self.destroy = true
-		self.drawable = false
+		self:eat(a, b, c, d)
 	end	
 end
 
