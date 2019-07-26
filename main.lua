@@ -195,6 +195,10 @@ function love.load(arg)
 		end
 	end
 
+	-- override
+	desktopsize.width = 1920
+	desktopsize.height = 1080
+
 	recordtarget = 1/40
 	recordskip = 1
 	recordframe = 1
@@ -255,11 +259,6 @@ function love.load(arg)
 	debugtimescale = false
 	timetrials = true
 
-
-	width = 25	--! default 25
-	height = 14
-	fsaa = 0
-
 	steptimer = 0
 	targetdt = 1/60
 
@@ -276,6 +275,11 @@ function love.load(arg)
 		scale = 2
 		fullscreen = false
 	end
+
+
+	width = 30	--! default 25
+	height = 16.875
+	fsaa = 0
 
 	--Calculate relative scaling factor
 	touchfrominsidescaling = math.min(desktopsize.width/(width*16), desktopsize.height/(height*16))
@@ -1172,13 +1176,14 @@ function love.draw()
 
 	if mkstation then
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("fill", 0*scale, 224*scale, 420*scale, 38.5*scale)
+		local y = (height*16-38.5) -- 224
+		love.graphics.rectangle("fill", 0*scale, (height*16-38.5)*scale, width*16*scale, 38.5*scale)
 		if ttstate == "demo" then
 			love.graphics.setColor(128, 128, 128)
-			properprint("play and your replay will be saved and shown!", 30*scale, 230*scale)
+			properprint("play and your replay will be saved and shown!", 60*scale, (y+6)*scale)
 		end
 		love.graphics.setColor(255, 255,255)
-		properprint("highscore #", 70*scale, 240*scale)
+		properprint("highscore #", 60*scale, (y+16)*scale)
 
 
 		local string1, string2
@@ -1207,10 +1212,10 @@ function love.draw()
 			s = s .. letter
 		end
 
-		properprint(s, 158*scale, 240*scale)
+		properprint(s, 158*scale, (y+16)*scale)
 
 		love.graphics.setColor(128, 128, 128)
-		properprint("# of replays: " .. #replaydata, 280*scale, 254.5*scale)
+		properprint("# of replays: " .. #replaydata, (width*16-160)*scale, (y+20.5)*scale)
 		love.graphics.setColor(255, 255, 255)
 	end
 

@@ -1670,7 +1670,7 @@ function game_draw()
 
 			t = t .. addzeros(m, 2) .. "\'" .. addzeros(s, 2) .. "\"" .. addzeros(micro, 2)
 
-			properprintbackground(t, 135*scale, 200*scale, true, {255, 255, 255}, scale*2)
+			properprintbackground(t, (width*16-#t*16)/2*scale, 207.5*scale, true, {255, 255, 255}, scale*2)
 		end
 
 		--OBJECTS
@@ -2325,7 +2325,7 @@ function game_draw()
 	if ttstate == "idle" then
 		love.graphics.draw(instrimg, (width*16*scale-instrimg:getWidth()*(scale/4))/2, 12.5*scale, 0, scale/4, scale/4)
 	elseif ttstate == "countdown" then
-		properprintbackground(math.ceil(ttcountdown), 140*scale, 60*scale, true, {255, 255, 255}, scale*13)
+		properprintbackground(math.ceil(ttcountdown), (width*16-9*13)/2*scale, 60*scale, true, {255, 255, 255}, scale*13)
 
 	end
 
@@ -2336,7 +2336,7 @@ function game_draw()
 			-- 	creditDot = "!"
 			-- end
 
-			properprintbackground("press start" .. creditDot, 170*scale, 204*scale, 2*scale)
+			properprintbackground("press start" .. creditDot, (width*16-11*8)/2*scale, 204*scale, 2*scale)
 		end
 	end
 
