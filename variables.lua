@@ -201,7 +201,7 @@ boxfrictionair = 0
 
 faithplatetime = 0.3
 
-spacerunroom = 1.2/16 --How far you can fall but still be allowed onto the top of a block (For running over 1 tile wide gaps)
+spacerunroom = 1.5/16 --How far you can fall but still be allowed onto the top of a block (For running over 1 tile wide gaps)
 
 doorspeed = 2
 groundlightdelay = 1
