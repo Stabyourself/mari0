@@ -1,4 +1,4 @@
-name=time attack
-author=jorichi
-description=run!!!
+name=time trial
+author=willware
+description=
 lives=0
