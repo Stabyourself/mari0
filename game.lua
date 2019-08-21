@@ -3756,7 +3756,6 @@ function game_keypressed(key, unicode)
 	end
 
 	if key == "f6" then
-
 		if not editormode and testlevel then
 			checkpointsub = false
 			marioworld = testlevelworld
@@ -5121,7 +5120,7 @@ function game_joystickpressed( joystick, button )
 	end
 
 	if arcade then
-		if button == 8 or button == 1 then
+		if button == 12 or button == 2 then
 			if not arcadeplaying[arcadejoystickmaps[joystick]] then
 				arcadejoin(joystick, arcadejoystickmaps[joystick])
 			end
@@ -5386,18 +5385,18 @@ function arcadejoin(joystick, i)
 	objects["player"][i].controlsenabled = true
 
 	controls[i] = {}
-	controls[i]["right"] = {"joy", joystick, "hat", 1, "r"}
-	controls[i]["left"] = {"joy", joystick, "hat", 1, "l"}
-	controls[i]["down"] = {"joy", joystick, "hat", 1, "d"}
-	controls[i]["up"] = {"joy", joystick, "hat", 1, "u"}
-	controls[i]["run"] = {"joy", joystick, "but", 3}
-	controls[i]["jump"] = {"joy", joystick, "but", 1}
-	controls[i]["aimx"] = {"joy", joystick, "axe", 5, "pos"}
-	controls[i]["aimy"] = {"joy", joystick, "axe", 4, "pos"}
-	controls[i]["portal1"] = {"joy", joystick, "but", 5}
-	controls[i]["portal2"] = {"joy", joystick, "but", 6}
+	controls[i]["right"] = {"joy", joystick, "axe", 1, "pos"}
+	controls[i]["left"] = {"joy", joystick, "axe", 1, "neg"}
+	controls[i]["down"] = {"joy", joystick, "axe", 2, "pos"}
+	controls[i]["up"] = {"joy", joystick, "axe", 2, "neg"}
+	controls[i]["run"] = {"joy", joystick, "but", 5}
+	controls[i]["jump"] = {"joy", joystick, "but", 2}
+	controls[i]["aimx"] = {"joy", joystick, "axe", 1, "pos"}
+	controls[i]["aimy"] = {"joy", joystick, "axe", 2, "pos"}
+	controls[i]["portal1"] = {"joy", joystick, "but", 7}
+	controls[i]["portal2"] = {"joy", joystick, "but", 8}
 	controls[i]["reload"] = {"joy", joystick, "but", 4}
-	controls[i]["use"] = {"joy", joystick, "but", 2}
+	controls[i]["use"] = {"joy", joystick, "but", 3}
 
 	arcadeplaying[i] = true
 end
