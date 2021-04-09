@@ -756,7 +756,8 @@ function love.load()
 		delete_mappack(v)
 	end
 
-	intro_load()
+	game_load()
+	-- intro_load()
 end
 
 function love.update(dt)
