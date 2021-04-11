@@ -1,3 +1,5 @@
+game_ticks = 0
+
 function game_load(suspended)
 	scrollfactor = 0
 	backgroundcolor = {}
@@ -129,7 +131,7 @@ function game_load(suspended)
 end
 
 function game_update(dt)
-
+    game_ticks = game_ticks + 1
 	--------
 	--GAME--
 	--------
@@ -437,6 +439,18 @@ function game_update(dt)
 	for i, v in pairs(delete) do
 		table.remove(rocketlaunchers, v)
 	end
+
+
+    -- DETERMINE - AI actions
+    if (game_ticks % 5) == 0 then
+        for i, v in pairs(objects["AI"]) do
+            v:do_action()
+        end
+    else
+        for i, v in pairs(objects["AI"]) do
+            v:collect_data()
+        end
+    end
 
 	--UPDATE OBJECTS
 	for i, v in pairs(objects) do
@@ -2204,14 +2218,31 @@ function startlevel(level)
 		mul = 2/16
 	end
 
-	objects["player"] = {}
-	for i = 1, players do
-		if startx then
-			objects["player"][i] = mario:new(startx + (i-1)*mul-6/16, starty-1, i, animation, mariosizes[i], playertype)
-		else
-			objects["player"][i] = mario:new(1.5 + (i-1)*mul-6/16+1.5, 13, i, animation, mariosizes[i], playertype)
-		end
-	end
+--	objects["player"] = {}
+--	for i = 1, players do
+--		if startx then
+--			objects["player"][i] = mario:new(startx + (i-1)*mul-6/16, starty-1, i, animation, mariosizes[i], playertype)
+--		else
+--			objects["player"][i] = mario:new(1.5 + (i-1)*mul-6/16+1.5, 13, i, animation, mariosizes[i], playertype)
+--		end
+--    end
+
+    -- add the AI
+
+
+
+    objects["player"] = {}
+	objects["AI"] = {}
+	print(objects["AI"])
+    for i = 1, players do
+        if startx then
+            objects["player"][i] = marioAI:new(startx + (i-1)*mul-6/16, starty-1, i, animation, mariosizes[i], playertype)
+        else
+            objects["player"][i] = marioAI:new(1.5 + (i-1)*mul-6/16+1.5, 13, i, animation, mariosizes[i], playertype)
+        end
+        objects["AI"][i] = AI:new(objects["player"][i])
+    end
+
 
 	--PLAY BGM
 	if intermission == false then
@@ -2707,31 +2738,31 @@ function game_keypressed(key, unicode)
 		return
 	end
 
-	for i = 1, players do
-		if controls[i]["jump"][1] == key then
-			objects["player"][i]:jump()
-		elseif controls[i]["run"][1] == key then
-			objects["player"][i]:fire()
-		elseif controls[i]["reload"][1] == key then
-			objects["player"][i]:removeportals()
-		elseif controls[i]["use"][1] == key then
-			objects["player"][i]:use()
-		elseif controls[i]["left"][1] == key then
-			objects["player"][i]:leftkey()
-		elseif controls[i]["right"][1] == key then
-			objects["player"][i]:rightkey()
-		end
-
-		if controls[i]["portal1"][i] == key then
-			shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-			return
-		end
-
-		if controls[i]["portal2"][i] == key then
-			shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-			return
-		end
-	end
+--	for i = 1, players do
+--		if controls[i]["jump"][1] == key then
+--			objects["player"][i]:jump()
+--		elseif controls[i]["run"][1] == key then
+--			objects["player"][i]:fire()
+--		elseif controls[i]["reload"][1] == key then
+--			objects["player"][i]:removeportals()
+--		elseif controls[i]["use"][1] == key then
+--			objects["player"][i]:use()
+--		elseif controls[i]["left"][1] == key then
+--			objects["player"][i]:leftkey()
+--		elseif controls[i]["right"][1] == key then
+--			objects["player"][i]:rightkey()
+--		end
+--
+--		if controls[i]["portal1"][i] == key then
+--			shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--			return
+--		end
+--
+--		if controls[i]["portal2"][i] == key then
+--			shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--			return
+--		end
+--	end
 
 	if key == "escape" then
 		if not editormode and testlevel then
@@ -3926,55 +3957,55 @@ function game_joystickpressed( joystick, button )
 		return
 	end
 
-	for i = 1, players do
-		if not noupdate and objects["player"][i].controlsenabled and not objects["player"][i].vine then
-			local s1 = controls[i]["jump"]
-			local s2 = controls[i]["run"]
-			local s3 = controls[i]["reload"]
-			local s4 = controls[i]["use"]
-			local s5 = controls[i]["left"]
-			local s6 = controls[i]["right"]
-			if s1[1] == "joy" and joystick == tonumber(s1[2]) and s1[3] == "but" and button == tonumber(s1[4]) then
-				objects["player"][i]:jump()
-				return
-			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "but" and button == s2[4] then
-				objects["player"][i]:fire()
-				return
-			elseif s3[1] == "joy" and joystick == s3[2] and s3[3] == "but" and button == s3[4] then
-				objects["player"][i]:removeportals()
-				return
-			elseif s4[1] == "joy" and joystick == s4[2] and s4[3] == "but" and button == s4[4] then
-				objects["player"][i]:use()
-				return
-			elseif s5[1] == "joy" and joystick == s5[2] and s5[3] == "but" and button == s5[4] then
-				objects["player"][i]:leftkey()
-				return
-			elseif s6[1] == "joy" and joystick == s6[2] and s6[3] == "but" and button == s6[4] then
-				objects["player"][i]:rightkey()
-				return
-			end
-
-			local s = controls[i]["portal1"]
-			if s and s[1] == "joy" then
-				if s[3] == "but" then
-					if joystick == s[2] and button == s[4] then
-						shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-						return
-					end
-				end
-			end
-
-			local s = controls[i]["portal2"]
-			if s and s[1] == "joy" then
-				if s[3] == "but" then
-					if joystick == tonumber(s[2]) and button == tonumber(s[4]) then
-						shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-						return
-					end
-				end
-			end
-		end
-	end
+--	for i = 1, players do
+--		if not noupdate and objects["player"][i].controlsenabled and not objects["player"][i].vine then
+--			local s1 = controls[i]["jump"]
+--			local s2 = controls[i]["run"]
+--			local s3 = controls[i]["reload"]
+--			local s4 = controls[i]["use"]
+--			local s5 = controls[i]["left"]
+--			local s6 = controls[i]["right"]
+--			if s1[1] == "joy" and joystick == tonumber(s1[2]) and s1[3] == "but" and button == tonumber(s1[4]) then
+--				objects["player"][i]:jump()
+--				return
+--			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "but" and button == s2[4] then
+--				objects["player"][i]:fire()
+--				return
+--			elseif s3[1] == "joy" and joystick == s3[2] and s3[3] == "but" and button == s3[4] then
+--				objects["player"][i]:removeportals()
+--				return
+--			elseif s4[1] == "joy" and joystick == s4[2] and s4[3] == "but" and button == s4[4] then
+--				objects["player"][i]:use()
+--				return
+--			elseif s5[1] == "joy" and joystick == s5[2] and s5[3] == "but" and button == s5[4] then
+--				objects["player"][i]:leftkey()
+--				return
+--			elseif s6[1] == "joy" and joystick == s6[2] and s6[3] == "but" and button == s6[4] then
+--				objects["player"][i]:rightkey()
+--				return
+--			end
+--
+--			local s = controls[i]["portal1"]
+--			if s and s[1] == "joy" then
+--				if s[3] == "but" then
+--					if joystick == s[2] and button == s[4] then
+--						shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--						return
+--					end
+--				end
+--			end
+--
+--			local s = controls[i]["portal2"]
+--			if s and s[1] == "joy" then
+--				if s[3] == "but" then
+--					if joystick == tonumber(s[2]) and button == tonumber(s[4]) then
+--						shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--						return
+--					end
+--				end
+--			end
+--		end
+--	end
 end
 
 function game_joystickreleased( joystick, button )
@@ -3999,42 +4030,43 @@ function game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
 		endgame()
 		return
 	end
-	for i = 1, players do
-		if not noupdate and objects["player"][i].controlsenabled then
-			local s1 = controls[i]["left"]
-			local s2 = controls[i]["right"]
-			if s1[1] == "joy" and joystick == s1[2] and s1[3] == "axe" and s1[4] == axis and stickmoved and value < 0 then
-				objects["player"][i]:leftkey()
-				return
-			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "axe" and s2[4] == axis and stickmoved and value > 0 then
-				objects["player"][i]:rightkey()
-				return
-			end
-			
-			if i ~= mouseowner then
-				local s = controls[i]["portal1"]
-				if s and s[1] == "joy" then
-					if s[3] == "axe" and s[4] == axis then
-						if joystick == s[2] and shouldermoved then
-							shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-							return
-						end
-					end
-				end
-				
-				local s = controls[i]["portal2"]
-				if s and s[1] == "joy" then
-					if s[3] == "axe" and s[4] == axis then
-						if joystick == s[2] and shouldermoved then
-							shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-							return
-						end
-					end
-				end
-			end
-		end
-	end
+--	for i = 1, players do
+--		if not noupdate and objects["player"][i].controlsenabled then
+--			local s1 = controls[i]["left"]
+--			local s2 = controls[i]["right"]
+--			if s1[1] == "joy" and joystick == s1[2] and s1[3] == "axe" and s1[4] == axis and stickmoved and value < 0 then
+--				objects["player"][i]:leftkey()
+--				return
+--			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "axe" and s2[4] == axis and stickmoved and value > 0 then
+--				objects["player"][i]:rightkey()
+--				return
+--			end
+--
+--			if i ~= mouseowner then
+--				local s = controls[i]["portal1"]
+--				if s and s[1] == "joy" then
+--					if s[3] == "axe" and s[4] == axis then
+--						if joystick == s[2] and shouldermoved then
+--							shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--							return
+--						end
+--					end
+--				end
+--
+--				local s = controls[i]["portal2"]
+--				if s and s[1] == "joy" then
+--					if s[3] == "axe" and s[4] == axis then
+--						if joystick == s[2] and shouldermoved then
+--							shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--							return
+--						end
+--					end
+--				end
+--			end
+--		end
+--	end
 end
+
 function game_joystickhat(joystick, hat, direction)
 	if pausemenuopen then
 		return
@@ -4043,41 +4075,41 @@ function game_joystickhat(joystick, hat, direction)
 		endgame()
 		return
 	end
-	for i = 1, players do
-		if not noupdate and objects["player"][i].controlsenabled then
-			local s1 = controls[i]["left"]
-			local s2 = controls[i]["right"]
-			if s1[1] == "joy" and joystick == s1[2] and s1[3] == "hat" and s1[4] == hat and s1[5]:find(direction) then
-				objects["player"][i]:leftkey()
-				return
-			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "hat" and s2[4] == hat and s2[5]:find(direction) then
-				objects["player"][i]:rightkey()
-				return
-			end
-		end
-		
-		if i ~= mouseowner then
-			local s = controls[i]["portal1"]
-			if s and s[1] == "joy" then
-				if s[3] == "hat" and s[4] == hat then
-					if joystick == s[2] and s[5]:find(direction) then
-						shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-						return
-					end
-				end
-			end
-			
-			local s = controls[i]["portal2"]
-			if s and s[1] == "joy" then
-				if s[3] == "hat" and s[4] == hat then
-					if joystick == s[2] and s[5]:find(direction) then
-						shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
-						return
-					end
-				end
-			end
-		end
-	end
+--	for i = 1, players do
+--		if not noupdate and objects["player"][i].controlsenabled then
+--			local s1 = controls[i]["left"]
+--			local s2 = controls[i]["right"]
+--			if s1[1] == "joy" and joystick == s1[2] and s1[3] == "hat" and s1[4] == hat and s1[5]:find(direction) then
+--				objects["player"][i]:leftkey()
+--				return
+--			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "hat" and s2[4] == hat and s2[5]:find(direction) then
+--				objects["player"][i]:rightkey()
+--				return
+--			end
+--		end
+--
+--		if i ~= mouseowner then
+--			local s = controls[i]["portal1"]
+--			if s and s[1] == "joy" then
+--				if s[3] == "hat" and s[4] == hat then
+--					if joystick == s[2] and s[5]:find(direction) then
+--						shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--						return
+--					end
+--				end
+--			end
+--
+--			local s = controls[i]["portal2"]
+--			if s and s[1] == "joy" then
+--				if s[3] == "hat" and s[4] == hat then
+--					if joystick == s[2] and s[5]:find(direction) then
+--						shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
+--						return
+--					end
+--				end
+--			end
+--		end
+--	end
 end
 
 function inrange(i, a, b, include)

@@ -91,7 +91,6 @@ function love.load()
 	require "variables"
 	require "class"
 	require "sha1"
-
 	require "intro"
 	require "menu"
 	require "levelscreen"
@@ -103,6 +102,8 @@ function love.load()
 	require "portalwall"
 	require "tile"
 	require "mario"
+    require "mario_controller"
+	require "custom_AI"
 	require "goomba"
 	require "koopa"
 	require "cheepcheep"
@@ -756,7 +757,10 @@ function love.load()
 		delete_mappack(v)
 	end
 
+
 	game_load()
+--	love.window.close()
+	soundenabled = false
 	-- intro_load()
 end
 
