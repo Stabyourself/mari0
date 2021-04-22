@@ -444,7 +444,7 @@ function game_update(dt)
     -- DETERMINE - AI actions
     if (game_ticks % 5) == 0 then
         for i, v in pairs(objects["AI"]) do
-            v:do_action()
+            v:neatAlgo()
         end
     else
         for i, v in pairs(objects["AI"]) do
@@ -1912,7 +1912,7 @@ end
 function startlevel(level)
 	skipupdate = true
 	love.audio.stop()
-
+	-- AI.initializePool()
 	local sublevel = false
 	if type(level) == "number" then
 		sublevel = true
@@ -2229,8 +2229,6 @@ function startlevel(level)
 
     -- add the AI
 
-
-
     objects["player"] = {}
 	objects["AI"] = {}
 	print(objects["AI"])
@@ -2242,6 +2240,7 @@ function startlevel(level)
         end
         objects["AI"][i] = AI:new(objects["player"][i])
     end
+    objects["AI"][1]:initializePool()
 
 
 	--PLAY BGM
