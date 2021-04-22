@@ -187,7 +187,7 @@ swimanimationspeed = 10
 spriteset = 1
 background = 1
 speed = 1
-speedtarget = 1
+speedtarget = 2
 speedmodifier = 10
 
 scrollingscoretime = 0.8

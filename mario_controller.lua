@@ -2623,8 +2623,8 @@ function marioAI:startfall()
 end
 
 function marioAI:die(how)
+	gamestate = "NEATdied"
 	print("Death cause: " .. how)
-
 	if how ~= "pit" and how ~= "time" then
 		if self.size > 1 then
 			self:shrink()
@@ -2644,59 +2644,62 @@ function marioAI:die(how)
 	end
 	self.dead = true
 
-	everyonedead = true
-	for i = 1, players do
-		if not objects["player"][i].dead then
-			everyonedead = false
-		end
-	end
-
-	self.animationmisc = nil
-	if everyonedead then
-		self.animationmisc = "everyonedead"
-		love.audio.stop()
-	end
-
-	playsound(deathsound)
-
-	if how == "time" then
-		noupdate = false
-		self.quadcenterY = 10
-		self.graphic = self.smallgraphic
-		self.size = 1
-		self.quadcenterX = 11
-		self.offsetY = 3
-		self.drawable = true
-	end
-
-	if how == "pit" then
-		self.animation = "deathpit"
-		self.size = 1
-		self.drawable = false
-		self.invincible = false
-	else
-		self.animation = "death"
-		self.drawable = true
-		self.invincible = false
-		self.animationstate = "dead"
-		self:setquad()
-		self.speedy = 0
-	end
-
-	self.y = self.y - 1/16
-
-	self.animationx = self.x
-	self.animationy = self.y
-	self.animationtimer = 0
-	self.controlsenabled = false
-	self.active = false
-	prevsublevel = nil
-
-	if not levelfinished and not testlevel and not infinitelives and mariolivecount ~= false then
-		mariolives[self.playernumber] = mariolives[self.playernumber] - 1
-	end
-
 	return
+
+--	everyonedead = true
+--	for i = 1, players do
+--		if not objects["player"][i].dead then
+--			everyonedead = false
+--		end
+--	end
+--
+--	return
+--	self.animationmisc = nil
+--	if everyonedead then
+--		self.animationmisc = "everyonedead"
+--		love.audio.stop()
+--	end
+--
+--	playsound(deathsound)
+--
+--	if how == "time" then
+--		noupdate = false
+--		self.quadcenterY = 10
+--		self.graphic = self.smallgraphic
+--		self.size = 1
+--		self.quadcenterX = 11
+--		self.offsetY = 3
+--		self.drawable = true
+--	end
+--
+--	if how == "pit" then
+--		self.animation = "deathpit"
+--		self.size = 1
+--		self.drawable = false
+--		self.invincible = false
+--	else
+--		self.animation = "death"
+--		self.drawable = true
+--		self.invincible = false
+--		self.animationstate = "dead"
+--		self:setquad()
+--		self.speedy = 0
+--	end
+--
+--	self.y = self.y - 1/16
+--
+--	self.animationx = self.x
+--	self.animationy = self.y
+--	self.animationtimer = 0
+--	self.controlsenabled = false
+--	self.active = false
+--	prevsublevel = nil
+--
+--	if not levelfinished and not testlevel and not infinitelives and mariolivecount ~= false then
+--		mariolives[self.playernumber] = mariolives[self.playernumber] - 1
+--	end
+--
+--	return
 end
 
 function marioAI:laser(dir)

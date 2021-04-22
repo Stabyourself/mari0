@@ -73,7 +73,6 @@ function love.load()
 	require "tile"
 	require "mario"
     require "mario_controller"
-	require "custom_AI"
 	require "goomba"
 	require "koopa"
 	require "cheepcheep"
@@ -748,6 +747,8 @@ function love.update(dt)
 		game_update(dt)
 	elseif gamestate == "intro" then
 		intro_update(dt)
+	elseif gamestate == "NEAT" or gamestate == "NEATdied" then
+		NEATloop(dt)
 	end
 
 	for i, v in pairs(guielements) do
@@ -762,7 +763,7 @@ function love.draw()
 		menu_draw()
 	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "mappackfinished" then
 		levelscreen_draw()
-	elseif gamestate == "game" then
+	elseif gamestate == "game" or gamestate == "NEAT" then
 		game_draw()
 	elseif gamestate == "intro" then
 		intro_draw()
