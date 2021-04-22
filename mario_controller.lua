@@ -1082,42 +1082,7 @@ function marioAI:update(dt)
 end
 
 function marioAI:updateangle()
-	--UPDATE THE PLAYER ANGLE
-	if self.playernumber == mouseowner then
-		local scale = scale
-		if shaders and shaders.scale then scale = shaders.scale end
-		self.pointingangle = math.atan2(self.x+6/16-xscroll-(love.mouse.getX()/16/scale), (self.y+6/16-.5)-(love.mouse.getY()/16/scale))
-	elseif #controls[self.playernumber]["aimx"] > 0 then
-		local x, y
 
-		local joysticks = love.joystick.getJoysticks()
-		local s = controls[self.playernumber]["aimx"]
-		if s[1] == "joy" and joysticks[s[2]] ~= nil then
-			x = -joysticks[s[2]]:getAxis(s[4])
-			if s[5] == "neg" then
-				x = -x
-			end
-		end
-		
-		s = controls[self.playernumber]["aimy"]
-		if s[1] == "joy" and joysticks[s[2]] ~= nil then
-			y = -joysticks[s[2]]:getAxis(s[4])
-			if s[5] == "neg" then
-				y = -y
-			end
-		end
-
-		if not x or not y then
-			return
-		end
-
-		if math.abs(x) > joystickaimdeadzone or math.abs(y) > joystickaimdeadzone then
-			self.pointingangle = math.atan2(x, y)
-			if self.pointingangle == 0 then
-				self.pointingangle = 0 --this is really silly, but will crash the game if I don't do this. It's because it's -0 or something. I'm not good with computers.
-			end
-		end
-	end
 end
 
 function marioAI:movement(dt)
@@ -3210,47 +3175,52 @@ function marioAI:shootgel(i)
 end
 
 function marioAI:respawn()
-	if mariolivecount ~= false and (mariolives[self.playernumber] == 0 or levelfinished) then
-		return
-	end
-
-	local i = 1
-	while i <= players and (objects["player"][i].dead or self.playernumber == i) do
-		i = i + 1
-	end
-
-	fastestplayer = objects["player"][i]
-
-	for i = 2, players do
-		if objects["player"][i].x > fastestplayer.x and not objects["player"][i].dead then
-			fastestplayer = objects["player"][i]
-		end
-	end
-
-	self.colors = mariocolors[self.playernumber]
-	self.speedy = 0
-	self.speedx = 0
-	self.dead = false
-	self.quadcenterY = 10
-	self.height = 12/16
-	self.graphic = self.smallgraphic
-	self.size = 1
-	self.quadcenterX = 11
-	self.offsetY = 3
-	self.drawable = true
-	self.animationstate = "idle"
-	self:setquad()
-
-	self.animation = "invincible"
-	self.invincible = true
-	self.animationtimer = 0
-
-	self.y = fastestplayer.y + fastestplayer.height-12/16
-	self.x = fastestplayer.x
-
-	self.jumping = false
-	self.falling = true
-
-	self.controlsenabled = true
-	self.active = true
+	-- Agent has died
+	-- No need to respawn
+	return
 end
+
+
+--	if mariolivecount ~= false and (mariolives[self.playernumber] == 0 or levelfinished) then
+--		return
+--	end
+--
+--	local i = 1
+--	while i <= players and (objects["player"][i].dead or self.playernumber == i) do
+--		i = i + 1
+--	end
+--
+--	fastestplayer = objects["player"][i]
+--
+--	for i = 2, players do
+--		if objects["player"][i].x > fastestplayer.x and not objects["player"][i].dead then
+--			fastestplayer = objects["player"][i]
+--		end
+--	end
+--
+--	self.colors = mariocolors[self.playernumber]
+--	self.speedy = 0
+--	self.speedx = 0
+--	self.dead = false
+--	self.quadcenterY = 10
+--	self.height = 12/16
+--	self.graphic = self.smallgraphic
+--	self.size = 1
+--	self.quadcenterX = 11
+--	self.offsetY = 3
+--	self.drawable = true
+--	self.animationstate = "idle"
+--	self:setquad()
+--
+--	self.animation = "invincible"
+--	self.invincible = true
+--	self.animationtimer = 0
+--
+--	self.y = fastestplayer.y + fastestplayer.height-12/16
+--	self.x = fastestplayer.x
+--
+--	self.jumping = false
+--	self.falling = true
+--
+--	self.controlsenabled = true
+--	self.active = true

@@ -63,7 +63,6 @@ end
 -- this function is called every tick
 function AI:collect_data()
 	self:getPositions()
-    print(marioX .. " " .. marioY)
 end
 
 function AI:getPositions()
@@ -323,7 +322,7 @@ function AI:evaluateNetwork(network, inputs)
 	local outputs = {}
 	for o=1,Outputs do
 		local button = "P1 " .. ButtonNames[o]
-		print(network.neurons[MaxNodes+o].value)
+--		print(network.neurons[MaxNodes+o].value)
 		if network.neurons[MaxNodes+o].value > 0 then
 			outputs[button] = true
 		else
@@ -888,7 +887,7 @@ function AI:displayGenome(genome)
 		else
 			color = 0xFF000000
 		end
-		gui.drawText(223, 24+8*o, ButtonNames[o], color, 9)
+		love.graphics.print(ButtonNames[o], 223, 24+8*o, color, 9)
 	end
  
 	for n,neuron in pairs(network.neurons) do
@@ -937,8 +936,8 @@ function AI:displayGenome(genome)
 			end
 		end
 	end
- 
-	gui.drawBox(50-BoxRadius*5-3,70-BoxRadius*5-3,50+BoxRadius*5+2,70+BoxRadius*5+2,0xFF000000, 0x80808080)
+
+	love.graphics.rectangle('line', 50-BoxRadius*5-3,70-BoxRadius*5-3,50+BoxRadius*5+2,70+BoxRadius*5+2,0xFF000000, 0x80808080)
 	for n,cell in pairs(cells) do
 		if n > Inputs or cell.value ~= 0 then
 			local color = math.floor((cell.value+1)/2*256)
@@ -949,7 +948,7 @@ function AI:displayGenome(genome)
 				opacity = 0x50000000
 			end
 			color = opacity + color*0x10000 + color*0x100 + color
-			gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
+			love.graphics.rectangle('line', cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
 		end
 	end
 	for _,gene in pairs(genome.genes) do
@@ -967,16 +966,16 @@ function AI:displayGenome(genome)
 			else
 				color = opacity + 0x800000 + 0x100*color
 			end
-			gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color)
+			love.graphics.line(c1.x+1, c1.y, c2.x-3, c2.y, color)
 		end
 	end
- 
-	gui.drawBox(49,71,51,78,0x00000000,0x80FF0000)
+
+	love.graphics.rectangle('line', 49,71,51,78,0x00000000,0x80FF0000)
  
 	if forms.ischecked(showMutationRates) then
 		local pos = 100
 		for mutation,rate in pairs(genome.mutationRates) do
-			gui.drawText(100, pos, mutation .. ": " .. rate, 0xFF000000, 10)
+			love.graphics.print(mutation .. ": " .. rate, 100, pos, 0xFF000000, 10)
 			pos = pos + 8
 		end
 	end
@@ -1128,7 +1127,8 @@ function AI:neatAlgo()
 	 
 		local species = pool.species[pool.currentSpecies]
 		local genome = species.genomes[pool.currentGenome]
-	 
+
+--		self:displayGenome(genome)
 		-- if forms.ischecked(showNetwork) then
 		-- 	displayGenome(genome)
 		-- end
@@ -1186,11 +1186,11 @@ function AI:neatAlgo()
 				end
 			end
 		end
-	-- if not forms.ischecked(hideBanner) then
-	-- 	gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-	-- 	gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
-	-- 	gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
-	-- end
+--	 if True then
+--	 	gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
+--	 	gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
+--	 	gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
+--	 end
  
 	pool.currentFrame = pool.currentFrame + 1
  	counter = counter + 1

@@ -1912,7 +1912,7 @@ end
 function startlevel(level)
 	skipupdate = true
 	love.audio.stop()
-	-- AI.initializePool()
+--	AI.initializePool()
 	local sublevel = false
 	if type(level) == "number" then
 		sublevel = true

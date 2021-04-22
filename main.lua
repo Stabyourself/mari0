@@ -1,12 +1,5 @@
---[[
-	PRETTY MUCH EVERYTHING BY MAURICE GUÉGAN AND IF SOMETHING ISN'T BY ME THEN IT SHOULD BE OBVIOUS OR NOBODY CARES
-
-	Licensed under MIT. You should not have received a copy of the MIT license with this program because just google for it, cmon.
-]]
 
 function love.load()
-	marioversion = 1006
-	versionstring = "version 1.6"
 	shaderlist = love.filesystem.getDirectoryItems( "shaders/" )
 	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
 
@@ -24,7 +17,6 @@ function love.load()
 	currentshaderi1 = 1
 	currentshaderi2 = 1
 
-	hatcount = #love.filesystem.getDirectoryItems("graphics/SMB/hats")
 
 	if not pcall(loadconfig) then
 		players = 1
@@ -45,27 +37,7 @@ function love.load()
 
 	iconimg = love.image.newImageData("graphics/icon.png")
 	love.window.setIcon(iconimg)
-
 	love.graphics.setDefaultFilter("nearest", "nearest")
-
-	axisDeadZones = {}
-	joysticks = love.joystick.getJoysticks()
-	if #joysticks > 0 then
-		for i, v in ipairs(joysticks) do
-			axisDeadZones[i] = {}
-			for j=1, v:getAxisCount() do
-				axisDeadZones[i][j] = {}
-				axisDeadZones[i][j]["stick"] = true
-				axisDeadZones[i][j]["shoulder"] = true
-			end
-			for _, j in pairs({"leftx", "lefty", "rightx", "righty", "triggerleft", "triggerright"}) do
-				axisDeadZones[i][j] = {}
-				axisDeadZones[i][j]["stick"] = true
-				axisDeadZones[i][j]["shoulder"] = true
-			end
-		end
-	end
-
 	love.graphics.setBackgroundColor(0, 0, 0)
 
 
@@ -80,12 +52,10 @@ function love.load()
 
 	love.graphics.clear()
 	love.graphics.setColor(0.4, 0.4, 0.4)
-	loadingtexts = {"reticulating splines..", "loading..", "booting glados..", "growing potatoes..", "voting against acta..", "rendering important stuff..",
-					"baking cake..", "happy explosion day..", "raising coolness by 20 percent..", "yay facepunch..", "stabbing myself..", "sharpening knives..",
-					"tanaka, thai kick..", "loading game genie.."}
-	loadingtext = loadingtexts[math.random(#loadingtexts)]
+	loadingtext = "starting emulator for training NEAT"
 	properprint(loadingtext, 25*8*scale-string.len(loadingtext)*4*scale, 108*scale)
 	love.graphics.present()
+
 	--require ALL the files!
 	require "shaders"
 	require "variables"
@@ -94,7 +64,7 @@ function love.load()
 	require "intro"
 	require "menu"
 	require "levelscreen"
-	require "game"
+	require "emulator"
 	require "editor"
 	require "physics"
 	require "quad"
@@ -159,26 +129,16 @@ function love.load()
 	require "notgate"
 	require "musicloader"
 
-	http = require("socket.http")
-	http.TIMEOUT = 1
-
 	love.filesystem.setIdentity("mari0")
 
-	updatenotification = false
-	if getupdate() then
-		updatenotification = true
-	end
-	http.TIMEOUT = 4
 
 	graphicspack = "SMB" --SMB, ALLSTARS
 	playertypei = 1
 	playertype = playertypelist[playertypei] --portal, minecraft
 
-	if volume == 0 then
-		soundenabled = false
-	else
-		soundenabled = true
-	end
+	soundenabled = false
+
+
 	love.filesystem.createDirectory( "mappacks" )
 	editormode = false
 	yoffset = 0
@@ -615,10 +575,6 @@ function love.load()
 	portalprojectileimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalprojectile.png")
 	portalprojectileparticleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/portalprojectileparticle.png")
 
-	--Menu shit
-	huebarimg = love.graphics.newImage("graphics/" .. graphicspack .. "/huebar.png")
-	huebarmarkerimg = love.graphics.newImage("graphics/" .. graphicspack .. "/huebarmarker.png")
-	volumesliderimg = love.graphics.newImage("graphics/" .. graphicspack .. "/volumeslider.png")
 
 	--Portal props
 	emanceparticleimg = love.graphics.newImage("graphics/" .. graphicspack .. "/emanceparticle.png")
@@ -666,14 +622,6 @@ function love.load()
 
 	gradientimg = love.graphics.newImage("graphics/gradient.png");gradientimg:setFilter("linear", "linear")
 
-	--optionsmenu
-	skinpuppet = {}
-	secondskinpuppet = {}
-	for i = 0, 3 do
-		skinpuppet[i] = love.graphics.newImage("graphics/" .. graphicspack .. "/options/skin" .. i .. ".png")
-		secondskinpuppet[i] = love.graphics.newImage("graphics/" .. graphicspack .. "/options/secondskin" .. i .. ".png")
-	end
-
 	--Ripping off
 	minecraftbreakimg = love.graphics.newImage("graphics/Minecraft/blockbreak.png")
 	minecraftbreakquad = {}
@@ -684,6 +632,7 @@ function love.load()
 	minecraftselected = love.graphics.newImage("graphics/Minecraft/selected.png")
 
 	--AUDIO--
+
 	--sounds
 	jumpsound = love.audio.newSource("sounds/jump.ogg", "static");love.audio.stop(jumpsound)
 	jumpbigsound = love.audio.newSource("sounds/jumpbig.ogg", "static");love.audio.stop(jumpbigsound)
@@ -724,21 +673,6 @@ function love.load()
 
 	lowtime = love.audio.newSource("sounds/lowtime.ogg", "static");rainboomsound:setVolume(0);rainboomsound:play();rainboomsound:stop();rainboomsound:setVolume(1)
 
-	--music
-	--[[
-	overworldmusic = love.audio.newSource("sounds/overworld.ogg", "stream");overworldmusic:setLooping(true)
-	undergroundmusic = love.audio.newSource("sounds/underground.ogg", "stream");undergroundmusic:setLooping(true)
-	castlemusic = love.audio.newSource("sounds/castle.ogg", "stream");castlemusic:setLooping(true)
-	underwatermusic = love.audio.newSource("sounds/underwater.ogg", "stream");underwatermusic:setLooping(true)
-	starmusic = love.audio.newSource("sounds/starmusic.ogg", "stream");starmusic:setLooping(true)
-	princessmusic = love.audio.newSource("sounds/princessmusic.ogg", "stream");princessmusic:setLooping(true)
-
-	overworldmusicfast = love.audio.newSource("sounds/overworld-fast.ogg", "stream");overworldmusicfast:setLooping(true)
-	undergroundmusicfast = love.audio.newSource("sounds/underground-fast.ogg", "stream");undergroundmusicfast:setLooping(true)
-	castlemusicfast = love.audio.newSource("sounds/castle-fast.ogg", "stream");castlemusicfast:setLooping(true)
-	underwatermusicfast = love.audio.newSource("sounds/underwater-fast.ogg", "stream");underwatermusicfast:setLooping(true)
-	starmusicfast = love.audio.newSource("sounds/starmusic-fast.ogg", "stream");starmusicfast:setLooping(true)
-	]]
 
 	soundlist = {jumpsound, jumpbigsound, stompsound, shotsound, blockhitsound, blockbreaksound, coinsound, pipesound, boomsound, mushroomappearsound, mushroomeatsound, shrinksound, deathsound, gameoversound,
 				fireballsound, oneupsound, levelendsound, castleendsound, scoreringsound, intermissionsound, firesound, bridgebreaksound, bowserfallsound, vinesound, swimsound, rainboomsoud,
@@ -757,11 +691,7 @@ function love.load()
 		delete_mappack(v)
 	end
 
-
-	game_load()
---	love.window.close()
-	soundenabled = false
-	-- intro_load()
+	emulator()
 end
 
 function love.update(dt)
@@ -1231,187 +1161,6 @@ function changescale(s, fullscreen)
 		shaders:refresh()
 	end
 end
-
-function love.keypressed(key, unicode)
-	if keyprompt then
-		keypromptenter("key", key)
-		return
-	end
-
-	for i, v in pairs(guielements) do
-		if v:keypress(key) then
-			return
-		end
-	end
-
-	if key == "f12" then
-		love.mouse.setGrabbed(not love.mouse.isGrabbed())
-	end
-
-	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
-		--konami code
-		if key == konami[konamii] then
-			konamii = konamii + 1
-			if konamii == #konami+1 then
-				playsound(konamisound)
-				gamefinished = true
-				saveconfig()
-				konamii = 1
-			end
-		else
-			konamii = 1
-		end
-		menu_keypressed(key, unicode)
-	elseif gamestate == "game" then
-		game_keypressed(key, unicode)
-	elseif gamestate == "intro" then
-		intro_keypressed()
-	end
-end
-
-function love.keyreleased(key, unicode)
-	if gamestate == "menu" or gamestate == "options" then
-		menu_keyreleased(key, unicode)
-	elseif gamestate == "game" then
-		game_keyreleased(key, unicode)
-	end
-end
-
-function love.mousepressed(x, y, button)
-	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
-		menu_mousepressed(x, y, button)
-	elseif gamestate == "game" then
-		game_mousepressed(x, y, button)
-	elseif gamestate == "intro" then
-		intro_mousepressed()
-	end
-
-	for i, v in pairs(guielements) do
-		if v.priority then
-			if v:click(x, y, button) then
-				return
-			end
-		end
-	end
-
-	for i, v in pairs(guielements) do
-		if not v.priority then
-			if v:click(x, y, button) then
-				return
-			end
-		end
-	end
-end
-
-function love.mousereleased(x, y, button)
-	if gamestate == "menu" or gamestate == "options" then
-		menu_mousereleased(x, y, button)
-	elseif gamestate == "game" then
-		game_mousereleased(x, y, button)
-	end
-
-	for i, v in pairs(guielements) do
-		v:unclick(x, y, button)
-	end
-end
-
-function love.wheelmoved(x, y)
-	if gamestate == "game" then
-		game_wheelmoved(x, y)
-	end
-
-	for i, v in pairs(guielements) do
-		if v.priority then
-			if v:wheel(x, y) then
-				return
-			end
-		end
-	end
-
-	for i, v in pairs(guielements) do
-		if not v.priority then
-			if v:wheel(x, y) then
-				return
-			end
-		end
-	end
-end
-
-function love.joystickpressed(joystick, button)
-	if keyprompt then
-		keypromptenter("joybutton", joystick:getID(), button)
-		return
-	end
-
-	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickpressed(joystick:getID(), button)
-	elseif gamestate == "game" then
-		game_joystickpressed(joystick:getID(), button)
-	end
-end
-
-function love.joystickreleased(joystick, button)
-	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickreleased(joystick:getID(), button)
-	elseif gamestate == "game" then
-		game_joystickreleased(joystick:getID(), button)
-	end
-end
-
-function love.joystickaxis(joystick, axis, value)
-	local joysticks,found = love.joystick.getJoysticks(),false
-	for i,v in ipairs(joysticks) do
-		if v:getID() == joystick:getID() then
-			joystick,found = i,true
-			break
-		end
-	end
-
-	if found then
-		local stickmoved = false
-		local shouldermoved = false
-
-		--If this axis is a stick, get whether it just moved out of its deadzone
-		if math.abs(value) > joystickaimdeadzone and axisDeadZones[joystick][axis]["stick"] then
-			stickmoved = true
-			axisDeadZones[joystick][axis]["stick"] = false
-		elseif math.abs(value) < joystickaimdeadzone and not axisDeadZones[joystick][axis]["stick"] then
-			axisDeadZones[joystick][axis]["stick"] = true
-		end
-		--If this axis is a shoulder, get whether it just moved out of its deadzone
-		if value > 0 and axisDeadZones[joystick][axis]["shoulder"] then
-			shouldermoved = true
-			axisDeadZones[joystick][axis]["shoulder"] = false
-		elseif value < 0 and not axisDeadZones[joystick][axis]["shoulder"] then
-			axisDeadZones[joystick][axis]["shoulder"] = true
-		end
-		if gamestate == "menu" or gamestate == "options" then
-			menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
-		elseif gamestate == "game" then
-			game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
-		end
-	end
-end
-function love.joystickhat(joystick, hat, direction)
-	local joysticks,found = love.joystick.getJoysticks(),false
-	for i,v in ipairs(joysticks) do
-		if v:getID() == joystick:getID() then
-			joystick,found = i,true
-			break
-		end
-	end
-
-	if found then
-		if gamestate == "menu" or gamestate == "options" then
-			menu_joystickhat(joystick, hat, direction)
-		elseif gamestate == "game" then
-			game_joystickhat(joystick, hat, direction)
-		end
-	end
-end
--- love.gamepadpressed = love.joystickpressed
--- love.gamepadreleased = love.joystickreleased
--- love.gamepadaxis = love.joystickaxis
 
 function round(num, idp) --Not by me
 	local mult = 10^(idp or 0)
