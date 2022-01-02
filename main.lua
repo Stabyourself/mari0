@@ -33,7 +33,7 @@ function love.load()
 
 	saveconfig()
 	width = 25
-	fullscreen = false
+	fullscreen = true
 	changescale(scale, fullscreen)
 	love.window.setTitle( "Mari0" )
 
@@ -1212,8 +1212,13 @@ function changescale(s, fullscreen)
 
 	if fullscreen then
 		fullscreen = true
-		scale = 2
-		love.window.setMode(800, 600, {fullscreen=fullscreen, vsync=vsync})
+		love.window.setMode(0, 0, {fullscreen=fullscreen, vsync=vsync})
+		gamewidth = love.graphics.getWidth()
+		gameheight = love.graphics.getHeight()
+		scale = gamewidth / (width *16)
+		if (scale > gameheight / 224) then
+			scale = gameheight / 224
+		end
 	end
 
 	uispace = math.floor(width*16*scale/4)
