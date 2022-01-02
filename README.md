@@ -3,7 +3,7 @@ Runs on LÖVE 11.2
 
 Mostly: MIT License
 
-Mushrooms, star, coinblockanimation, coinblock and plant graphics
+Mushrooms, star, coin, coinblockanimation, coinblock and plant graphics
 Mario-like stuff by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/mario-like-stuff
 License: CC-BY-SA 4.0
