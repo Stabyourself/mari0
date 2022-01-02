@@ -22,3 +22,8 @@ Pipes
 16 Bit Pipes by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/16-bit-pipes
 License: CC-BY-SA 4.0
+
+Koopa
+Modified from Monsterboy in Wonder World mockup assets by surt
+https://opengameart.org/content/monsterboy-in-wonder-world-mockup-assets
+License: CC-BY-SA 3.0
