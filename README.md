@@ -37,3 +37,8 @@ Clouds
 Modified from Clouds and Gust by Urie W.
 https://opengameart.org/content/clouds-and-gust
 License: CC-BY-SA 3.0
+
+Tree tops
+Modified from Tiny Tree by Mirofox
+https://opengameart.org/content/tiny-tree
+License: CC0
