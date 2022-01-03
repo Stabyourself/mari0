@@ -32,3 +32,8 @@ Castle bricks
 Modified from RPG Tile Set 'Military Base' NES by Chasersgaming (https://chasersgaming.itch.io/)
 https://opengameart.org/content/rpg-tile-set-military-base-nes
 License: CC0
+
+Clouds
+Modified from Clouds and Gust by Urie W.
+https://opengameart.org/content/clouds-and-gust
+License: CC-BY-SA 3.0
