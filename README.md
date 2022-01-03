@@ -42,3 +42,8 @@ Tree tops
 Modified from Tiny Tree by Mirofox
 https://opengameart.org/content/tiny-tree
 License: CC0
+
+White and green platforms
+Modified from Snow Tiles by Kelvin Shadewing (http://kelvinshadewing.net)
+https://opengameart.org/content/snow-tiles-0
+License: CC-BY-SA 3.0
