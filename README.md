@@ -3,6 +3,8 @@ Runs on LÖVE 11.2
 
 Mostly: MIT License
 
+Graphics
+
 Mushrooms, star, coin, coinblockanimation, coinblock and plant graphics
 Mario-like stuff by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/mario-like-stuff
@@ -47,3 +49,11 @@ White and green platforms
 Modified from Snow Tiles by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/snow-tiles-0
 License: CC-BY-SA 3.0
+
+Sounds
+
+overworld.ogg and overworld-fast.ogg (MainTheme.wav)
+underwater.ogg and underwater-fast.ogg (SwingingLevel.wav)
+Hungry Dino (9 chiptune tracks, 10 SFX) by SketchyLogic
+https://opengameart.org/content/hungry-dino-9-chiptune-tracks-10-sfx
+License: CC-BY 3.0
