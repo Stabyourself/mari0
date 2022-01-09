@@ -30,7 +30,7 @@ Modified from Monsterboy in Wonder World mockup assets by surt
 https://opengameart.org/content/monsterboy-in-wonder-world-mockup-assets
 License: CC-BY-SA 3.0
 
-Castle bricks
+Castle bricks and block debris
 Modified from RPG Tile Set 'Military Base' NES by Chasersgaming (https://chasersgaming.itch.io/)
 https://opengameart.org/content/rpg-tile-set-military-base-nes
 License: CC0
