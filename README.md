@@ -10,7 +10,7 @@ Mario-like stuff by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/mario-like-stuff
 License: CC-BY-SA 4.0
 
-Goomba and Peach
+Goomba, Peach, and mushroom on flag
 Modified from Super-Guido by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/super-guido
 License: CC-BY-SA 4.0
@@ -28,6 +28,11 @@ License: CC-BY-SA 4.0
 Koopa and Red Koopa
 Modified from Monsterboy in Wonder World mockup assets by surt
 https://opengameart.org/content/monsterboy-in-wonder-world-mockup-assets
+License: CC-BY-SA 3.0
+
+Squid
+Modified from Random Ocean Creatures by RAPIDPUNCHES
+https://opengameart.org/content/random-ocean-creatures
 License: CC-BY-SA 3.0
 
 Castle bricks, castle inside bricks and block debris
