@@ -55,6 +55,11 @@ Modified from Snow Tiles by Kelvin Shadewing (http://kelvinshadewing.net)
 https://opengameart.org/content/snow-tiles-0
 License: CC-BY-SA 3.0
 
+Block
+Modified from Square Block Textures by etqws3
+https://opengameart.org/content/square-block-textures
+License: CC0
+
 Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)
