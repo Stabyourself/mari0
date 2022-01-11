@@ -33,7 +33,6 @@ function love.load()
 
 	saveconfig()
 	width = 25
-	fullscreen = true
 	changescale(scale, fullscreen)
 	love.window.setTitle( "Mari0" )
 
@@ -900,6 +899,13 @@ function saveconfig()
 	end
 
 	s = s .. "scale:" .. scale .. ";"
+	s = s .. "fullscreen:"
+	if fullscreen then
+		s = s .. "true"
+	else
+		s = s .. "false"
+	end
+	s = s .. ";"
 
 	s = s .. "shader1:" .. shaderlist[currentshaderi1] .. ";"
 	s = s .. "shader2:" .. shaderlist[currentshaderi2] .. ";"
@@ -1003,6 +1009,12 @@ function loadconfig()
 
 		elseif s2[1] == "scale" then
 			scale = tonumber(s2[2])
+		elseif s2[1] == "fullscreen" then
+			if s2[2] == "true" then
+				fullscreen = true
+			else
+				fullscreen = false
+			end
 
 		elseif s2[1] == "shader1" then
 			for i = 1, #shaderlist do
@@ -1136,6 +1148,7 @@ function defaultconfig()
 
 	--options
 	scale = 2
+ fullscreen = false
 	volume = 1
 	mappack = "smb"
 	vsync = true

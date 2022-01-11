@@ -912,7 +912,11 @@ function menu_draw()
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
 			properprint("scale:", 30*scale, 40*scale)
-			properprint(scale, (180-string.len(scale)*8)*scale, 40*scale)
+			if fullscreen then
+				properprint("fullscreen", (180-string.len("fullscreen")*8)*scale, 40*scale)
+			else
+				properprint(scale, (180-string.len(scale)*8)*scale, 40*scale)
+			end
 
 
 			if optionsselection == 3 then
@@ -1821,7 +1825,10 @@ function menu_keypressed(key, unicode)
 				end
 			elseif optionstab == 3 then
 				if optionsselection == 2 then
-					if scale < 5 then
+					if fullscreen then
+						fullscreen = false
+						changescale(1, false)
+					elseif scale < 5 then
 						changescale(scale+1)
 					end
 				elseif optionsselection == 3 then
@@ -1924,8 +1931,11 @@ function menu_keypressed(key, unicode)
 				end
 			elseif optionstab == 3 then
 				if optionsselection == 2 then
-					if scale > 1 then
+					if (scale > 1 and not fullscreen) then
 						changescale(scale-1)
+					elseif (scale == 1 and not fullscreen) then
+						fullscreen = true
+						changescale(1, true)
 					end
 				elseif optionsselection == 3 then
 					currentshaderi1 = currentshaderi1 - 1
