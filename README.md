@@ -60,6 +60,11 @@ Modified from Square Block Textures by etqws3
 https://opengameart.org/content/square-block-textures  
 License: CC0
 
+Underwater block and coral
+Modified from Monkey Lad in Magical Planet by surt
+https://opengameart.org/content/monkey-lad-in-magical-planet
+License: CC0
+
 Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)  
