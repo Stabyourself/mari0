@@ -60,10 +60,16 @@ Modified from Square Block Textures by etqws3
 https://opengameart.org/content/square-block-textures  
 License: CC0
 
-Underwater block and coral
-Modified from Monkey Lad in Magical Planet by surt
-https://opengameart.org/content/monkey-lad-in-magical-planet
+Underwater block and coral  
+Modified from Monkey Lad in Magical Planet by surt  
+https://opengameart.org/content/monkey-lad-in-magical-planet  
 License: CC0
+
+Small mario  
+Modified from Super Miyamoto by Lars Doucet & Sean Choate  
+https://opengameart.org/content/super-miyamoto  
+License: CC-BY 3.0
+
 
 Sounds
 
