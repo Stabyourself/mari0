@@ -70,6 +70,11 @@ Modified from Super Miyamoto by Lars Doucet & Sean Choate
 https://opengameart.org/content/super-miyamoto  
 License: CC-BY 3.0
 
+Cloud, water and lava blocks  
+Modified from Super Miyamoto Land Tilesets by Lars Doucet, Sean Choate, and Megan Bednarz  
+https://opengameart.org/content/super-miyamoto-land-tilesets  
+License: CC-BY 3.0
+
 
 Sounds
 
