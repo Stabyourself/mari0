@@ -75,6 +75,10 @@ Modified from Super Miyamoto Land Tilesets by Lars Doucet, Sean Choate, and Mega
 https://opengameart.org/content/super-miyamoto-land-tilesets  
 License: CC-BY 3.0
 
+Fire Flower  
+Modified from bubbling potion bottle by serenajeanne  
+https://opengameart.org/content/bubbling-potion-bottle  
+License: CC-BY-SA 3.0
 
 Sounds
 
