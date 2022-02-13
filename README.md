@@ -80,6 +80,11 @@ Modified from bubbling potion bottle by serenajeanne
 https://opengameart.org/content/bubbling-potion-bottle  
 License: CC-BY-SA 3.0
 
+Fireball  
+Modified from Firebal 32x32 by MSavioti  
+https://opengameart.org/content/firebal-32x32  
+License: CC0
+
 Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)  
