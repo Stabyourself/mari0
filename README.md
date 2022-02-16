@@ -91,7 +91,12 @@ overworld.ogg and overworld-fast.ogg (MainTheme.wav)
 underwater.ogg and underwater-fast.ogg (SwingingLevel.wav)  
 underground.ogg and underground-fast.ogg (8BitMetal.wav)  
 castle.ogg and castle-fast.ogg (SeriousCutScene.wav)  
-levelend.ogg (VictoryMusic.wav)
+levelend.ogg (VictoryMusic.wav)  
 Hungry Dino (9 chiptune tracks, 10 SFX) by SketchyLogic  
 https://opengameart.org/content/hungry-dino-9-chiptune-tracks-10-sfx  
 License: CC-BY 3.0
+
+stomp.ogg (flyswatter.wav)  
+Fly Swatter Squish sound by qubodup  
+https://opengameart.org/content/fly-swatter-squish-sound  
+License: CC0
