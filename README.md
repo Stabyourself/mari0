@@ -100,3 +100,8 @@ stomp.ogg (flyswatter.wav)
 Fly Swatter Squish sound by qubodup  
 https://opengameart.org/content/fly-swatter-squish-sound  
 License: CC0
+
+starmusic.ogg and starmusic-fast.ogg  
+At The Starting Line by Snabisch  
+https://opengameart.org/content/at-the-starting-line  
+License: CC-BY 3.0
