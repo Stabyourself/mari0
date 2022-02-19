@@ -105,3 +105,14 @@ starmusic.ogg and starmusic-fast.ogg
 At The Starting Line by Snabisch  
 https://opengameart.org/content/at-the-starting-line  
 License: CC-BY 3.0
+
+coin.ogg  
+vine.ogg (plant_growth.ogg)  
+jump.ogg and jumpbig.ogg (jump.ogg)  
+swim.ogg (splash.ogg)  
+pause.ogg (cut.ogg)  
+shrink.ogg (hurt.ogg)  
+mushroomeat.ogg (achieved.ogg)  
+NES Sounds by Baŝto  
+https://opengameart.org/content/nes-sounds  
+License: CC0
