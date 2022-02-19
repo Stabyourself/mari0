@@ -84,7 +84,7 @@ function mario:init(x, y, i, animation, size, t)
 		self.height = 24/16
 
 		if self.size == 3 then
-			self.colors = flowercolor
+			self.colors = flowercolor[self.playernumber]
 		end
 	end
 
@@ -285,7 +285,7 @@ function mario:update(dt)
 
 		if self.startimer >= mariostarduration then
 			if self.size == 3 then --flower colors
-				self.colors = flowercolor
+				self.colors = flowercolor[self.playernumber]
 			else
 				self.colors = mariocolors[self.playernumber]
 			end
@@ -788,6 +788,7 @@ function mario:update(dt)
 
 		if self.animationtimer - dt < growtime and self.animationtimer > growtime then
 			self.animation = false
+			self.colors = flowercolor[self.playernumber]
 			noupdate = false
 			self.animationtimer = 0
 		end
@@ -1643,7 +1644,7 @@ function mario:grow()
 			self.y = self.y - 12/16
 			self.height = 24/16
 		elseif self.size == 3 then
-			self.colors = flowercolor
+			self.colors = flowercolor[self.playernumber]
 		end
 
 		if self.size == 2 then

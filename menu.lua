@@ -133,10 +133,16 @@ function menu_update(dt)
 				if mariocolors[skinningplayer][colornumber][colorRGB] > 1 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 1
 				end
+				if (colornumber == 3) then
+					flowercolor[skinningplayer][3] = mariocolors[skinningplayer][3]
+				end
 			elseif love.keyboard.isDown("left") and mariocolors[skinningplayer][colornumber][colorRGB] > 0 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] - RGBchangespeed*dt
 				if mariocolors[skinningplayer][colornumber][colorRGB] < 0 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 0
+				end
+				if (colornumber == 3) then
+					flowercolor[skinningplayer][3] = mariocolors[skinningplayer][3]
 				end
 			end
 

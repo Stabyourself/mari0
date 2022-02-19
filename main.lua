@@ -982,6 +982,7 @@ function loadconfig()
 			end
 			s3 = s2[3]:split(",")
 			mariocolors[tonumber(s2[2])] = {{tonumber(s3[1]), tonumber(s3[2]), tonumber(s3[3])}, {tonumber(s3[4]), tonumber(s3[5]), tonumber(s3[6])}, {tonumber(s3[7]), tonumber(s3[8]), tonumber(s3[9])}}
+			flowercolor[tonumber(s2[2])][3] = mariocolors[tonumber(s2[2])][3]
 
 		elseif s2[1] == "portalhues" then
 			if portalhues[tonumber(s2[2])] == nil then
@@ -1129,8 +1130,8 @@ function defaultconfig()
 	--3: skin (yellow-orange)
 
 	mariocolors = {}
-	mariocolors[1] = {{224/255,  32/255,   0/255}, {136/255, 112/255,   0/255}, {252/255, 152/255,  56/255}}
-	mariocolors[2] = {{255/255, 255/255, 255/255}, {  0/255, 160/255,   0/255}, {252/255, 152/255,  56/255}}
+	mariocolors[1] = {{148/255,   0/255,   0/255}, {136/255,  86/255,  36/255}, {240/255, 140/255,  88/255}}
+	mariocolors[2] = {{ 17/255,  78/255,   0/255}, { 59/255,  29/255,   0/255}, {120/255,  57/255,  20/255}}
 	mariocolors[3] = {{  0/255,   0/255,   0/255}, {200/255,  76/255,  12/255}, {252/255, 188/255, 176/255}}
 	mariocolors[4] = {{ 32/255,  56/255, 236/255}, {  0/255, 128/255, 136/255}, {252/255, 152/255,  56/255}}
 	for i = 5, players do
@@ -1144,11 +1145,17 @@ function defaultconfig()
 	starcolors[3] = {{252/255, 216/255, 168/255}, {216/255,  40/255,   0/255}, {252/255, 152/255,  56/255}}
 	starcolors[4] = {{216/255,  40/255,   0/255}, {252/255, 152/255,  56/255}, {252/255, 252/255, 252/255}}
 
-	flowercolor = {{252/255, 216/255, 168/255}, {216/255,  40/255,   0/255}, {252/255, 152/255,  56/255}}
+	flowercolor = {}
+	for i = 1, 4 do
+		flowercolor[i] = {{252/255, 216/255, 168/255}, {216/255,  40/255,   0/255}, mariocolors[i][3]}
+	end
+	for i = 5, players do
+		flowercolor[i] = {{252/255, 216/255, 168/255}, {216/255,  40/255,   0/255}, mariocolors[i][3]}
+	end
 
 	--options
 	scale = 2
- fullscreen = false
+	fullscreen = false
 	volume = 1
 	mappack = "smb"
 	vsync = true
