@@ -45,7 +45,7 @@ Pipes
 https://opengameart.org/content/16-bit-pipes  
 License: CC-BY-SA 4.0
 
-Koopa and Red Koopa  
+Koopa, Red Koopa, and vines  
 Modified from Monsterboy in Wonder World mockup assets by surt  
 https://opengameart.org/content/monsterboy-in-wonder-world-mockup-assets  
 License: CC-BY-SA 3.0
