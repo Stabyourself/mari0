@@ -85,6 +85,12 @@ Modified from Firebal 32x32 by MSavioti
 https://opengameart.org/content/firebal-32x32  
 License: CC0
 
+Toad  
+Modified from Mushroom, Dude by sparrow666  
+https://opengameart.org/content/mushroom-dude  
+License: CC0
+
+
 Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)  
