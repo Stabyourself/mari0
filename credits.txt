@@ -59,3 +59,6 @@ by snabisch
 
 nes sounds
 by basto
+
+game over 8bit music
+by 3dpyramid
