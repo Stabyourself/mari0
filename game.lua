@@ -1022,7 +1022,7 @@ function game_draw()
 			love.graphics.translate(0, yoffset*scale)
 		end
 
-		properprint("mario", uispace*.5 - 24*scale, 8*scale)
+		properprint("score", uispace*.5 - 24*scale, 8*scale)
 		properprint(addzeros(marioscore, 6), uispace*0.5-24*scale, 16*scale)
 
 		properprint("*", uispace*1.5-8*scale, 16*scale)
@@ -1121,7 +1121,7 @@ function game_draw()
 		if levelfinished and levelfinishtype == "castle" then
 			if levelfinishedmisc2 == 1 then
 				if levelfinishedmisc >= 1 then
-					properprint("thank you mario!", math.floor(((mapwidth-12-xscroll)*16-1)*scale), 72*scale)
+					properprint("thank you hero!", math.floor(((mapwidth-12-xscroll)*16-1)*scale), 72*scale)
 				end
 				if levelfinishedmisc == 2 then
 					properprint("but our princess is in", math.floor(((mapwidth-13.5-xscroll)*16-1)*scale), 104*scale) --say what
@@ -1129,7 +1129,7 @@ function game_draw()
 				end
 			else
 				if levelfinishedmisc >= 1 then
-					properprint("thank you mario!", math.floor(((mapwidth-12-xscroll)*16-1)*scale), 72*scale)
+					properprint("thank you hero!", math.floor(((mapwidth-12-xscroll)*16-1)*scale), 72*scale)
 				end
 				if levelfinishedmisc >= 2 then
 					properprint("your quest is over.", math.floor(((mapwidth-12.5-xscroll)*16-1)*scale), 96*scale)

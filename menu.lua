@@ -231,7 +231,7 @@ function menu_draw()
 
 	---UI
 
-	properprint("mario", uispace*.5 - 24*scale, 8*scale)
+	properprint("score", uispace*.5 - 24*scale, 8*scale)
 	properprint("000000", uispace*0.5-24*scale, 16*scale)
 
 	properprint("*", uispace*1.5-8*scale, 16*scale)

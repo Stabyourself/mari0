@@ -1,3 +1,5 @@
+super mario brothers created by nintendo
+portal created by valve
 original mari0 created by maurice
 at stabyourself.net
 rebranded gateway jump by identical games
@@ -8,7 +10,7 @@ following. see readme for complete details
 super-guido
 mario-like stuff
 cannon bob
-pipes
+16 bit pipes
 snow tiles
 by kelvin shadewing http://kelvinshadewing.net
 

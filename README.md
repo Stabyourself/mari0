@@ -1,9 +1,26 @@
-# mari0
-Runs on LÖVE 11.2
+# Gateway Jump
+
+Gateway Jump is a platformer with a gun which opens gateways. It is based
+on the Mari0 game developed by Stabyourself.net. That game combined Super
+Mario Brothers and Portal. The game assets were mostly taken from Super
+Mario Brothers. Gateway Jump has been replacing all the assets to make
+it easier to legally distribute the game.
+
+## Status
+
+Levels: Not Started
+Graphics: 75% Complete.
+Sounds: 40% Complete
+
+## How to start
+
+Runs on LÖVE 11.2.
+
+## License
 
 Mostly: MIT License
 
-Graphics
+### Graphics
 
 Most things not Portal related or from Super Mario Brothers or listed below
 were created by Dennis Payne.
@@ -93,8 +110,7 @@ Modified from Mushroom, Dude by sparrow666
 https://opengameart.org/content/mushroom-dude  
 License: CC0
 
-
-Sounds
+### Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)  
 underwater.ogg and underwater-fast.ogg (SwingingLevel.wav)  

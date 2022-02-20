@@ -188,7 +188,7 @@ function levelscreen_draw()
 			love.graphics.translate(0, yoffset*scale)
 		end
 
-		properprint("mario", uispace*.5 - 24*scale, 8*scale)
+		properprint("score", uispace*.5 - 24*scale, 8*scale)
 		properprint(addzeros(marioscore, 6), uispace*0.5-24*scale, 16*scale)
 
 		properprint("*", uispace*1.5-8*scale, 16*scale)
