@@ -5,6 +5,9 @@ Mostly: MIT License
 
 Graphics
 
+Most things not Portal related or from Super Mario Brothers or listed below
+were created by Dennis Payne.
+
 Mushrooms, star, coin, coinblockanimation, coinblock and plant graphics  
 Mario-like stuff by Kelvin Shadewing (http://kelvinshadewing.net)  
 https://opengameart.org/content/mario-like-stuff  
@@ -65,7 +68,7 @@ Modified from Monkey Lad in Magical Planet by surt
 https://opengameart.org/content/monkey-lad-in-magical-planet  
 License: CC0
 
-Small mario  
+Small and big mario  
 Modified from Super Miyamoto by Lars Doucet & Sean Choate  
 https://opengameart.org/content/super-miyamoto  
 License: CC-BY 3.0

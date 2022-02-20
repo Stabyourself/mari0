@@ -34,7 +34,7 @@ function love.load()
 	saveconfig()
 	width = 25
 	changescale(scale, fullscreen)
-	love.window.setTitle( "Mari0" )
+	love.window.setTitle( "Gateway Jump" )
 
 	--version check
 	local loveversion = string.format("%02d.%02d.%02d", love._version_major, love._version_minor, love._version_revision)
@@ -93,6 +93,7 @@ function love.load()
 
 	require "intro"
 	require "menu"
+	require "credits"
 	require "levelscreen"
 	require "game"
 	require "editor"
@@ -806,6 +807,8 @@ function love.update(dt)
 
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 		menu_update(dt)
+	elseif gamestate == "credits" then
+		credits_update(dt)
 	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "sublevelscreen" or gamestate == "mappackfinished" then
 		levelscreen_update(dt)
 	elseif gamestate == "game" then
@@ -824,6 +827,8 @@ function love.draw()
 
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 		menu_draw()
+	elseif gamestate == "credits" then
+		credits_draw()
 	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "mappackfinished" then
 		levelscreen_draw()
 	elseif gamestate == "game" then
@@ -1282,6 +1287,8 @@ function love.keypressed(key, unicode)
 			konamii = 1
 		end
 		menu_keypressed(key, unicode)
+	elseif gamestate == "credits" then
+		credits_keypressed(key, unicode)
 	elseif gamestate == "game" then
 		game_keypressed(key, unicode)
 	elseif gamestate == "intro" then

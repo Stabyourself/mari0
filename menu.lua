@@ -4,7 +4,6 @@ function menu_load()
 	gamestate = "menu"
 	selection = 1
 	coinanimation = 1
-	love.graphics.setBackgroundColor(92, 148, 252)
 	scrollsmoothrate = 4
 	optionstab = 2
 	optionsselection = 1
@@ -295,6 +294,8 @@ function menu_draw()
 			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		elseif selection == 4 then
 			love.graphics.draw(menuselection, 98*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
+		elseif selection == 5 then
+			love.graphics.draw(menuselection, 98*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		end
 
 		local start = 9
@@ -337,6 +338,8 @@ function menu_draw()
 			properprint("select mappack", 87*scale, 170*scale)
 
 			properprint("options", 111*scale, 186*scale)
+
+			properprint("credits", 111*scale, 202*scale)
 
 			properprint(players, 87*scale, 138*scale)
 
@@ -1590,7 +1593,7 @@ function menu_keypressed(key, unicode)
 				end
 			end
 		elseif (key == "down" or key == "s") then
-			if selection < 4 then
+			if selection < 5 then
 				selection = selection + 1
 			end
 		elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
@@ -1617,6 +1620,9 @@ function menu_keypressed(key, unicode)
 				mappacks()
 			elseif selection == 4 then
 				gamestate = "options"
+			elseif selection == 5 then
+				gamestate = "credits"
+				credits_load()
 			end
 		elseif key == "escape" then
 			love.event.quit()
