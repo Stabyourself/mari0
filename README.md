@@ -8,9 +8,9 @@ it easier to legally distribute the game.
 
 ## Status
 
-Levels: Not Started
-Graphics: 75% Complete.
-Sounds: 40% Complete
+Levels: Not Started  
+Graphics: 75% Complete  
+Sounds: 40% Complete  
 
 ## How to start
 
