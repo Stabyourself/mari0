@@ -146,3 +146,13 @@ gameover.ogg
 Modified from Game Over 8bit music by 3DPyramid  
 https://opengameart.org/content/game-over-8bit-music  
 License: CC0
+
+blockbreak.ogg  
+Modified from Sledgehammer - using to break a block of concrete. by Soundsnap  
+https://opengameart.org/content/sledgehammer-using-to-break-a-block-of-concrete  
+License: GPL 3.0
+
+blockhit.ogg  
+Modified from Plastic on bongos by remaxim  
+https://opengameart.org/content/plastic-bongos  
+License: CC-BY-SA 3.0
