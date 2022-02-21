@@ -45,7 +45,7 @@ Pipes
 https://opengameart.org/content/16-bit-pipes  
 License: CC-BY-SA 4.0
 
-Koopa, Red Koopa, and vines  
+Koopa, Red Koopa, vines and bonus platform  
 Modified from Monsterboy in Wonder World mockup assets by surt  
 https://opengameart.org/content/monsterboy-in-wonder-world-mockup-assets  
 License: CC-BY-SA 3.0
@@ -108,6 +108,11 @@ License: CC0
 Toad  
 Modified from Mushroom, Dude by sparrow666  
 https://opengameart.org/content/mushroom-dude  
+License: CC0
+
+Upfire  
+Modified from Fire by Spring Spring
+https://opengameart.org/content/fire-0  
 License: CC0
 
 ### Sounds
