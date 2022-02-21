@@ -148,6 +148,8 @@ swim.ogg (splash.ogg)
 pause.ogg (cut.ogg)  
 shrink.ogg (hurt.ogg)  
 mushroomeat.ogg (achieved.ogg)  
+lowtime.ogg (nearly_dead.ogg)  
+fireball.ogg (hit.ogg)
 NES Sounds by Baŝto  
 https://opengameart.org/content/nes-sounds  
 License: CC0
