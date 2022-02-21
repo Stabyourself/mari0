@@ -115,6 +115,11 @@ Modified from Fire by Spring Spring
 https://opengameart.org/content/fire-0  
 License: CC0
 
+Fire  
+Modified from Animated Fires by stealthix  
+https://opengameart.org/content/animated-fires  
+License: CC0
+
 ### Sounds
 
 overworld.ogg and overworld-fast.ogg (MainTheme.wav)  
