@@ -168,3 +168,8 @@ blockhit.ogg
 Modified from Plastic on bongos by remaxim  
 https://opengameart.org/content/plastic-bongos  
 License: CC-BY-SA 3.0
+
+death.ogg  
+Modified from retro dead/destroyed/damaged sound by Prinsu-Kun  
+https://opengameart.org/content/retro-deaddestroyeddamaged-sound  
+License: CC0

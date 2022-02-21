@@ -1,11 +1,14 @@
-super mario brothers created by nintendo
-portal created by valve
-original mari0 created by maurice
-at stabyourself.net
-rebranded gateway jump by identical games
+gateway jump is based on mari0. it attempts
+to replace all content copied without
+permission from other games.
 
-graphics and sound contributions from the
-following. see readme for complete details
+mari0 was created by maurice at
+stabyourself.net. it combines elements of
+super mario brothers created by nintendo
+and portal created by valve.
+
+graphics and sound contributions include the
+following. see readme for complete details.
 
 super-guido
 mario-like stuff
@@ -55,7 +58,7 @@ animated fires
 by stealthix
 
 hungry dino
-by SketchyLogic
+by sketchylogic
 
 fly swatter squish sound
 by qubodup
@@ -74,3 +77,6 @@ by soundsnap
 
 plastic on bongos
 by remaxim
+
+retro dead/destroyed/damaged sound
+by prinsu-kun
