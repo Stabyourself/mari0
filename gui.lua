@@ -444,6 +444,10 @@ function guielement:keypress(key)
 								break
 							end
 						end
+						if key == "space" then
+							key = " "
+							found = true
+						end
 
 						if found then
 							self.value = self.value .. key
