@@ -183,3 +183,8 @@ bridgebreak.ogg (interface6.wav)
 RPG Sound Pack by artisticdude  
 https://opengameart.org/content/rpg-sound-pack  
 License: CC0
+
+castleend.ogg  
+Victory! Composed by: Jon K. Fite  
+https://opengameart.org/content/victory-2  
+License: CC-BY 3.0
