@@ -149,9 +149,10 @@ pause.ogg (cut.ogg)
 shrink.ogg (hurt.ogg)  
 mushroomeat.ogg (achieved.ogg)  
 lowtime.ogg (nearly_dead.ogg)  
-fireball.ogg (hit.ogg)
-boom.ogg (bomb.ogg)
-mushroomappear.ogg (magic.ogg)
+fireball.ogg (hit.ogg)  
+boom.ogg (bomb.ogg)  
+mushroomappear.ogg (magic.ogg)  
+oneup.ogg (secret.ogg)  
 NES Sounds by Baŝto  
 https://opengameart.org/content/nes-sounds  
 License: CC0
