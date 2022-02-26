@@ -278,12 +278,6 @@ function menu_draw()
 	if gamestate == "menu" then
 		love.graphics.draw(titleimage, 40*scale, 24*scale, 0, scale, scale)
 
-		if updatenotification then
-			love.graphics.setColor(1, 0, 0)
-			properprint("version outdated!|go to stabyourself.net|to download latest", 220*scale, 90*scale)
-			love.graphics.setColor(1, 1, 1, 1)
-		end
-
 		if selection == 0 then
 			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		elseif selection == 1 then

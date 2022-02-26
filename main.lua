@@ -161,12 +161,8 @@ function love.load()
 	http = require("socket.http")
 	http.TIMEOUT = 1
 
-	love.filesystem.setIdentity("mari0")
+	love.filesystem.setIdentity("gatewayjump")
 
-	updatenotification = false
-	if getupdate() then
-		updatenotification = true
-	end
 	http.TIMEOUT = 4
 
 	graphicspack = "SMB" --SMB, ALLSTARS
@@ -1603,9 +1599,9 @@ function openSaveFolder(subfolder) --By Slime
 	if os.getenv("WINDIR") then -- lolwindows
 		--cmdstr = "Explorer /root,%s"
 		if path:match("LOVE") then --hardcoded to fix ISO characters in usernames and made sure release mode doesn't mess anything up -saso
-			cmdstr = "Explorer %%appdata%%\\LOVE\\mari0"
+			cmdstr = "Explorer %%appdata%%\\LOVE\\gatewayjump"
 		else
-			cmdstr = "Explorer %%appdata%%\\mari0"
+			cmdstr = "Explorer %%appdata%%\\gatewayjump"
 		end
 		path = path:gsub("/", "\\")
 		successval = 1
@@ -1619,31 +1615,6 @@ function openSaveFolder(subfolder) --By Slime
 
 	-- returns true if successfully opened folder
 	return cmdstr and os.execute(cmdstr:format(path)) == successval
-end
-
-function getupdate()
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
-
-	if code ~= 200 then
-		return false
-	elseif not onlinedata then
-		return false
-	end
-
-	local latestversion
-
-	local split1 = onlinedata:split("<")
-	for i = 2, #split1 do
-		local split2 = split1[i]:split(">")
-		if split2[1] == "latestversion" then
-			latestversion = tonumber(split2[2])
-		end
-	end
-
-	if latestversion and latestversion > marioversion then
-		return true
-	end
-	return false
 end
 
 function properprint(s, x, y)
