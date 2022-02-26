@@ -3,7 +3,7 @@
 portalgundelay = 0.2
 gellifetime = 2
 bulletbilllifetime = 20
-playertypelist = {"portal", "minecraft", "gelcannon"}
+playertypelist = {"portal", "minecraft", "gelcannon", "none"}
 
 joystickdeadzone = 0.2
 joystickaimdeadzone = 0.5

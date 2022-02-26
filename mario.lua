@@ -1019,7 +1019,9 @@ end
 
 function mario:updateangle()
 	--UPDATE THE PLAYER ANGLE
-	if self.playernumber == mouseowner then
+	if self.t == "none" then
+		-- Do nothing
+	elseif self.playernumber == mouseowner then
 		local scale = scale
 		if shaders and shaders.scale then scale = shaders.scale end
 		self.pointingangle = math.atan2(self.x+6/16-xscroll-(love.mouse.getX()/16/scale), (self.y+6/16-.5)-(love.mouse.getY()/16/scale))
@@ -1226,6 +1228,10 @@ function mario:movement(dt)
 	else --WALKING
 
 		if rightkey(self.playernumber) then --MOVEMENT RIGHT
+			if self.t == "none" then
+				self.animationdirection = "right"
+				self.pointingangle = -math.pi/2
+			end
 			if self.jumping or self.falling then --IN AIR
 				if self.speedx < maxwalkspeed then
 					if self.speedx < 0 then
@@ -1266,6 +1272,10 @@ function mario:movement(dt)
 			end
 
 		elseif leftkey(self.playernumber) then --MOVEMENT LEFT
+			if self.t == "none" then
+				self.animationdirection = "left"
+				self.pointingangle = math.pi/2
+			end
 			if self.jumping or self.falling then --IN AIR
 				if self.speedx > -maxwalkspeed then
 					if self.speedx > 0 then
@@ -1381,6 +1391,10 @@ function mario:underwatermovement(dt)
 
 	--HORIZONTAL MOVEMENT
 	if rightkey(self.playernumber) then --MOVEMENT RIGHT
+		if self.t == "none" then
+			self.animationdirection = "right"
+			self.pointingangle = -math.pi/2
+		end
 		if self.jumping or self.falling then --IN AIR
 			if self.speedx < uwmaxairwalkspeed then
 				if self.speedx < 0 then
@@ -1421,6 +1435,10 @@ function mario:underwatermovement(dt)
 		end
 
 	elseif leftkey(self.playernumber) then --MOVEMENT LEFT
+		if self.t == "none" then
+			self.animationdirection = "left"
+			self.pointingangle = math.pi/2
+		end
 		if self.jumping or self.falling then --IN AIR
 			if self.speedx > -uwmaxairwalkspeed then
 				if self.speedx > 0 then
