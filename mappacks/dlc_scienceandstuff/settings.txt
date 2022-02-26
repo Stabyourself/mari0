@@ -1,3 +1,0 @@
-name=science and stuff
-author=matt y
-description=a brisk refresherof testing.

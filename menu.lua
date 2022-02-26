@@ -406,11 +406,11 @@ function menu_draw()
 				love.graphics.setColor(0, 0, 0, 0.8)
 				love.graphics.rectangle("fill", 240*scale, 81*scale, 115*scale, 61*scale)
 				love.graphics.setColor(1, 1, 1)
-				if not savefolderfailed then
-					properprint("press right to|access the dlc||press m to|open your|mappack folder", 241*scale, 83*scale)
-				else
-					properprint("press right to|access the dlc||could not|open your|mappack folder", 241*scale, 83*scale)
-				end
+--				if not savefolderfailed then
+--					properprint("press right to|access the dlc||press m to|open your|mappack folder", 241*scale, 83*scale)
+--				else
+--					properprint("press right to|access the dlc||could not|open your|mappack folder", 241*scale, 83*scale)
+--				end
 				love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
 
 				for i = 1, #mappacklist do
@@ -583,11 +583,11 @@ function menu_draw()
 			love.graphics.rectangle("fill", 22*scale, 3*scale, 44*scale, 13*scale)
 			love.graphics.setColor(0, 0, 0)
 			properprint("local", 23*scale, 6*scale)
-			drawrectangle(22, 3, 44, 13)
-			love.graphics.setColor(0, 0, 0)
-			love.graphics.rectangle("fill", 70*scale, 3*scale, 29*scale, 13*scale)
-			love.graphics.setColor(1, 1, 1)
-			properprint("dlc", 72*scale, 6*scale)
+--			drawrectangle(22, 3, 44, 13)
+--			love.graphics.setColor(0, 0, 0)
+--			love.graphics.rectangle("fill", 70*scale, 3*scale, 29*scale, 13*scale)
+--			love.graphics.setColor(1, 1, 1)
+--			properprint("dlc", 72*scale, 6*scale)
 		else
 			love.graphics.setColor(0, 0, 0)
 			love.graphics.rectangle("fill", 22*scale, 3*scale, 44*scale, 13*scale)
@@ -1703,9 +1703,9 @@ function menu_keypressed(key, unicode)
 			if mappack == "custom_mappack" then
 				createmappack()
 			end
-		elseif (key == "right" or key == "d") then
-			loadonlinemappacks()
-			mappackhorscroll = 1
+--		elseif (key == "right" or key == "d") then
+--			loadonlinemappacks()
+--			mappackhorscroll = 1
 		elseif (key == "left" or key == "a") then
 			loadmappacks()
 			mappackhorscroll = 0

@@ -1,4 +1,0 @@
-name=escape the lab
-author=xser0
-description=you run away fromthe lab
-lives=0
