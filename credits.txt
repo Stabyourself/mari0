@@ -85,7 +85,10 @@ rpg sound pack
 by artisticdude
 
 victory!
-by jon k. fite  
+by jon k. fite
 
 fun adventure
-by hitctrl  
+by hitctrl
+
+gui sound effects 4
+by jesús lastra  

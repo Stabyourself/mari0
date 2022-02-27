@@ -193,3 +193,8 @@ intermission.ogg
 Fun Adventure by HitCtrl  
 https://opengameart.org/content/fun-adventure  
 License: CC-BY 3.0
+
+scorering.ogg (GUI Sound Effects_031.wav)  
+GUI Sound Effects #4 by Jesús Lastra  
+https://opengameart.org/content/gui-sound-effects-4  
+License: CC-BY 3.0
