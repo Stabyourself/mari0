@@ -10,7 +10,7 @@ it easier to legally distribute the game.
 
 Levels: Not Started  
 Graphics: Complete  
-Sounds: 40% Complete  
+Sounds: Complete  
 
 ## How to start
 
@@ -215,3 +215,10 @@ fire.ogg
 Spell 4 (fire) by Bart K.  
 https://opengameart.org/content/spell-4-fire  
 License: CC-BY 3.0
+
+portalenter.ogg (teleport.ogg)  
+portalfizzle.ogg (disenchant.ogg)  
+portal1open.ogg and portal2open.ogg (warp3.ogg)  
+Spell Sounds Starter Pack by p0ss  
+https://opengameart.org/content/spell-sounds-starter-pack  
+License: CC-BY-SA 3.0
