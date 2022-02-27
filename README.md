@@ -198,3 +198,8 @@ scorering.ogg (GUI Sound Effects_031.wav)
 GUI Sound Effects #4 by Jesús Lastra  
 https://opengameart.org/content/gui-sound-effects-4  
 License: CC-BY 3.0
+
+princessmusic.ogg  
+End Credits Theme Music by Cleyton Kauffman - https://soundcloud.com/cleytonkauffman  
+https://opengameart.org/content/end-credits-theme  
+License: CC-BY-SA 3.0

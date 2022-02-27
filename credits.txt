@@ -91,4 +91,8 @@ fun adventure
 by hitctrl
 
 gui sound effects 4
-by jesús lastra  
+by jesus lastra  
+
+end credits theme
+by cleyton kauffman
+https://soundcloud.com/cleytonkauffman
