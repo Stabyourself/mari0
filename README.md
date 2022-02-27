@@ -188,3 +188,8 @@ castleend.ogg
 Victory! Composed by: Jon K. Fite  
 https://opengameart.org/content/victory-2  
 License: CC-BY 3.0
+
+intermission.ogg  
+Fun Adventure by HitCtrl  
+https://opengameart.org/content/fun-adventure  
+License: CC-BY 3.0
