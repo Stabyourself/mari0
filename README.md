@@ -203,3 +203,8 @@ princessmusic.ogg
 End Credits Theme Music by Cleyton Kauffman - https://soundcloud.com/cleytonkauffman  
 https://opengameart.org/content/end-credits-theme  
 License: CC-BY-SA 3.0
+
+bulletbill.ogg  
+Cannon fire by Thimras  
+https://opengameart.org/content/cannon-fire  
+License: CC0
