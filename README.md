@@ -208,3 +208,8 @@ bulletbill.ogg
 Cannon fire by Thimras  
 https://opengameart.org/content/cannon-fire  
 License: CC0
+
+fire.ogg  
+Spell 4 (fire) by Bart K.  
+https://opengameart.org/content/spell-4-fire  
+License: CC-BY 3.0
