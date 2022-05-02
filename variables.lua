@@ -1,5 +1,6 @@
 --SETABLE VARS--
 --almost all vars are in "blocks", "blocks per second" or just "seconds". Should be obvious enough what's what.
+epsilon = 0.000000000000001
 portalgundelay = 0.2
 gellifetime = 2
 bulletbilllifetime = 20

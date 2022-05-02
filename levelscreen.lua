@@ -84,7 +84,7 @@ end
 
 function levelscreen_update(dt)
 	levelscreentimer = levelscreentimer + dt
-	if (levelscreentimer-blacktime) > -0.000000000000001 then -- epsilon ensures that the delay is consistent
+	if (levelscreentimer-blacktime) > -epsilon then -- epsilon ensures that the delay is consistent through floating point errors
 		if gamestate == "levelscreen" then
 			gamestate = "game"
 			if respawnsublevel ~= 0 then
