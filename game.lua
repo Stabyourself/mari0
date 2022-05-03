@@ -2886,7 +2886,7 @@ function shootportal(plnumber, i, sourcex, sourcey, direction)
 		return
 	end
 	--portalgun delay
-	if portaldelay[plnumber] > 0 then
+	if portaldelay[plnumber] > epsilon then -- epsilon ensures that the delay is consistent through floating point errors
 		return
 	else
 		portaldelay[plnumber] = portalgundelay
