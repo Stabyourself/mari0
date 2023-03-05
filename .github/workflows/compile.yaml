@@ -1,0 +1,49 @@
+name: Compile
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+        submodules: true
+      name: Checkout Repository
+    - name: Extract Metadata
+      id: metadata
+      run: python3 main/_DO_NOT_INCLUDE/extract-metadata.py
+    - name: Add Universe Repository
+      run: sudo add-apt-repository universe
+    - name: Update Packages
+      run: sudo apt-get update
+    - name: Install Dependencies
+      run: sudo apt-get install --assume-yes wine-stable wine64 python3-pip libfuse2
+    - name: Install makelove
+      run: pip3 install git+https://github.com/pfirsich/makelove/
+    - name: Build
+      run: cd main && python3 -m makelove && cd ..
+    - name: Artifact (LÖVE)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-source
+        path: main/makelove-build/love/${{ env.ARTIFACT_NAME_LOVE }}
+    - name: Artifact (AppImage)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-linux
+        path: main/makelove-build/appimage/${{ env.ARTIFACT_NAME_APPIMAGE }}
+    - name: Artifact (Win64)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-win64
+        path: main/makelove-build/win64/${{ env.ARTIFACT_NAME_WIN64 }}
+    - name: Artifact (Win32)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-win32
+        path: main/makelove-build/win32/${{ env.ARTIFACT_NAME_WIN32 }}
+    - name: Artifact (MacOS)
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-macos
+        path: main/makelove-build/macos/${{ env.ARTIFACT_NAME_MACOS }}

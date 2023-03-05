@@ -1,0 +1,23 @@
+name = "mari0"
+default_targets = ["win32", "win64", "appimage", "macos"]
+build_directory = "makelove-build"
+icon_file = "_DO_NOT_INCLUDE/icon.png"
+
+love_files = [
+    "::git-ls-tree::",
+    "-*/.*",
+    "-./_DO_NOT_INCLUDE/*",
+]
+
+[windows.exe_metadata]
+ProductName = "Mari0"
+CompanyName = "Stabyourself.net"
+LegalCopyright = "Copyright © 2006-2023 Maurice Guégan"
+
+[linux.desktop_file_metadata]
+Name = "Mari0"
+
+[macos.app_metadata]
+CFBundleName = "Mari0"
+CFBundleIdentifier = "net.stabyourself"
+NSHumanReadableCopyright = "Copyright © 2006-2023 Maurice Guégan"

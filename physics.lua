@@ -1,6 +1,6 @@
 --[[
 	PHYSICS LIBRARY THING
-	WRITTEN BY MAURICE GUÉGAN FOR MARI0
+	WRITTEN BY MAURICE GUÃ‰GAN FOR MARI0
 	DON'T STEAL MY SHIT
 	Licensed under the same license as the game itself.
 ]]--
