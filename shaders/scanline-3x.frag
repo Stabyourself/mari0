@@ -29,6 +29,6 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texture_coords, vec2 pixel_coords)
 		intens = vec4(0.0, 0.0, 0.0, 1.0);
 	else
 		intens = smoothstep(0.2,0.8,rgb) + normalize(vec4(rgb.xyz, 1.0));
-	number level = (4.0-gl_TexCoord[0].z) * 0.19;
+	number level = (4.0-texture_coords.x) * 0.19;
     return vec4((intens * (0.5-level) + rgb * 1.1).rgb, 1.0);
 }
