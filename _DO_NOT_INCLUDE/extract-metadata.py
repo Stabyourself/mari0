@@ -44,7 +44,7 @@ with open(toml_path, 'r') as toml_file:
     if metadata['title'] != _mac_title.group(1):
         print('::error file=makelove.toml::macOS bundle display name does not match game title in main.lua')
 
-if len(sys.argv > 1):
+if len(sys.argv) > 1:
     if (version := re.sub(r'^refs/tags/v?', '', sys.argv[1], count=1)) != sys.argv[1]:
         metadata['version'] = version
 
