@@ -977,11 +977,20 @@ function loadconfig()
 				mariocolors[tonumber(s2[2])] = {}
 			end
 			s3 = s2[3]:split(",")
+			-- migrate pre 11.0 config
 			local s4 = {}
+			local migrate = false;
 			for j = 1, #s3 do
-				s4[j] = tonumber(s3[j])
-				if s4[j] > 1 then
-					s4[j] = s4[j] / 255  -- migrate pre 11.0 config
+				if tonumber(s3[j]) > 1 then
+					migrate = true
+					break
+				end
+			end
+			for j = 1, #s3 do
+				if migrate then
+					s4[j] = tonumber(s3[j]) / 255
+				else
+					s4[j] = tonumber(s3[j])
 				end
 			end
 			mariocolors[tonumber(s2[2])] = {{s4[1], s4[2], s4[3]}, {s4[4], s4[5], s4[6]}, {s4[7], s4[8], s4[9]}}
