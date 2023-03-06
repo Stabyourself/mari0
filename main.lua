@@ -963,6 +963,8 @@ function loadconfig()
 				for k = 2, #s4 do
 					if tonumber(s4[k]) ~= nil then
 						controls[tonumber(s2[2])][s4[1]][k-1] = tonumber(s4[k])
+					elseif s4[k] == " " then
+						controls[tonumber(s2[2])][s4[1]][k-1] = "space" -- migrate pre 0.10.2 config
 					else
 						controls[tonumber(s2[2])][s4[1]][k-1] = s4[k]
 					end
