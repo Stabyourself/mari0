@@ -32,17 +32,17 @@ with open(toml_path, 'r') as toml_file:
     metadata['id'] = re.search(r'^name\s*=\s*"(.+)"', toml).group(1)
     # ensure title is the same as the one in main.lua
     if (_win_title := re.search(r'^ProductName\s*=\s*"(.+)"$', toml, re.MULTILINE)) is None:
-        print('::error file=makelove.toml::Windows product name could not be found')
+        print('::warning file=makelove.toml::Windows product name could not be found')
     if metadata['title'] != _win_title.group(1):
-        print('::error file=makelove.toml::Windows product name does not match game title in main.lua')
+        print('::warning file=makelove.toml::Windows product name does not match game title in main.lua')
     if (_linux_title := re.search(r'\[linux.desktop_file_metadata\]\n+Name\s*=\s*"(.+)"', toml, re.MULTILINE)) is None:
-        print('::error file=makelove.toml::Linux desktop file name could not be found')
+        print('::warning file=makelove.toml::Linux desktop file name could not be found')
     if metadata['title'] != _linux_title.group(1):
-        print('::error file=makelove.toml::Linux desktop file name does not match game title in main.lua')
+        print('::warning file=makelove.toml::Linux desktop file name does not match game title in main.lua')
     if (_mac_title := re.search(r'^CFBundle(?:Display)?Name\s*=\s*"(.+)"$', toml, re.MULTILINE)) is None:
-        print('::error file=makelove.toml::macOS bundle display name could not be found')
+        print('::warning file=makelove.toml::macOS bundle display name could not be found')
     if metadata['title'] != _mac_title.group(1):
-        print('::error file=makelove.toml::macOS bundle display name does not match game title in main.lua')
+        print('::warning file=makelove.toml::macOS bundle display name does not match game title in main.lua')
 
 if len(sys.argv) > 1:
     if (version := re.sub(r'^refs/tags/v?', '', sys.argv[1], count=1)) != sys.argv[1]:
