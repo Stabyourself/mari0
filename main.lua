@@ -865,7 +865,7 @@ function saveconfig()
 		s = s .. "playercolors:" .. i .. ":"
 		for j = 1, 3 do
 			for k = 1, 3 do
-				s = s .. mariocolors[i][j][k]
+				s = s .. round(mariocolors[i][j][k], 4)
 				if j == 3 and k == 3 then
 					s = s .. ";"
 				else
@@ -977,7 +977,14 @@ function loadconfig()
 				mariocolors[tonumber(s2[2])] = {}
 			end
 			s3 = s2[3]:split(",")
-			mariocolors[tonumber(s2[2])] = {{tonumber(s3[1]), tonumber(s3[2]), tonumber(s3[3])}, {tonumber(s3[4]), tonumber(s3[5]), tonumber(s3[6])}, {tonumber(s3[7]), tonumber(s3[8]), tonumber(s3[9])}}
+			local s4 = {}
+			for j = 1, #s3 do
+				s4[j] = tonumber(s3[j])
+				if s4[j] > 1 then
+					s4[j] = s4[j] / 255  -- migrate pre 11.0 config
+				end
+			end
+			mariocolors[tonumber(s2[2])] = {{s4[1], s4[2], s4[3]}, {s4[4], s4[5], s4[6]}, {s4[7], s4[8], s4[9]}}
 
 		elseif s2[1] == "portalhues" then
 			if portalhues[tonumber(s2[2])] == nil then
