@@ -10,6 +10,7 @@ Authored by @qixils
 import os
 from pathlib import Path
 import re
+import sys
 
 game_path: Path = Path(__file__).parent.parent.resolve()
 main_path: Path = game_path / 'main.lua'
@@ -42,6 +43,10 @@ with open(toml_path, 'r') as toml_file:
         print('::error file=makelove.toml::macOS bundle display name could not be found')
     if metadata['title'] != _mac_title.group(1):
         print('::error file=makelove.toml::macOS bundle display name does not match game title in main.lua')
+
+if len(sys.argv > 1):
+    if (version := re.sub(r'^refs/tags/v?', '', sys.argv[1], count=1)) != sys.argv[1]:
+        metadata['version'] = version
 
 with open(os.environ['GITHUB_OUTPUT'], 'a') as env_file:
     for key, value in metadata.items():

@@ -1,7 +1,13 @@
-name: Compile
-on: [push, pull_request]
+name: Create Artifacts
+on:
+  release:
+    types:
+      - created
+  push: {}
+  pull_request: {}
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -11,7 +17,7 @@ jobs:
       name: Checkout Repository
     - name: Extract Metadata
       id: metadata
-      run: python3 main/_DO_NOT_INCLUDE/extract-metadata.py
+      run: python3 main/_DO_NOT_INCLUDE/extract-metadata.py ${{ github.ref }}
     - name: Add Universe Repository
       run: sudo add-apt-repository universe
     - name: Update Packages
@@ -21,29 +27,35 @@ jobs:
     - name: Install makelove
       run: pip3 install git+https://github.com/pfirsich/makelove/
     - name: Build
-      run: cd main && python3 -m makelove && cd ..
+      run: cd main && python3 -m makelove --version-name ${{ steps.metadata.outputs.version }} && cd ..
     - name: Artifact (LÖVE)
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.metadata.outputs.id }}-source
-        path: main/makelove-build/love/${{ env.ARTIFACT_NAME_LOVE }}
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/love/${{ env.ARTIFACT_NAME_LOVE }}
     - name: Artifact (AppImage)
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.metadata.outputs.id }}-linux
-        path: main/makelove-build/appimage/${{ env.ARTIFACT_NAME_APPIMAGE }}
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/appimage/${{ env.ARTIFACT_NAME_APPIMAGE }}
     - name: Artifact (Win64)
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.metadata.outputs.id }}-win64
-        path: main/makelove-build/win64/${{ env.ARTIFACT_NAME_WIN64 }}
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/win64/${{ env.ARTIFACT_NAME_WIN64 }}
     - name: Artifact (Win32)
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.metadata.outputs.id }}-win32
-        path: main/makelove-build/win32/${{ env.ARTIFACT_NAME_WIN32 }}
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/win32/${{ env.ARTIFACT_NAME_WIN32 }}
     - name: Artifact (MacOS)
       uses: actions/upload-artifact@v3
       with:
         name: ${{ steps.metadata.outputs.id }}-macos
-        path: main/makelove-build/macos/${{ env.ARTIFACT_NAME_MACOS }}
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/macos/${{ env.ARTIFACT_NAME_MACOS }}
+    - name: Upload Release Assets
+      if: github.event_name == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: main/makelove-build/${{ steps.metadata.outputs.version }}/**/*
+        file_glob: true
