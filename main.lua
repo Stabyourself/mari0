@@ -909,9 +909,7 @@ function saveconfig()
 
 	s = s .. "mappack:" .. mappack .. ";"
 
-	if vsync then
-		s = s .. "vsync;"
-	end
+	s = s .. "vsync:" .. vsync .. ";"
 
 	if gamefinished then
 		s = s .. "gamefinished;"
@@ -1046,7 +1044,11 @@ function loadconfig()
 		elseif s2[1] == "gamefinished" then
 			gamefinished = true
 		elseif s2[1] == "vsync" then
-			vsync = true
+			if #s2 > 1 then
+				vsync = tonumber(s2[2])
+			else
+				vsync = -1
+			end
 		elseif s2[1] == "reachedworlds" then
 			reachedworlds[s2[2]] = {}
 			local s3 = s2[3]:split(",")
@@ -1156,7 +1158,7 @@ function defaultconfig()
 	scale = 2
 	volume = 1
 	mappack = "smb"
-	vsync = true
+	vsync = -1
 
 	reachedworlds = {}
 end
