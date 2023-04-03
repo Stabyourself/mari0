@@ -32,7 +32,6 @@ function love.load()
 	end
 
 	saveconfig()
-	width = 25
 	fullscreen = false
 	changescale(scale, fullscreen)
 	love.window.setTitle( "Mari0" )
@@ -84,7 +83,7 @@ function love.load()
 					"baking cake..", "happy explosion day..", "raising coolness by 20 percent..", "yay facepunch..", "stabbing myself..", "sharpening knives..",
 					"tanaka, thai kick..", "loading game genie.."}
 	loadingtext = loadingtexts[math.random(#loadingtexts)]
-	properprint(loadingtext, 25*8*scale-string.len(loadingtext)*4*scale, 108*scale)
+	properprint(loadingtext, width*8*scale-string.len(loadingtext)*4*scale, 108*scale)
 	love.graphics.present()
 	--require ALL the files!
 	require "shaders"
@@ -900,6 +899,7 @@ function saveconfig()
 	end
 
 	s = s .. "scale:" .. scale .. ";"
+	s = s .. "width:" .. width .. ";"
 
 	s = s .. "shader1:" .. shaderlist[currentshaderi1] .. ";"
 	s = s .. "shader2:" .. shaderlist[currentshaderi2] .. ";"
@@ -1019,6 +1019,9 @@ function loadconfig()
 
 		elseif s2[1] == "scale" then
 			scale = tonumber(s2[2])
+
+		elseif s2[1] == "width" then
+			width = tonumber(s2[2])
 
 		elseif s2[1] == "shader1" then
 			for i = 1, #shaderlist do
@@ -1156,6 +1159,7 @@ function defaultconfig()
 
 	--options
 	scale = 2
+	width = 25
 	volume = 1
 	mappack = "smb"
 	vsync = -1
