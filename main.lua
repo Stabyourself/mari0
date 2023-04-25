@@ -1610,7 +1610,7 @@ function openSaveFolder(subfolder) --By Slime
 end
 
 function getupdate()
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
+	local onlinedata, code = {}, 404--http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
 
 	if code ~= 200 then
 		return false

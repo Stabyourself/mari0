@@ -1417,7 +1417,7 @@ end
 
 function downloadmappacks()
 	downloaderror = false
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
+	local onlinedata, code = {}, 404--http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
 
 	if code ~= 200 then
 		downloaderror = true
@@ -1473,7 +1473,7 @@ function downloadmappacks()
 			end
 
 			love.filesystem.createDirectory("mappacks/" .. maplist[i])
-			local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i])
+			local onlinedata, code = {}, 404--http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i])
 
 			if code == 200 then
 				filecount = 0

@@ -35,7 +35,7 @@ end
 function music:play(name)
 	if name and soundenabled then
 		if self.loaded[name] == false then
-			local source = self.thread:demand(name)
+			local source = love.thread.getChannel("musiclist"):demand(name)
 			self:onLoad(name, source)
 		end
 		if self.loaded[name] then

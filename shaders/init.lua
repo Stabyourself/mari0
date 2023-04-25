@@ -93,6 +93,7 @@ shaders.passes = {}
 -- call at the end of love.load
 -- numpasses is the max number of concurrent shaders (default 2)
 function shaders:init(numpasses)
+	if true then return end
 	numpasses = numpasses or 2
 
 	local files = love.filesystem.getDirectoryItems("shaders")
@@ -131,6 +132,7 @@ end
 -- pass nil as the second argument to disable that shader pass
 -- don't call before shaders:init()
 function shaders:set(i, shadername)
+	if true then return end
 	i = i or 1
 	local pass = self.passes[i]
 	if not pass then return end
@@ -150,6 +152,7 @@ end
 -- for tweaking some of the 'extern' parameters in the shaders
 -- returns true if it worked, false with an error message otherwise
 function shaders:setParameter(shadername, paramname, ...)
+	if true then return end
 	if self.effects[shadername] then
 		local effect = self.effects[shadername][1]
 		return pcall(effect.send, effect, paramname, ...)
@@ -160,6 +163,7 @@ end
 -- automatically called on init
 -- should also be called when resolution changes or fullscreen is toggled
 function shaders:refresh()
+	if true then return end
 	if not self.scale or self.scale ~= scale
 	or not self.xres or not self.yres
 	or self.xres ~= love.graphics.getWidth() or self.yres ~= love.graphics.getHeight() then
@@ -180,6 +184,7 @@ end
 -- call in love.draw before drawing whatever you want post-processed
 -- note: don't change shaders in between predraw and postdraw!
 function shaders:predraw()
+	if true then return end
 	-- only predraw the first available pass here (we'll do the rest in postdraw)
 	self.curcanvas = nil
 	for i,v in ipairs(self.passes) do
@@ -194,6 +199,7 @@ end
 
 -- call in love.draw after drawing whatever you want post-processed
 function shaders:postdraw()
+	if true then return end
 	if not self.curcanvas then return end
 
 	local blendmode, alphamode = love.graphics.getBlendMode()
