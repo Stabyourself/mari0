@@ -1,0 +1,71 @@
+name: Create Artifacts
+on:
+  release:
+    types:
+      - created
+  push: {}
+  pull_request: {}
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+        submodules: true
+      name: Checkout Repository
+    - name: Extract Metadata
+      id: metadata
+      run: python3 main/_DO_NOT_INCLUDE/extract-metadata.py ${{ github.ref }}
+    - name: Add Universe Repository
+      run: sudo add-apt-repository universe
+    - name: Update Packages
+      run: sudo apt-get update
+    - name: Install Dependencies
+      run: sudo apt-get install --assume-yes wine-stable wine64 python3-pip libfuse2
+    - name: Install makelove
+      run: pip3 install git+https://github.com/pfirsich/makelove/
+    - name: Build
+      run: |
+        cd main
+        python3 -m makelove --version-name ${{ steps.metadata.outputs.version }}
+        cd ..
+    - name: Rename AppImage # for consistency with every other built artifact
+      run: mv main/makelove-build/${{ steps.metadata.outputs.version }}/appimage/${{ steps.metadata.outputs.id }}.AppImage main/makelove-build/${{ steps.metadata.outputs.version }}/appimage/${{ steps.metadata.outputs.id }}-linux.AppImage
+    - name: Artifact (LÖVE)
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-source
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/love/${{ steps.metadata.outputs.id }}.love
+    - name: Artifact (AppImage)
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-linux
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/appimage/${{ steps.metadata.outputs.id }}-linux.AppImage
+    - name: Artifact (Win64)
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-win64
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/win64/${{ steps.metadata.outputs.id }}-win64.zip
+    - name: Artifact (Win32)
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-win32
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/win32/${{ steps.metadata.outputs.id }}-win32.zip
+    - name: Artifact (MacOS)
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.metadata.outputs.id }}-macos
+        path: main/makelove-build/${{ steps.metadata.outputs.version }}/macos/${{ steps.metadata.outputs.id }}-macos.zip
+    - name: Upload Release Assets
+      if: github.event_name == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: main/makelove-build/${{ steps.metadata.outputs.version }}/**/*
+        file_glob: true
