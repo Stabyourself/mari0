@@ -10,8 +10,8 @@ function love.load()
 		love.filesystem.setIdentity("LOVE/mari0")
 	end
 
-	marioversion = 1006
-	versionstring = "version 1.6"
+	marioversion = 10063
+	versionstring = "version 1.6.3"
 	shaderlist = love.filesystem.getDirectoryItems( "shaders/" )
 	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
 

@@ -982,7 +982,7 @@ function menu_draw()
 			properprint("you can lock the|mouse with f12", 30*scale, 165*scale)
 
 			love.graphics.setColor(1, 1, 1, 1)
-			properprint(versionstring, 150*scale, 207*scale)
+			properprint(versionstring, (236-(versionstring:len()*8))*scale, 207*scale)
 		elseif optionstab == 4 then
 			love.graphics.setColor(1, 1, 1, 1)
 			if not gamefinished then
