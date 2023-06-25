@@ -1,4 +1,9 @@
+speedleveltime = 0.0
+local levelscreenreason = "initial"
+
 function levelscreen_load(reason, i)
+	levelscreenreason = reason
+
 	if reason ~= "sublevel" and reason ~= "vine" and testlevel then
 		marioworld = testlevelworld
 		mariolevel = testlevellevel
@@ -85,6 +90,11 @@ end
 function levelscreen_update(dt)
 	levelscreentimer = levelscreentimer + dt
 	if (levelscreentimer-blacktime) > -epsilon then -- epsilon ensures that the delay is consistent through floating point errors
+		--reset level timer
+		if levelscreenreason == "initial" or levelscreenreason == "next" then
+			speedleveltime = 0.0
+		end
+		--start level
 		if gamestate == "levelscreen" then
 			gamestate = "game"
 			if respawnsublevel ~= 0 then
@@ -200,5 +210,28 @@ function levelscreen_draw()
 		properprint(marioworld .. "-" .. mariolevel, uispace*2.5 - 12*scale, 16*scale)
 
 		properprint("time", uispace*3.5 - 16*scale, 8*scale)
+
+		if speedtimer then
+			local timer_y = 25
+			if speedtotaltime > 0 then
+				if gamestate == "mappackfinished" then
+					love.graphics.setColor(0.2, 1.0, 0.2, 1)
+				else
+					love.graphics.setColor(1, 1, 1, 1)
+				end
+				local total_text = "total " .. format_speed_time(speedtotaltime)
+				properprint(total_text, uispace*4 - 8*total_text:len()*scale - 20, timer_y*scale)
+			end
+
+			if speedleveltime > 0 then
+				if levelscreenreason == "initial" or levelscreenreason == "next" then
+					love.graphics.setColor(0.2, 1.0, 0.2, 1)
+				else
+					love.graphics.setColor(1, 1, 1, 1)
+				end
+				local level_text = "level " .. format_speed_time(speedleveltime)
+				properprint(level_text, uispace*4 - 8*level_text:len()*scale - 20, (timer_y+8)*scale)
+			end
+		end
 	end
 end

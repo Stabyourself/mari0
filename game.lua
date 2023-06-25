@@ -60,6 +60,7 @@ function game_load(suspended)
 	mariolevel = 1
 	mariosublevel = 0
 	respawnsublevel = 0
+	speedtotaltime = 0.0
 
 	objects = nil
 	if suspended == true then
@@ -133,6 +134,12 @@ function game_update(dt)
 	--------
 	--GAME--
 	--------
+
+	--speedrun timer
+	if not (levelfinished and (not nextlevelexists or (levelfinishtype == "castle" and levelfinishedmisc2 == 2))) then
+		speedtotaltime = speedtotaltime + dt
+		speedleveltime = speedleveltime + dt
+	end
 
 	--earthquake reset
 	if earthquake > 0 then
@@ -1044,7 +1051,9 @@ function game_draw()
 			properprint(addzeros(math.ceil(mariotime), 3), uispace*3.5-8*scale, 16*scale)
 		end
 
+		local timer_y = 25
 		if players > 1 then
+			timer_y = 35
 			for i = 1, players do
 				local x = (width*16)/players/2 + (width*16)/players*(i-1)
 				if mariolivecount ~= false then
@@ -1054,6 +1063,20 @@ function game_draw()
 					love.graphics.setColor(1, 1, 1, 1)
 				end
 			end
+		end
+
+		if speedtimer then
+			if levelfinished and (not nextlevelexists or (levelfinishtype == "castle" and levelfinishedmisc2 == 2)) then
+				love.graphics.setColor(0.2, 1.0, 0.2, 1)
+			else
+				love.graphics.setColor(1, 1, 1, 1)
+			end
+
+			local total_text = "total " .. format_speed_time(speedtotaltime)
+			properprint(total_text, uispace*4 - 8*total_text:len()*scale - 20, timer_y*scale)
+
+			local level_text = "level " .. format_speed_time(speedleveltime)
+			properprint(level_text, uispace*4 - 8*level_text:len()*scale - 20, (timer_y+8)*scale)
 		end
 
 		love.graphics.setColor(1, 1, 1)
@@ -1919,6 +1942,7 @@ function startlevel(level)
 	end
 
 	--MISC VARS
+	nextlevelexists = getnextlevelexists()
 	everyonedead = false
 	levelfinished = false
 	coinanimation = 1
@@ -3453,6 +3477,16 @@ function nextlevel()
 		marioworld = marioworld + 1
 	end
 	levelscreen_load("next")
+end
+
+function getnextlevelexists()
+	local nextmariolevel = mariolevel + 1
+	local nextmarioworld = marioworld
+	if nextmariolevel > 4 then
+		nextmariolevel = 1
+		nextmarioworld = nextmarioworld + 1
+	end
+	return love.filesystem.getInfo("mappacks/" .. mappack .. "/" .. nextmarioworld .. "-" .. nextmariolevel .. ".txt")
 end
 
 function warpzone(i)

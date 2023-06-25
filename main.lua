@@ -914,6 +914,10 @@ function saveconfig()
 
 	s = s .. "vsync:" .. vsync .. ";"
 
+	if speedtimer then
+		s = s .. "speedtimer;"
+	end
+
 	if gamefinished then
 		s = s .. "gamefinished;"
 	end
@@ -1052,6 +1056,8 @@ function loadconfig()
 			else
 				vsync = -1
 			end
+		elseif s2[1] == "speedtimer" then
+			speedtimer = true
 		elseif s2[1] == "reachedworlds" then
 			reachedworlds[s2[2]] = {}
 			local s3 = s2[3]:split(",")
@@ -1162,6 +1168,7 @@ function defaultconfig()
 	volume = 1
 	mappack = "smb"
 	vsync = -1
+	speedtimer = false
 
 	reachedworlds = {}
 end
@@ -1187,7 +1194,8 @@ function suspendgame()
 			s = s .. "size/" .. i .."/1|"
 		end
 	end
-	s = s .. "mappack/" .. mappack
+	s = s .. "mappack/" .. mappack .. "|"
+	s = s .. "speedtotaltime/" .. speedtotaltime
 
 	love.filesystem.write("suspend.txt", s)
 
@@ -1224,6 +1232,8 @@ function continuegame()
 			mariosizes[tonumber(split2[2])] = tonumber(split2[3])
 		elseif split2[1] == "mappack" then
 			mappack = split2[2]
+		elseif split2[1] == "speedtotaltime" then
+			speedtotaltime = tonumber(split2[2])
 		end
 	end
 
@@ -1648,6 +1658,24 @@ function properprint(s, x, y)
 			love.graphics.draw(fontimage, fontquads[char], x+((i-1)*8)*scale, y, 0, scale, scale)
 		end
 	end
+end
+
+function format_speed_time(time)
+	--input: float of seconds
+	--output: string of format "00:00.00"
+	local minutes = math.floor(time/60)
+	local seconds = math.floor(time%60)
+	local milliseconds = math.floor((time*100)%100)
+	if minutes < 10 then
+		minutes = "0" .. minutes
+	end
+	if seconds < 10 then
+		seconds = "0" .. seconds
+	end
+	if milliseconds < 10 then
+		milliseconds = "0" .. milliseconds
+	end
+	return minutes .. ":" .. seconds .. "." .. milliseconds
 end
 
 function loadcustombackground()

@@ -978,8 +978,21 @@ function menu_draw()
 				properprint("adaptive", (180-64)*scale, 150*scale)
 			end
 
+			if optionsselection == 9 then
+				love.graphics.setColor(1, 1, 1, 1)
+			else
+				love.graphics.setColor(0.4, 0.4, 0.4)
+			end
+
+			properprint("speedrun timer:", 30*scale, 165*scale)
+			if speedtimer then
+				properprint("on", (180-16)*scale, 165*scale)
+			else
+				properprint("off", (180-24)*scale, 165*scale)
+			end
+
 			love.graphics.setColor(0.4, 0.4, 0.4)
-			properprint("you can lock the|mouse with f12", 30*scale, 165*scale)
+			properprint("you can lock the|mouse with f12", 30*scale, 180*scale)
 
 			love.graphics.setColor(1, 1, 1, 1)
 			properprint(versionstring, (236-(versionstring:len()*8))*scale, 207*scale)
@@ -1782,7 +1795,7 @@ function menu_keypressed(key, unicode)
 					optionsselection = 1
 				end
 			elseif optionstab == 3 then
-				if optionsselection < 8 then
+				if optionsselection < 9 then
 					optionsselection = optionsselection + 1
 				else
 					optionsselection = 1
@@ -1807,7 +1820,7 @@ function menu_keypressed(key, unicode)
 				elseif optionstab == 2 then
 					optionsselection = 14
 				elseif optionstab == 3 then
-					optionsselection = 8
+					optionsselection = 9
 				elseif optionstab == 4 and gamefinished then
 					optionsselection = 10
 				end
@@ -1861,6 +1874,8 @@ function menu_keypressed(key, unicode)
 				elseif optionsselection == 8 then
 					vsync = ((vsync + 2) % 3) - 1
 					changescale(scale)
+				elseif optionsselection == 9 then
+					speedtimer = not speedtimer
 				end
 			elseif optionstab == 4 then
 				if optionsselection == 2 then
@@ -1965,6 +1980,8 @@ function menu_keypressed(key, unicode)
 				elseif optionsselection == 8 then
 					vsync = (vsync % 3) - 1
 					changescale(scale)
+				elseif optionsselection == 9 then
+					speedtimer = not speedtimer
 				end
 			elseif optionstab == 4 then
 				if optionsselection == 2 then
