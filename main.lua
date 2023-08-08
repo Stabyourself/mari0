@@ -1660,6 +1660,16 @@ function properprint(s, x, y)
 	end
 end
 
+function borderprint(s, x, y, textcolor, bordercolor)
+	local positions = {{-scale, scale}, {scale, scale}, {-scale, -scale}, {scale, -scale}, {0, -scale}, {0, scale}, {scale, 0}, {-scale, 0}, {0, 0}}
+	local color = bordercolor or {0, 0, 0}
+	for i, position in ipairs(positions) do
+		if i == #positions then color = textcolor or {1, 1, 1} end
+		love.graphics.setColor(color)
+		properprint(s, x+position[1], y+position[2])
+	end
+end
+
 function format_speed_time(time)
 	--input: float of seconds
 	--output: string of format "00:00.00"

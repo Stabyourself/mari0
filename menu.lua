@@ -291,51 +291,24 @@ function menu_draw()
 			love.graphics.draw(menuselection, 98*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		end
 
-		local start = 9
+		local printfunction = properprint
 		if custombackground then
-			start = 1
+			printfunction = borderprint
 		end
 
-		for i = start, 9 do
-			local tx, ty = -scale, scale
-			love.graphics.setColor(0, 0, 0)
-			if i == 2 then
-				tx, ty = scale, scale
-			elseif i == 3 then
-				tx, ty = -scale, -scale
-			elseif i == 4 then
-				tx, ty = scale, -scale
-			elseif i == 5 then
-				tx, ty = 0, -scale
-			elseif i == 6 then
-				tx, ty = 0, scale
-			elseif i == 7 then
-				tx, ty = scale, 0
-			elseif i == 8 then
-				tx, ty = -scale, 0
-			elseif i == 9 then
-				tx, ty = 0, 0
-				love.graphics.setColor(1, 1, 1)
-			end
-
-			love.graphics.translate(tx, ty)
-
-			if continueavailable then
-				properprint("continue game", 87*scale, 122*scale)
-			end
-
-			properprint("player game", 103*scale, 138*scale)
-
-			properprint("level editor", 95*scale, 154*scale)
-
-			properprint("select mappack", 87*scale, 170*scale)
-
-			properprint("options", 111*scale, 186*scale)
-
-			properprint(players, 87*scale, 138*scale)
-
-			love.graphics.translate(-tx, -ty)
+		if continueavailable then
+			printfunction("continue game", 87*scale, 122*scale)
 		end
+
+		printfunction("player game", 103*scale, 138*scale)
+
+		printfunction("level editor", 95*scale, 154*scale)
+
+		printfunction("select mappack", 87*scale, 170*scale)
+
+		printfunction("options", 111*scale, 186*scale)
+
+		printfunction(players, 87*scale, 138*scale)
 
 		if players > 1 then
 			love.graphics.draw(playerselectimg, 82*scale, 138*scale, 0, scale, scale)

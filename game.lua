@@ -1065,20 +1065,6 @@ function game_draw()
 			end
 		end
 
-		if speedtimer then
-			if levelfinished and (not nextlevelexists or (levelfinishtype == "castle" and levelfinishedmisc2 == 2)) then
-				love.graphics.setColor(0.2, 1.0, 0.2, 1)
-			else
-				love.graphics.setColor(1, 1, 1, 1)
-			end
-
-			local total_text = "total " .. format_speed_time(speedtotaltime)
-			properprint(total_text, uispace*4 - 8*total_text:len()*scale - 20, timer_y*scale)
-
-			local level_text = "level " .. format_speed_time(speedleveltime)
-			properprint(level_text, uispace*4 - 8*level_text:len()*scale - 20, (timer_y+8)*scale)
-		end
-
 		love.graphics.setColor(1, 1, 1)
 		--vines
 		for j, w in pairs(objects["vine"]) do
@@ -1767,6 +1753,22 @@ function game_draw()
 					properprint(count, (width*8-72+(i-1)*20-string.len(count)*8)*scale, 205*scale)
 				end
 			end
+		end
+
+		--speedrun timer
+		if speedtimer then
+			local textcolor = {1, 1, 1, 1}
+			if levelfinished and (not nextlevelexists or (levelfinishtype == "castle" and levelfinishedmisc2 == 2)) then
+				textcolor = {0.2, 1.0, 0.2, 1.0}
+			end
+
+			local bordercolor = {0.2, 0.2, 0.2, 1.0}
+
+			local total_text = "total " .. format_speed_time(speedtotaltime)
+			borderprint(total_text, uispace*4 - 8*total_text:len()*scale - 20, timer_y*scale, textcolor, bordercolor)
+
+			local level_text = "level " .. format_speed_time(speedleveltime)
+			borderprint(level_text, uispace*4 - 8*level_text:len()*scale - 20, (timer_y+8)*scale, textcolor, bordercolor)
 		end
 
 		love.graphics.translate(-(split-1)*width*16*scale/#splitscreen, 0)
