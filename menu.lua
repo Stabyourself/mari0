@@ -969,14 +969,18 @@ function menu_draw()
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
 
-			properprint("vsync:", 30*scale, 150*scale)
-			if vsync == 1 then
-				properprint("on", (180-16)*scale, 150*scale)
-			elseif vsync == 0 then
-				properprint("off", (180-24)*scale, 150*scale)
+			properprint("fps:", 30*scale, 150*scale)
+			local fpstext
+			if fps == 1 then
+				fpstext = "full vsync"
+			elseif fps == 0 then
+				fpstext = "unlimited"
+			elseif fps == -1 then
+				fpstext = "adaptive vsync"
 			else
-				properprint("adaptive", (180-64)*scale, 150*scale)
+				fpstext = tostring(fps)
 			end
+			properprint(fpstext, (180-(string.len(fpstext)*8))*scale, 150*scale)
 
 			love.graphics.setColor(0.4, 0.4, 0.4)
 			properprint("you can lock the|mouse with f12", 30*scale, 165*scale)
@@ -1859,8 +1863,12 @@ function menu_keypressed(key, unicode)
 						soundenabled = true
 					end
 				elseif optionsselection == 8 then
-					vsync = ((vsync + 2) % 3) - 1
-					changescale(scale)
+					local index = (fpsoptionsindices[fps] or 0)+1
+					if index > #fpsoptions then
+						index = 1 --wraparound
+					end
+					fps = fpsoptions[index]
+					updatevsync()
 				end
 			elseif optionstab == 4 then
 				if optionsselection == 2 then
@@ -1963,8 +1971,12 @@ function menu_keypressed(key, unicode)
 						playsound(coinsound)
 					end
 				elseif optionsselection == 8 then
-					vsync = (vsync % 3) - 1
-					changescale(scale)
+					local index = (fpsoptionsindices[fps] or 2)-1
+					if index < 1 then
+						index = #fpsoptions --wraparound
+					end
+					fps = fpsoptions[index]
+					updatevsync()
 				end
 			elseif optionstab == 4 then
 				if optionsselection == 2 then

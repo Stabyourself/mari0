@@ -37,6 +37,7 @@ function love.load()
 	end
 
 	saveconfig()
+	renderfps = false
 	width = 25
 	fullscreen = false
 	changescale(scale, fullscreen)
@@ -44,8 +45,8 @@ function love.load()
 
 	--version check
 	local loveversion = string.format("%02d.%02d.%02d", love._version_major, love._version_minor, love._version_revision)
-	if loveversion < "00.10.01" then
-		error("You have an outdated version of Love! Get 0.10.1 or higher and retry.")
+	if loveversion < "11.04.00" then
+		error("You have an outdated version of LÖVE2D! Get 11.4 or higher and retry.")
 	end
 
 	iconimg = love.image.newImageData("graphics/icon.png")
@@ -766,7 +767,6 @@ function love.update(dt)
 	if music then
 		music:update()
 	end
-	dt = math.min(0.01666667, dt)
 
 	--speed
 	if speed ~= speedtarget then
@@ -838,7 +838,82 @@ function love.draw()
 
 	shaders:postdraw()
 
-	love.graphics.setColor(1, 1,1)
+	love.graphics.setColor(1, 1, 1)
+
+	-- Draw FPS counter
+	if renderfps then
+		properprint(measuredfps, 2, 4)
+	end
+end
+
+function love.run() --default run function from https://love2d.org/wiki/love.run
+	love.load()
+
+	-- We don't want the first frame's dt to include time taken by love.load.
+	love.timer.step()
+
+	local dt = 0
+	local dtelapsed = 0
+
+	local frames = 0
+	local secondelapsed = 0
+
+	-- Main loop time.
+	return function()
+		-- Process events.
+		love.event.pump()
+		for name, a,b,c,d,e,f in love.event.poll() do
+			if name == "quit" then
+				if not love.quit or not love.quit() then
+					return a or 0
+				end
+			end
+			love.handlers[name](a,b,c,d,e,f)
+		end
+
+		-- Update dt, as we'll be passing it to update
+		dt = love.timer.step()
+
+		-- Calculate FPS
+		secondelapsed = secondelapsed + dt
+		if secondelapsed >= measuredfpsperiod then
+			measuredfps = frames/measuredfpsperiod
+			frames = 0
+			secondelapsed = secondelapsed - measuredfpsperiod
+		end
+
+		-- Apply FPS limiter
+		if fps > 1 then
+			local target = round(1/fps, 8) --backwards-compat with old hardcoded mindt
+			if dt < target then
+				dtelapsed = dtelapsed + dt
+				if dtelapsed < target then
+					dt = -1 -- Skip this frame; interval not elapsed yet
+				else
+					dtelapsed = dtelapsed - target
+					dt = target
+				end
+			end
+		end
+		dt = math.min(mindt, dt)
+
+		if dt ~= -1 then
+			-- Call update and draw
+			frames = frames + 1
+			love.update(dt)
+
+			if love.graphics.isActive() then
+				love.graphics.origin()
+				love.graphics.clear(love.graphics.getBackgroundColor())
+				love.draw()
+				love.graphics.present()
+			end
+		end
+
+		if math.abs(fps) ~= 1 then -- no need to sleep if vsync is on
+			love.timer.sleep(0.001)
+		end
+	end
 end
 
 function saveconfig()
@@ -912,7 +987,7 @@ function saveconfig()
 
 	s = s .. "mappack:" .. mappack .. ";"
 
-	s = s .. "vsync:" .. vsync .. ";"
+	s = s .. "fps:" .. fps .. ";"
 
 	if gamefinished then
 		s = s .. "gamefinished;"
@@ -1047,11 +1122,19 @@ function loadconfig()
 		elseif s2[1] == "gamefinished" then
 			gamefinished = true
 		elseif s2[1] == "vsync" then
+			-- convert old vsync value to fps value
 			if #s2 > 1 then
-				vsync = tonumber(s2[2])
+				fps = tonumber(s2[2])
 			else
-				vsync = -1
+				fps = -1 --convert old old "vsync on" value to adaptive vsync
 			end
+			updatevsync()
+		elseif s2[1] == "fps" then
+			fps = tonumber(s2[2])
+			if fps < -1 then -- validate input
+				fps = -1
+			end
+			updatevsync()
 		elseif s2[1] == "reachedworlds" then
 			reachedworlds[s2[2]] = {}
 			local s3 = s2[3]:split(",")
@@ -1161,7 +1244,8 @@ function defaultconfig()
 	scale = 2
 	volume = 1
 	mappack = "smb"
-	vsync = -1
+	fps = -1 --adaptive vsync
+	updatevsync()
 
 	reachedworlds = {}
 end
@@ -1230,6 +1314,14 @@ function continuegame()
 	love.filesystem.remove("suspend.txt")
 end
 
+function updatevsync()
+	vsync = fps
+	if vsync > 1 then
+		vsync = 0 --if fps is capped then disable vsync
+	end
+	love.window.setVSync(vsync)
+end
+
 function changescale(s, fullscreen)
 	scale = s
 
@@ -1260,6 +1352,10 @@ function love.keypressed(key, unicode)
 		if v:keypress(key) then
 			return
 		end
+	end
+
+	if key == "f11" then
+		renderfps = not renderfps
 	end
 
 	if key == "f12" then

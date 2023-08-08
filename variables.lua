@@ -6,6 +6,13 @@ gellifetime = 2
 bulletbilllifetime = 20
 playertypelist = {"portal", "minecraft", "gelcannon"}
 
+minfps = 60
+mindt = round(1/minfps, 8) --rounding for backwards-compat with old hardcoded mindt
+measuredfpsperiod = 0.5 --how often fps is measured in seconds
+fpsoptions = {1, -1, 0, 60, 120, 144, 240, 360, 480}
+fpsoptionsindices = {} --reverse map for cleaner menu code
+for i, v in pairs(fpsoptions) do fpsoptionsindices[v] = i end
+
 joystickdeadzone = 0.2
 joystickaimdeadzone = 0.5
 
