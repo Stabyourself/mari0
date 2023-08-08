@@ -3,8 +3,6 @@ require("love.sound")
 require("love.audio")
 require("love.timer")
 
-love.filesystem.setIdentity("mari0")
-
 local musicpath = "sounds/%s.ogg"
 
 local musiclist = {}
