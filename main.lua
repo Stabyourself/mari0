@@ -172,6 +172,12 @@ function love.load()
 	end
 	http.TIMEOUT = 4
 
+	-- establish livesplit socket
+	socket = require("socket")
+	livesplit = socket.tcp()
+	livesplit:settimeout(0.01)
+	livesplit:connect("localhost", 16834)
+
 	graphicspack = "SMB" --SMB, ALLSTARS
 	playertypei = 1
 	playertype = playertypelist[playertypei] --portal, minecraft

@@ -2232,6 +2232,7 @@ function startlevel(level)
 	end
 
 	generatespritebatch()
+	livesplit:send("unpausegametime\r\n")
 end
 
 function loadmap(filename)
@@ -3443,6 +3444,16 @@ function moveoutportal(p0) --pushes objects out of the portal i in.
 			end
 		end
 	end
+end
+
+function nextlevelexists()
+	local nextmariolevel = mariolevel + 1
+	local nextmarioworld = marioworld
+	if nextmariolevel > 4 then
+		nextmariolevel = 1
+		nextmarioworld = nextmarioworld + 1
+	end
+	return love.filesystem.getInfo("mappacks/" .. mappack .. "/" .. nextmarioworld .. "-" .. nextmariolevel .. ".txt")
 end
 
 function nextlevel()

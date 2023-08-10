@@ -1,4 +1,5 @@
 function menu_load()
+	livesplit:send("pausegametime\r\n") -- pause to remove load times
 	love.audio.stop()
 	editormode = false
 	gamestate = "menu"
@@ -51,6 +52,7 @@ function menu_load()
 	loadbackground("1-1.txt")
 
 	skipupdate = true
+	livesplit:send("unpausegametime\r\n")
 end
 
 function menu_update(dt)
