@@ -172,6 +172,10 @@ function love.load()
 	end
 	http.TIMEOUT = 4
 
+	-- establish livesplit socket
+	socket = require("socket")
+	livesplit_load()
+
 	graphicspack = "SMB" --SMB, ALLSTARS
 	playertypei = 1
 	playertype = playertypelist[playertypei] --portal, minecraft
@@ -1250,6 +1254,15 @@ function changescale(s, fullscreen)
 	end
 end
 
+function livesplit_load()
+	if livesplit then
+		livesplit:close()
+	end
+	livesplit = socket.tcp()
+	livesplit:settimeout(0.01)
+	livesplit:connect("localhost", 16834)
+end
+
 function love.keypressed(key, unicode)
 	if keyprompt then
 		keypromptenter("key", key)
@@ -1260,6 +1273,10 @@ function love.keypressed(key, unicode)
 		if v:keypress(key) then
 			return
 		end
+	end
+
+	if key == "f10" then
+		livesplit_load()
 	end
 
 	if key == "f12" then

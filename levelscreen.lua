@@ -1,4 +1,5 @@
 function levelscreen_load(reason, i)
+	livesplit:send("alwayspausegametime\r\n")
 	if reason ~= "sublevel" and reason ~= "vine" and testlevel then
 		marioworld = testlevelworld
 		mariolevel = testlevellevel
@@ -47,6 +48,14 @@ function levelscreen_load(reason, i)
 		blacktime = gameovertime
 		playsound(gameoversound)
 		checkpointx = nil
+	end
+
+	if gamestate ~= "mappackfinished" then
+		if reason == "initial" then
+			livesplit:send("startorsplit\r\n")
+		elseif reason == "next" then
+			livesplit:send("split\r\n")
+		end
 	end
 
 	if editormode then

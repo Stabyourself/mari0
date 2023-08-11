@@ -2916,6 +2916,9 @@ function mario:flag()
 	if levelfinished then
 		return
 	end
+	if not nextlevelexists() then
+		livesplit:send("split\r\n")
+	end
 	self.ducking = false
 	self.animation = "flag"
 	self.invincible = false
@@ -2969,6 +2972,9 @@ end
 function mario:axe()
 	if levelfinished then
 		return
+	end
+	if not nextlevelexists() then
+		livesplit:send("split\r\n")
 	end
 	self.ducking = false
 	for i = 1, players do
