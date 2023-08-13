@@ -914,46 +914,45 @@ function menu_draw()
 			properprint("scale:", 30*scale, 40*scale)
 			properprint(scale, (180-string.len(scale)*8)*scale, 40*scale)
 
-
 			if optionsselection == 3 then
 				love.graphics.setColor(1, 1, 1, 1)
 			else
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
-
-			properprint("shader1:", 30*scale, 55*scale)
-			properprint(string.lower(shaderlist[currentshaderi1]), (180-string.len(shaderlist[currentshaderi1])*8)*scale, 55*scale)
+			properprint("width:", 30*scale, 50*scale)
+			properprint(width, (180-string.len(scale)*8)*scale, 50*scale)
 
 			if optionsselection == 4 then
 				love.graphics.setColor(1, 1, 1, 1)
 			else
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
-			properprint("shader2:", 30*scale, 65*scale)
-			properprint(string.lower(shaderlist[currentshaderi2]), (180-string.len(shaderlist[currentshaderi2])*8)*scale, 65*scale)
 
-			love.graphics.setColor(0.4, 0.4, 0.4)
-			properprint("shaders will really", 30*scale, 80*scale)
-			properprint("reduce performance!", 30*scale, 90*scale)
+			properprint("shader1:", 30*scale, 65*scale)
+			properprint(string.lower(shaderlist[currentshaderi1]), (180-string.len(shaderlist[currentshaderi1])*8)*scale, 65*scale)
 
 			if optionsselection == 5 then
 				love.graphics.setColor(1, 1, 1, 1)
 			else
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
-			properprint("volume:", 30*scale, 105*scale)
-			drawrectangle(90, 108, 90, 1)
-			drawrectangle(90, 105, 1, 7)
-			drawrectangle(179, 105, 1, 7)
-			love.graphics.draw(volumesliderimg, math.floor((89+89*volume)*scale), 105*scale, 0, scale, scale)
+			properprint("shader2:", 30*scale, 75*scale)
+			properprint(string.lower(shaderlist[currentshaderi2]), (180-string.len(shaderlist[currentshaderi2])*8)*scale, 75*scale)
+
+			love.graphics.setColor(0.4, 0.4, 0.4)
+			properprint("shaders will really", 30*scale, 90*scale)
+			properprint("reduce performance!", 30*scale, 100*scale)
 
 			if optionsselection == 6 then
 				love.graphics.setColor(1, 1, 1, 1)
 			else
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
-
-			properprint("reset game mappacks", 30*scale, 120*scale)
+			properprint("volume:", 30*scale, 115*scale)
+			drawrectangle(90, 118, 90, 1)
+			drawrectangle(90, 115, 1, 7)
+			drawrectangle(179, 115, 1, 7)
+			love.graphics.draw(volumesliderimg, math.floor((89+89*volume)*scale), 115*scale, 0, scale, scale)
 
 			if optionsselection == 7 then
 				love.graphics.setColor(1, 1, 1, 1)
@@ -961,7 +960,7 @@ function menu_draw()
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
 
-			properprint("reset all settings", 30*scale, 135*scale)
+			properprint("reset game mappacks", 30*scale, 130*scale)
 
 			if optionsselection == 8 then
 				love.graphics.setColor(1, 1, 1, 1)
@@ -969,17 +968,25 @@ function menu_draw()
 				love.graphics.setColor(0.4, 0.4, 0.4)
 			end
 
-			properprint("vsync:", 30*scale, 150*scale)
-			if vsync == 1 then
-				properprint("on", (180-16)*scale, 150*scale)
-			elseif vsync == 0 then
-				properprint("off", (180-24)*scale, 150*scale)
+			properprint("reset all settings", 30*scale, 145*scale)
+
+			if optionsselection == 9 then
+				love.graphics.setColor(1, 1, 1, 1)
 			else
-				properprint("adaptive", (180-64)*scale, 150*scale)
+				love.graphics.setColor(0.4, 0.4, 0.4)
+			end
+
+			properprint("vsync:", 30*scale, 160*scale)
+			if vsync == 1 then
+				properprint("on", (180-16)*scale, 160*scale)
+			elseif vsync == 0 then
+				properprint("off", (180-24)*scale, 160*scale)
+			else
+				properprint("adaptive", (180-64)*scale, 160*scale)
 			end
 
 			love.graphics.setColor(0.4, 0.4, 0.4)
-			properprint("you can lock the|mouse with f12", 30*scale, 165*scale)
+			properprint("you can lock the|mouse with f12", 30*scale, 175*scale)
 
 			love.graphics.setColor(1, 1, 1, 1)
 			properprint(versionstring, 150*scale, 207*scale)
@@ -1754,9 +1761,9 @@ function menu_keypressed(key, unicode)
 					keypromptstart()
 				end
 			elseif optionstab == 3 then
-				if optionsselection == 6 then
+				if optionsselection == 7 then
 					reset_mappacks()
-				elseif optionsselection == 7 then
+				elseif optionsselection == 8 then
 					resetconfig()
 				end
 			end
@@ -1827,6 +1834,9 @@ function menu_keypressed(key, unicode)
 						changescale(scale+1)
 					end
 				elseif optionsselection == 3 then
+				  width = width + 1
+				  changescale(scale)
+				elseif optionsselection == 4 then
 					currentshaderi1 = currentshaderi1 + 1
 					if currentshaderi1 > #shaderlist then
 						currentshaderi1 = 1
@@ -1837,7 +1847,7 @@ function menu_keypressed(key, unicode)
 						shaders:set(1, shaderlist[currentshaderi1])
 					end
 
-				elseif optionsselection == 4 then
+				elseif optionsselection == 5 then
 					currentshaderi2 = currentshaderi2 + 1
 					if currentshaderi2 > #shaderlist then
 						currentshaderi2 = 1
@@ -1848,7 +1858,7 @@ function menu_keypressed(key, unicode)
 						shaders:set(2, shaderlist[currentshaderi2])
 					end
 
-				elseif optionsselection == 5 then
+				elseif optionsselection == 6 then
 					if volume < 1 then
 						volume = volume + 0.1
 						if volume > 1 then
@@ -1858,7 +1868,7 @@ function menu_keypressed(key, unicode)
 						playsound(coinsound)
 						soundenabled = true
 					end
-				elseif optionsselection == 8 then
+				elseif optionsselection == 9 then
 					vsync = ((vsync + 2) % 3) - 1
 					changescale(scale)
 				end
@@ -1930,6 +1940,11 @@ function menu_keypressed(key, unicode)
 						changescale(scale-1)
 					end
 				elseif optionsselection == 3 then
+					if width > 1 then
+						width = width - 1
+						changescale(scale)
+					end
+				elseif optionsselection == 4 then
 					currentshaderi1 = currentshaderi1 - 1
 					if currentshaderi1 < 1 then
 						currentshaderi1 = #shaderlist
@@ -1940,7 +1955,7 @@ function menu_keypressed(key, unicode)
 					else
 						shaders:set(1, shaderlist[currentshaderi1])
 					end
-				elseif optionsselection == 4 then
+				elseif optionsselection == 5 then
 					currentshaderi2 = currentshaderi2 - 1
 					if currentshaderi2 < 1 then
 						currentshaderi2 = #shaderlist
@@ -1952,7 +1967,7 @@ function menu_keypressed(key, unicode)
 						shaders:set(2, shaderlist[currentshaderi2])
 					end
 
-				elseif optionsselection == 5 then
+				elseif optionsselection == 6 then
 					if volume > 0 then
 						volume = volume - 0.1
 						if volume <= 0 then
@@ -1962,7 +1977,7 @@ function menu_keypressed(key, unicode)
 						love.audio.setVolume( volume )
 						playsound(coinsound)
 					end
-				elseif optionsselection == 8 then
+				elseif optionsselection == 9 then
 					vsync = (vsync % 3) - 1
 					changescale(scale)
 				end
