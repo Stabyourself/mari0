@@ -1417,12 +1417,9 @@ end
 
 function downloadmappacks()
 	downloaderror = false
-	local onlinedata, code = {}, 404--http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
+	local psuccess, onlinedata, code = pcall(http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks"))
 
-	if code ~= 200 then
-		downloaderror = true
-		return false
-	elseif not onlinedata then
+	if not psuccess or not onlinedata or code ~= 200 then
 		downloaderror = true
 		return false
 	end
@@ -1473,9 +1470,9 @@ function downloadmappacks()
 			end
 
 			love.filesystem.createDirectory("mappacks/" .. maplist[i])
-			local onlinedata, code = {}, 404--http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i])
+			local psuccess, onlinedata, code = pcall(http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i]))
 
-			if code == 200 then
+			if psuccess and code == 200 then
 				filecount = 0
 				local checksums = {}
 
@@ -2128,9 +2125,9 @@ function keypromptstart()
 end
 
 function downloadfile(url, target, checksum)
-	local data, code = http.request(url)
+	local psuccess, data, code = pcall(http.request(url))
 
-	if code ~= 200 then
+	if not psuccess or not data or code ~= 200 then
 		return false
 	end
 
@@ -2139,12 +2136,8 @@ function downloadfile(url, target, checksum)
 		return false
 	end
 
-	if data then
-		love.filesystem.write(target, data)
-		return true
-	else
-		return false
-	end
+	love.filesystem.write(target, data)
+	return true
 end
 
 function reset_mappacks()
