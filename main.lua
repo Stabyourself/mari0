@@ -1610,9 +1610,9 @@ function openSaveFolder(subfolder) --By Slime
 end
 
 function getupdate()
-	local psuccess, onlinedata, code = pcall(http.request("http://server.stabyourself.net/mari0/?mode=mappacks"))
+	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
 
-	if not psuccess or not onlinedata or code ~= 200 then
+	if not onlinedata or code ~= 200 then
 		return false
 	end
 
