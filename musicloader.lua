@@ -108,10 +108,8 @@ end
 
 function music:onLoad(name, source)
 	self.loaded[name] = source
-	print("loaded yo")
 	source:setLooping(true)
 	source:setPitch(self.pitch)
-	print("configured yo")
 end
 
 

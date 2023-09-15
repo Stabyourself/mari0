@@ -1615,7 +1615,9 @@ end
 function getupdate()
 	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
 
-	if not onlinedata or code ~= 200 then
+	if code ~= 200 then
+		return false
+	elseif not onlinedata then
 		return false
 	end
 

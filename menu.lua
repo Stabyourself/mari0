@@ -1419,7 +1419,10 @@ function downloadmappacks()
 	downloaderror = false
 	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
 
-	if not onlinedata or code ~= 200 then
+	if code ~= 200 then
+		downloaderror = true
+		return false
+	elseif not onlinedata then
 		downloaderror = true
 		return false
 	end
@@ -2127,7 +2130,7 @@ end
 function downloadfile(url, target, checksum)
 	local data, code = http.request(url)
 
-	if not data or code ~= 200 then
+	if code ~= 200 then
 		return false
 	end
 
@@ -2136,8 +2139,12 @@ function downloadfile(url, target, checksum)
 		return false
 	end
 
-	love.filesystem.write(target, data)
-	return true
+	if data then
+		love.filesystem.write(target, data)
+		return true
+	else
+		return false
+	end
 end
 
 function reset_mappacks()
