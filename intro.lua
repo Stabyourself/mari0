@@ -20,7 +20,9 @@ function intro_update(dt)
 		end
 
 		if introprogress > 0.5 and playedwilhelm == nil then
-			playsound(stabsound)
+			if love.system.getOS() ~= "Web" then
+				playsound(stabsound)
+			end
 
 			playedwilhelm = true
 		end
