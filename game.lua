@@ -2604,7 +2604,7 @@ function game_keypressed(key, unicode)
 				pausemenuselected2 = 1
 			elseif (key == "right" or key == "d") then
 				pausemenuselected2 = 2
-			elseif (key == "return" or key == "enter" or key == "kpenter" or key == " ") then
+			elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				if pausemenuselected2 == 1 then
 					love.audio.stop()
 					pausemenuopen = false

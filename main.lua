@@ -5,6 +5,11 @@
 ]]
 
 function love.load()
+	love.filesystem.setIdentity("mari0")
+	if not love.filesystem.getSaveDirectory():match("LOVE") then
+		love.filesystem.setIdentity("LOVE/mari0")
+	end
+
 	marioversion = 1006
 	versionstring = "version 1.6"
 	shaderlist = love.filesystem.getDirectoryItems( "shaders/" )
@@ -160,8 +165,6 @@ function love.load()
 
 	http = require("socket.http")
 	http.TIMEOUT = 1
-
-	love.filesystem.setIdentity("mari0")
 
 	updatenotification = false
 	if getupdate() then

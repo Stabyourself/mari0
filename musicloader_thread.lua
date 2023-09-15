@@ -4,8 +4,6 @@ require("love.audio")
 require("love.timer")
 require("musicloader")
 
-love.filesystem.setIdentity("mari0")
-
 local musiclist = {}
 local musictoload = {} -- waiting to be loaded into memory
 
