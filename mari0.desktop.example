@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=mari0
+Icon=mari0
+Exec=love /usr/share/mari0/mari0
+Comment=The Mario game with Portal gun mechanics
+Categories=Game;
