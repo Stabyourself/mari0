@@ -2743,7 +2743,7 @@ function game_keypressed(key, unicode)
 			return
 		elseif not editormode and not everyonedead then
 			pausemenuopen = true
-			love.audio.pause()
+			pauseaudio()
 			playsound(pausesound)
 		end
 	end
