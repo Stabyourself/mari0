@@ -1896,7 +1896,7 @@ function updatesplitscreen()
 end
 
 function startlevel(level)
-	skipupdate = true
+	--skipupdate = true
 	love.audio.stop()
 
 	local sublevel = false

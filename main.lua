@@ -812,7 +812,8 @@ function love.update(dt)
 		menu_update(dt)
 	elseif gamestate == "levelscreen" or gamestate == "gameover" or gamestate == "sublevelscreen" or gamestate == "mappackfinished" then
 		levelscreen_update(dt)
-	elseif gamestate == "game" then
+	end
+	if gamestate == "game" then
 		game_update(dt)
 	elseif gamestate == "intro" then
 		intro_update(dt)
