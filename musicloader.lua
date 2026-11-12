@@ -9,6 +9,31 @@ music = {
 
 music.stringlist = table.concat(music.toload, ";")
 
+-- music loading constants
+
+local musicpath = "sounds/%s.ogg"
+
+local function getfilename(name)
+	local filename = name:match("%.[mo][pg][3g]$") and name or musicpath:format(name) -- mp3 or ogg
+	if love.filesystem.getInfo(filename).type == "file" then
+		return filename
+	else
+		print(string.format("thread can't load \"%s\": not a file!", filename))
+	end
+end
+
+function loadsong(name)
+	local filename = getfilename(name)
+	if filename then
+		local source = love.audio.newSource(love.sound.newDecoder(filename, 512 * 1024), "static")
+		--print("thread loaded music", name)
+		return source
+	end
+	return false
+end
+
+-- music object
+
 function music:init()
 	self.thread:start()
 end
@@ -35,8 +60,13 @@ end
 function music:play(name)
 	if name and soundenabled then
 		if self.loaded[name] == false then
-			local source = self.thread:demand(name)
-			self:onLoad(name, source)
+			local source = love.thread.getChannel(name):pop()
+			if source == nil then
+				source = loadsong(name)
+			end
+			if source ~= nil then
+				self:onLoad(name, source)
+			end
 		end
 		if self.loaded[name] then
 			self.loaded[name]:play()

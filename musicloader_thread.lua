@@ -2,8 +2,7 @@ require("love.filesystem")
 require("love.sound")
 require("love.audio")
 require("love.timer")
-
-local musicpath = "sounds/%s.ogg"
+require("musicloader")
 
 local musiclist = {}
 local musictoload = {} -- waiting to be loaded into memory
@@ -22,24 +21,11 @@ local function getmusiclist()
 	end
 end
 
-local function getfilename(name)
-	local filename = name:match("%.[mo][pg][3g]$") and name or musicpath:format(name) -- mp3 or ogg
-	if love.filesystem.getInfo(filename).type == "file" then
-		return filename
-	else
-		print(string.format("thread can't load \"%s\": not a file!", filename))
-	end
-end
-
 local function loadmusic()
 	if #musictoload > 0 then
 		local name = table.remove(musictoload, 1)
-		local filename = getfilename(name)
-		if filename then
-			local source = love.audio.newSource(love.sound.newDecoder(filename, 512 * 1024), "static")
-			--print("thread loaded music", name)
-			love.thread.getChannel(name):push(source)
-		end
+		local source = loadsong(name)
+		love.thread.getChannel(name):push(source)
 	end
 end
 
