@@ -5,6 +5,12 @@
 ]]
 
 function love.load()
+	isweb = love.system.getOS() == "Web" -- running in a browser through love.js
+	if isweb then
+		-- there's nothing to quit to in a browser tab
+		love.event.quit = function() end
+	end
+
 	love.filesystem.setIdentity("mari0")
 	if not love.filesystem.getSaveDirectory():match("LOVE") then
 		love.filesystem.setIdentity("LOVE/mari0")
@@ -95,7 +101,6 @@ function love.load()
 	require "shaders"
 	require "variables"
 	require "class"
-	require "sha1"
 
 	require "intro"
 	require "menu"
@@ -162,15 +167,6 @@ function love.load()
 	require "miniblock"
 	require "notgate"
 	require "musicloader"
-
-	http = require("socket.http")
-	http.TIMEOUT = 1
-
-	updatenotification = false
-	if getupdate() then
-		updatenotification = true
-	end
-	http.TIMEOUT = 4
 
 	graphicspack = "SMB" --SMB, ALLSTARS
 	playertypei = 1
@@ -1610,31 +1606,6 @@ function openSaveFolder(subfolder) --By Slime
 
 	-- returns true if successfully opened folder
 	return cmdstr and os.execute(cmdstr:format(path)) == successval
-end
-
-function getupdate()
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/?mode=mappacks")
-
-	if code ~= 200 then
-		return false
-	elseif not onlinedata then
-		return false
-	end
-
-	local latestversion
-
-	local split1 = onlinedata:split("<")
-	for i = 2, #split1 do
-		local split2 = split1[i]:split(">")
-		if split2[1] == "latestversion" then
-			latestversion = tonumber(split2[2])
-		end
-	end
-
-	if latestversion and latestversion > marioversion then
-		return true
-	end
-	return false
 end
 
 function properprint(s, x, y)

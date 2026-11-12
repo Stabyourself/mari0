@@ -273,12 +273,6 @@ function menu_draw()
 	if gamestate == "menu" then
 		love.graphics.draw(titleimage, 40*scale, 24*scale, 0, scale, scale)
 
-		if updatenotification then
-			love.graphics.setColor(1, 0, 0)
-			properprint("version outdated!|go to stabyourself.net|to download latest", 220*scale, 90*scale)
-			love.graphics.setColor(1, 1, 1, 1)
-		end
-
 		if selection == 0 then
 			love.graphics.draw(menuselection, 73*scale, (137+(selection-1)*16)*scale, 0, scale, scale)
 		elseif selection == 1 then
@@ -378,194 +372,172 @@ function menu_draw()
 		--set scissor
 		love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
 
-		if loadingonlinemappacks then
+		love.graphics.translate(-round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+
+		if mappackhorscrollsmooth < 1 then
+			--draw each butten (even if all you do, is press ONE. BUTTEN.)
+			--scrollbar offset
+			love.graphics.translate(0, -round(mappackscrollsmooth*60*scale))
+
+			love.graphics.setScissor(240*scale, 16*scale, 200*scale, 200*scale)
 			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
-			love.graphics.setColor(1, 1, 1, 1)
-			properprint("a little patience..|downloading " .. currentdownload .. " of " .. downloadcount, 50*scale, 30*scale)
-			drawrectangle(50, 55, 152, 10)
-			love.graphics.rectangle("fill", 50*scale, 55*scale, 152*((currentfiledownload-1)/(filecount-1))*scale, 10*scale)
-		else
-			love.graphics.translate(-round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+			love.graphics.rectangle("fill", 240*scale, 81*scale, 115*scale, 61*scale)
+			love.graphics.setColor(1, 1, 1)
+			if not savefolderfailed then
+				properprint("press right to|access the dlc||press m to|open your|mappack folder", 241*scale, 83*scale)
+			else
+				properprint("press right to|access the dlc||could not|open your|mappack folder", 241*scale, 83*scale)
+			end
+			love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
 
-			if mappackhorscrollsmooth < 1 then
-				--draw each butten (even if all you do, is press ONE. BUTTEN.)
-				--scrollbar offset
-				love.graphics.translate(0, -round(mappackscrollsmooth*60*scale))
+			for i = 1, #mappacklist do
+				--back
+				love.graphics.draw(mappackback, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
 
-				love.graphics.setScissor(240*scale, 16*scale, 200*scale, 200*scale)
-				love.graphics.setColor(0, 0, 0, 0.8)
-				love.graphics.rectangle("fill", 240*scale, 81*scale, 115*scale, 61*scale)
-				love.graphics.setColor(1, 1, 1)
-				if not savefolderfailed then
-					properprint("press right to|access the dlc||press m to|open your|mappack folder", 241*scale, 83*scale)
+				--icon
+				if mappackicon[i] ~= nil then
+					local scale2w = scale*50 / math.max(1, mappackicon[i]:getWidth())
+					local scale2h = scale*50 / math.max(1, mappackicon[i]:getHeight())
+					love.graphics.draw(mappackicon[i], 29*scale, (24+(i-1)*60)*scale, 0, scale2w, scale2h)
 				else
-					properprint("press right to|access the dlc||could not|open your|mappack folder", 241*scale, 83*scale)
+					love.graphics.draw(mappacknoicon, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
 				end
-				love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
+				love.graphics.draw(mappackoverlay, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
 
-				for i = 1, #mappacklist do
-					--back
-					love.graphics.draw(mappackback, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
-
-					--icon
-					if mappackicon[i] ~= nil then
-						local scale2w = scale*50 / math.max(1, mappackicon[i]:getWidth())
-						local scale2h = scale*50 / math.max(1, mappackicon[i]:getHeight())
-						love.graphics.draw(mappackicon[i], 29*scale, (24+(i-1)*60)*scale, 0, scale2w, scale2h)
-					else
-						love.graphics.draw(mappacknoicon, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
-					end
-					love.graphics.draw(mappackoverlay, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
-
-					--name
-					love.graphics.setColor(0.8, 0.8, 0.8)
-					if mappackselection == i then
-						love.graphics.setColor(1, 1, 1)
-					end
-
-					properprint(string.sub(mappackname[i]:lower(), 1, 17), 83*scale, (26+(i-1)*60)*scale)
-
-					--author
-					love.graphics.setColor(0.4, 0.4, 0.4)
-					if mappackselection == i then
-						love.graphics.setColor(0.4, 0.4, 0.4)
-					end
-
-					if mappackauthor[i] then
-						properprint(string.sub("by " .. mappackauthor[i]:lower(), 1, 16), 91*scale, (35+(i-1)*60)*scale)
-					end
-
-					--description
-					love.graphics.setColor(0.5, 0.5, 0.5)
-					if mappackselection == i then
-						love.graphics.setColor(0.7, 0.7, 0.7)
-					end
-
-					if mappackdescription[i] then
-						properprint( string.sub(mappackdescription[i]:lower(), 1, 17), 83*scale, (47+(i-1)*60)*scale)
-
-						if mappackdescription[i]:len() > 17 then
-							properprint( string.sub(mappackdescription[i]:lower(), 18, 34), 83*scale, (56+(i-1)*60)*scale)
-						end
-
-						if mappackdescription[i]:len() > 34 then
-							properprint( string.sub(mappackdescription[i]:lower(), 35, 51), 83*scale, (65+(i-1)*60)*scale)
-						end
-					end
-
+				--name
+				love.graphics.setColor(0.8, 0.8, 0.8)
+				if mappackselection == i then
 					love.graphics.setColor(1, 1, 1)
+				end
 
-					--highlight
-					if i == mappackselection then
-						love.graphics.draw(mappackhighlight, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
+				properprint(string.sub(mappackname[i]:lower(), 1, 17), 83*scale, (26+(i-1)*60)*scale)
+
+				--author
+				love.graphics.setColor(0.4, 0.4, 0.4)
+				if mappackselection == i then
+					love.graphics.setColor(0.4, 0.4, 0.4)
+				end
+
+				if mappackauthor[i] then
+					properprint(string.sub("by " .. mappackauthor[i]:lower(), 1, 16), 91*scale, (35+(i-1)*60)*scale)
+				end
+
+				--description
+				love.graphics.setColor(0.5, 0.5, 0.5)
+				if mappackselection == i then
+					love.graphics.setColor(0.7, 0.7, 0.7)
+				end
+
+				if mappackdescription[i] then
+					properprint( string.sub(mappackdescription[i]:lower(), 1, 17), 83*scale, (47+(i-1)*60)*scale)
+
+					if mappackdescription[i]:len() > 17 then
+						properprint( string.sub(mappackdescription[i]:lower(), 18, 34), 83*scale, (56+(i-1)*60)*scale)
+					end
+
+					if mappackdescription[i]:len() > 34 then
+						properprint( string.sub(mappackdescription[i]:lower(), 35, 51), 83*scale, (65+(i-1)*60)*scale)
 					end
 				end
 
-				love.graphics.translate(0, round(mappackscrollsmooth*60*scale))
-
-				local i = mappackscrollsmooth / (#mappacklist-3.233)
-
-				love.graphics.draw(mappackscrollbar, 227*scale, (20+i*160)*scale, 0, scale, scale)
-
-			end
-
-			love.graphics.translate(round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
-			----------
-			--ONLINE--
-			----------
-
-			love.graphics.translate(round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
-
-			if mappackhorscrollsmooth > 0 then
-				if #onlinemappacklist == 0 then
-					properprint("something went wrong||      sorry d:||maybe your internet|does not work right?", 40*scale, 80*scale)
-				end
-
-				love.graphics.setScissor()
-				love.graphics.setColor(0, 0, 0, 0.8)
-				love.graphics.rectangle("fill", 241*scale, 16*scale, 150*scale, 200*scale)
 				love.graphics.setColor(1, 1, 1)
-				properprint("wanna contribute?|make a mappack and|send an email to|mappack at|stabyourself.net!||include your map-|pack! you can find|it in your appdata|love/mari0 dir.", 244*scale, 19*scale)
-				if outdated then
-					love.graphics.setColor(1, 0, 0)
-					properprint("version outdated!|you have an old|version of mari0!|mappacks could not|be downloaded.|go to|stabyourself.net|to download latest", 244*scale, 130*scale)
-					love.graphics.setColor(1, 1, 1)
-				elseif downloaderror then
-					love.graphics.setColor(1, 0, 0)
-					properprint("download error!|something went|wrong while|downloading|mappacks.|press left and|right to try|again.  sorry.", 244*scale, 130*scale)
-					love.graphics.setColor(1, 1, 1)
+
+				--highlight
+				if i == mappackselection then
+					love.graphics.draw(mappackhighlight, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
 				end
-
-				love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
-
-				--scrollbar offset
-				love.graphics.translate(0, -round(onlinemappackscrollsmooth*60*scale))
-				for i = 1, #onlinemappacklist do
-					--back
-					love.graphics.draw(mappackback, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
-
-					--icon
-					if onlinemappackicon[i] ~= nil then
-						love.graphics.draw(onlinemappackicon[i], 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
-					else
-						love.graphics.draw(mappacknoicon, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
-					end
-					love.graphics.draw(mappackoverlay, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
-
-					--name
-					love.graphics.setColor(0.8, 0.8, 0.8)
-					if onlinemappackselection == i then
-						love.graphics.setColor(1, 1, 1)
-					end
-
-					properprint(string.sub(onlinemappackname[i]:lower(), 1, 17), 83*scale, (26+(i-1)*60)*scale)
-
-					--author
-					love.graphics.setColor(0.4, 0.4, 0.4)
-					if onlinemappackselection == i then
-						love.graphics.setColor(0.4, 0.4, 0.4)
-					end
-
-					if onlinemappackauthor[i] then
-						properprint(string.sub("by " .. onlinemappackauthor[i]:lower(), 1, 16), 91*scale, (35+(i-1)*60)*scale)
-					end
-
-					--description
-					love.graphics.setColor(0.5, 0.5, 0.5)
-					if onlinemappackselection == i then
-						love.graphics.setColor(0.7, 0.7, 0.7)
-					end
-
-					if onlinemappackdescription[i] then
-						properprint( string.sub(onlinemappackdescription[i]:lower(), 1, 17), 83*scale, (47+(i-1)*60)*scale)
-
-						if onlinemappackdescription[i]:len() > 17 then
-							properprint( string.sub(onlinemappackdescription[i]:lower(), 18, 34), 83*scale, (56+(i-1)*60)*scale)
-						end
-
-						if onlinemappackdescription[i]:len() > 34 then
-							properprint( string.sub(onlinemappackdescription[i]:lower(), 35, 51), 83*scale, (65+(i-1)*60)*scale)
-						end
-					end
-
-					love.graphics.setColor(1, 1, 1)
-
-					--highlight
-					if i == onlinemappackselection then
-						love.graphics.draw(mappackhighlight, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
-					end
-				end
-
-				love.graphics.translate(0, round(onlinemappackscrollsmooth*60*scale))
-
-				local i = onlinemappackscrollsmooth / (#onlinemappacklist-3.233)
-
-				love.graphics.draw(mappackscrollbar, 227*scale, (20+i*160)*scale, 0, scale, scale)
 			end
 
-			love.graphics.translate(- round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+			love.graphics.translate(0, round(mappackscrollsmooth*60*scale))
+
+			local i = mappackscrollsmooth / (#mappacklist-3.233)
+
+			love.graphics.draw(mappackscrollbar, 227*scale, (20+i*160)*scale, 0, scale, scale)
+
 		end
+
+		love.graphics.translate(round(mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+		----------
+		--ONLINE--
+		----------
+
+		love.graphics.translate(round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
+
+		if mappackhorscrollsmooth > 0 then
+			love.graphics.setScissor()
+			love.graphics.setColor(0, 0, 0, 0.8)
+			love.graphics.rectangle("fill", 241*scale, 16*scale, 150*scale, 200*scale)
+			love.graphics.setColor(1, 1, 1)
+			properprint("wanna contribute?|make a mappack and|send an email to|mappack at|stabyourself.net!||include your map-|pack! you can find|it in your appdata|love/mari0 dir.", 244*scale, 19*scale)
+
+			love.graphics.setScissor(21*scale, 16*scale, 218*scale, 200*scale)
+
+			--scrollbar offset
+			love.graphics.translate(0, -round(onlinemappackscrollsmooth*60*scale))
+			for i = 1, #onlinemappacklist do
+				--back
+				love.graphics.draw(mappackback, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
+
+				--icon
+				if onlinemappackicon[i] ~= nil then
+					love.graphics.draw(onlinemappackicon[i], 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
+				else
+					love.graphics.draw(mappacknoicon, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
+				end
+				love.graphics.draw(mappackoverlay, 29*scale, (24+(i-1)*60)*scale, 0, scale, scale)
+
+				--name
+				love.graphics.setColor(0.8, 0.8, 0.8)
+				if onlinemappackselection == i then
+					love.graphics.setColor(1, 1, 1)
+				end
+
+				properprint(string.sub(onlinemappackname[i]:lower(), 1, 17), 83*scale, (26+(i-1)*60)*scale)
+
+				--author
+				love.graphics.setColor(0.4, 0.4, 0.4)
+				if onlinemappackselection == i then
+					love.graphics.setColor(0.4, 0.4, 0.4)
+				end
+
+				if onlinemappackauthor[i] then
+					properprint(string.sub("by " .. onlinemappackauthor[i]:lower(), 1, 16), 91*scale, (35+(i-1)*60)*scale)
+				end
+
+				--description
+				love.graphics.setColor(0.5, 0.5, 0.5)
+				if onlinemappackselection == i then
+					love.graphics.setColor(0.7, 0.7, 0.7)
+				end
+
+				if onlinemappackdescription[i] then
+					properprint( string.sub(onlinemappackdescription[i]:lower(), 1, 17), 83*scale, (47+(i-1)*60)*scale)
+
+					if onlinemappackdescription[i]:len() > 17 then
+						properprint( string.sub(onlinemappackdescription[i]:lower(), 18, 34), 83*scale, (56+(i-1)*60)*scale)
+					end
+
+					if onlinemappackdescription[i]:len() > 34 then
+						properprint( string.sub(onlinemappackdescription[i]:lower(), 35, 51), 83*scale, (65+(i-1)*60)*scale)
+					end
+				end
+
+				love.graphics.setColor(1, 1, 1)
+
+				--highlight
+				if i == onlinemappackselection then
+					love.graphics.draw(mappackhighlight, 25*scale, (20+(i-1)*60)*scale, 0, scale, scale)
+				end
+			end
+
+			love.graphics.translate(0, round(onlinemappackscrollsmooth*60*scale))
+
+			local i = onlinemappackscrollsmooth / (#onlinemappacklist-3.233)
+
+			love.graphics.draw(mappackscrollbar, 227*scale, (20+i*160)*scale, 0, scale, scale)
+		end
+
+		love.graphics.translate(- round(mappackhorscrollrange*scale - mappackhorscrollsmooth*scale*mappackhorscrollrange), 0)
 
 		love.graphics.setScissor()
 
@@ -1337,7 +1309,6 @@ end
 
 function loadonlinemappacks()
 	mappacktype = "online"
-	downloadmappacks()
 	onlinemappacklist = love.filesystem.getDirectoryItems( "mappacks" )
 
 	local delete = {}
@@ -1413,135 +1384,6 @@ function loadonlinemappacks()
 	onlinemappackscroll = 0
 	onlineupdatescroll()
 	onlinemappackscrollsmooth = onlinemappackscroll
-end
-
-function downloadmappacks()
-	downloaderror = false
-	local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=mappacks")
-
-	if code ~= 200 then
-		downloaderror = true
-		return false
-	elseif not onlinedata then
-		downloaderror = true
-		return false
-	end
-
-	local maplist = {}
-	local versionlist = {}
-	local latestversion = marioversion
-
-	local split1 = onlinedata:split("<")
-	for i = 2, #split1 do
-		local split2 = split1[i]:split(">")
-		if split2[1] == "latestversion" then
-			latestversion = tonumber(split2[2])
-		elseif split2[1] == "mapfile" then
-			table.insert(maplist, split2[2])
-		elseif split2[1] == "version" then
-			table.insert(versionlist, tonumber(split2[2]))
-		end
-	end
-
-	if latestversion > marioversion then
-		outdated = true
-		return false
-	end
-
-	success = true
-
-	--download all mappacks
-	for i = 1, #maplist do
-		--check if current version is equal or newer
-		local version = 0
-		if love.filesystem.getInfo("mappacks/" .. maplist[i] .. "/version.txt") then
-			local data = love.filesystem.read("mappacks/" .. maplist[i] .. "/version.txt")
-			if data then
-				version = tonumber(data)
-			end
-		end
-
-		if version < versionlist[i] then
-			print("DOWNLOADING MAPPACK: " .. maplist[i])
-
-			--draw
-			currentdownload = i
-			downloadcount = #maplist
-
-			if love.filesystem.getInfo("mappacks/" .. maplist[i] .. "/") then
-				love.filesystem.remove("mappacks/" .. maplist[i] .. "/")
-			end
-
-			love.filesystem.createDirectory("mappacks/" .. maplist[i])
-			local onlinedata, code = http.request("http://server.stabyourself.net/mari0/index2.php?mode=getmap&get=" .. maplist[i])
-
-			if code == 200 then
-				filecount = 0
-				local checksums = {}
-
-				local split1 = onlinedata:split("<")
-				for j = 2, #split1 do
-					local split2 = split1[j]:split(">")
-					if split2[1] == "asset" then
-						filecount = filecount + 1
-					elseif split2[1] == "checksum" then
-						table.insert(checksums, split2[2])
-					end
-				end
-
-				currentfiledownload = 1
-
-				local split1 = onlinedata:split("<")
-				for j = 2, #split1 do
-					local split2 = split1[j]:split(">")
-					if split2[1] == "asset" then
-						loadingonlinemappacks = true
-						love.graphics.clear()
-						love.draw()
-						love.graphics.present()
-						loadingonlinemappacks = false
-
-						local target = "mappacks/" .. maplist[i] .. "/" .. split2[2]:match("([^/]-)$")
-
-						local tries = 0
-						success = false
-						while not success and tries < 3 do
-							success = downloadfile(split2[2], target, checksums[currentfiledownload])
-							tries = tries + 1
-						end
-
-						if not success then
-							break
-						end
-						currentfiledownload = currentfiledownload + 1
-					end
-				end
-				if success then
-					love.filesystem.write( "mappacks/" .. maplist[i] .. "/version.txt", versionlist[i])
-				end
-			else
-				success = false
-			end
-		end
-
-		--Delete stuff and stuff.
-		if not success then
-			if love.filesystem.getInfo("mappacks/" .. maplist[i] .. "/") then
-				local list = love.filesystem.getDirectoryItems("mappacks/" .. maplist[i] .. "/")
-				for j = 1, #list do
-					love.filesystem.remove("mappacks/" .. maplist[i] .. "/" .. list[j])
-				end
-
-				love.filesystem.remove("mappacks/" .. maplist[i] .. "/")
-			end
-			downloaderror = true
-			break
-		else
-			print("Download succeeded.")
-		end
-	end
-
-	return true
 end
 
 function menu_keypressed(key, unicode)
@@ -2124,26 +1966,6 @@ function keypromptstart()
 		for j = 1, prompt.joystick[i].axes do
 			table.insert(prompt.joystick[i].axisposition, js:getAxis(j))
 		end
-	end
-end
-
-function downloadfile(url, target, checksum)
-	local data, code = http.request(url)
-
-	if code ~= 200 then
-		return false
-	end
-
-	if checksum ~= sha1(data) then
-		print("Checksum doesn't match!")
-		return false
-	end
-
-	if data then
-		love.filesystem.write(target, data)
-		return true
-	else
-		return false
 	end
 end
 
