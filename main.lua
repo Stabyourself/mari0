@@ -100,6 +100,10 @@ function love.load()
 	--require ALL the files!
 	require "shaders"
 	require "variables"
+	if isweb then
+		table.remove(pausemenuoptions)
+		table.remove(pausemenuoptions2)
+	end
 	require "class"
 
 	require "intro"

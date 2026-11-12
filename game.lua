@@ -1783,25 +1783,27 @@ function game_draw()
 		love.graphics.setColor(0, 0, 0, 0.2)
 		love.graphics.rectangle("fill", 0, 0, width*16*scale, 224*scale)
 
+		local boxheight = 150 - 25*(5-#pausemenuoptions) --no quit option on web
+		local boxtop = 112 - boxheight/2
 		love.graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("fill", (width*8*scale)-50*scale, (112*scale)-75*scale, 100*scale, 150*scale)
+		love.graphics.rectangle("fill", (width*8*scale)-50*scale, boxtop*scale, 100*scale, boxheight*scale)
 		love.graphics.setColor(1, 1, 1)
-		drawrectangle(width*8-49, 112-74, 98, 148)
+		drawrectangle(width*8-49, boxtop+1, 98, boxheight-2)
 
 		for i = 1, #pausemenuoptions do
 			love.graphics.setColor(0.4, 0.4, 0.4)
 			if pausemenuselected == i and not menuprompt and not desktopprompt then
 				love.graphics.setColor(1, 1, 1)
-				properprint(">", (width*8*scale)-45*scale, (112*scale)-60*scale+(i-1)*25*scale)
+				properprint(">", (width*8*scale)-45*scale, (boxtop+15)*scale+(i-1)*25*scale)
 			end
-			properprint(pausemenuoptions[i], (width*8*scale)-35*scale, (112*scale)-60*scale+(i-1)*25*scale)
-			properprint(pausemenuoptions2[i], (width*8*scale)-35*scale, (112*scale)-50*scale+(i-1)*25*scale)
+			properprint(pausemenuoptions[i], (width*8*scale)-35*scale, (boxtop+15)*scale+(i-1)*25*scale)
+			properprint(pausemenuoptions2[i], (width*8*scale)-35*scale, (boxtop+25)*scale+(i-1)*25*scale)
 
 			if pausemenuoptions[i] == "volume" then
-				drawrectangle((width*8)-34, 68+(i-1)*25, 74, 1)
-				drawrectangle((width*8)-34, 65+(i-1)*25, 1, 7)
-				drawrectangle((width*8)+40, 65+(i-1)*25, 1, 7)
-				love.graphics.draw(volumesliderimg, math.floor(((width*8)-35+74*volume)*scale), (112*scale)-47*scale+(i-1)*25*scale, 0, scale, scale)
+				drawrectangle((width*8)-34, boxtop+31+(i-1)*25, 74, 1)
+				drawrectangle((width*8)-34, boxtop+28+(i-1)*25, 1, 7)
+				drawrectangle((width*8)+40, boxtop+28+(i-1)*25, 1, 7)
+				love.graphics.draw(volumesliderimg, math.floor(((width*8)-35+74*volume)*scale), (boxtop+28)*scale+(i-1)*25*scale, 0, scale, scale)
 			end
 		end
 
