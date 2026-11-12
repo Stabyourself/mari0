@@ -1,4 +1,4 @@
-extern number amount = 0.5;
+const number amount = 0.5;
 
 const vec4 redfilter = vec4(1.0, 0.0, 0.0, 1.0);
 const vec4 bluegreenfilter = vec4(0.0, 1.0, 0.7, 1.0);

@@ -31,12 +31,9 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texcoord, vec2 pixel_coords)
 	
 	float y_one = 1.0 / outputSize.y;
 	
-	int j;
-	int i;
-
-	for (i = -2; i < 2; i++)
+	for (int i = -2; i < 2; i++)
 	{
-		for (j = -1; j < 1; j++)
+		for (int j = -1; j < 1; j++)
 		{
 			sum += Texel(texture, texcoord + vec2(-i, j)*glaresize) * power;
 			bum += Texel(texture, texcoord + vec2(j, i)*glaresize) * power;            

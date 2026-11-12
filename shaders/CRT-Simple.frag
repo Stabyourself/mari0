@@ -37,7 +37,7 @@ extern vec2 textureSize;
 #define PI 3.141592653589
 
 
-vec2 bounds = vec2(inputSize.x / textureSize.x, 1.0 - inputSize.y / textureSize.y);
+#define bounds vec2(inputSize.x / textureSize.x, 1.0 - inputSize.y / textureSize.y)
 
 vec2 radialDistortion(vec2 coord, const vec2 ratio)
 {

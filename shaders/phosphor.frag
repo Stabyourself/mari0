@@ -59,16 +59,16 @@ extern vec2 textureSize;
  * for 2<g<3 : x^(1/g) ~ (a sqrt(x) + b sqrt(sqrt(x)))
  *             where   a = 6 - 15g / 2(g+1)  and b = 1-a
  */
-vec4 A_IN = vec4( 12.0/(InputGamma+1.0)-3.0 );
-vec4 B_IN = vec4(1.0) - A_IN;
-vec4 A_OUT = vec4(6.0 - 15.0 * OutputGamma / 2.0 / (OutputGamma+1.0));
-vec4 B_OUT = vec4(1.0) - A_OUT;
+const vec4 A_IN = vec4( 12.0/(InputGamma+1.0)-3.0 );
+const vec4 B_IN = vec4(1.0) - A_IN;
+const vec4 A_OUT = vec4(6.0 - 15.0 * OutputGamma / 2.0 / (OutputGamma+1.0));
+const vec4 B_OUT = vec4(1.0) - A_OUT;
 #define GAMMA_IN(color)     ( (A_IN + B_IN * color) * color * color )
 #define GAMMA_OUT(color)    ( A_OUT * sqrt(color) + B_OUT * sqrt( sqrt(color) ) )
 
 #elif defined FAKER_GAMMA
-vec4 A_IN = vec4(6.0/( InputGamma/OutputGamma + 1.0 ) - 2.0);
-vec4 B_IN = vec4(1.0) - A_IN;
+const vec4 A_IN = vec4(6.0/( InputGamma/OutputGamma + 1.0 ) - 2.0);
+const vec4 B_IN = vec4(1.0) - A_IN;
 #define GAMMA_IN(color)     ( (A_IN + B_IN * color) * color )
 #define GAMMA_OUT(color)    color
 
@@ -93,8 +93,8 @@ vec4 grid_color( vec2 coords )
 
 #endif // DEBUG
 
-vec2 onex = vec2( 1.0/textureSize.x, 0.0 );
-vec2 oney = vec2( 0.0, 1.0/textureSize.y );
+#define onex vec2( 1.0/textureSize.x, 0.0 )
+#define oney vec2( 0.0, 1.0/textureSize.y )
 
 vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 {
@@ -113,15 +113,13 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texCoord, vec2 pixel_coords)
 	float dx,dy;
 	float w;
 
-	float i,j;
-
-	for (j = -1.0; j<=1.0; j++) {
+	for (float j = -1.0; j<=1.0; j++) {
 			// Vertical weight
 			dy = abs(coords.y - 0.5 - j );
 			vweight = smoothstep(1.0,0.0, dy / PHOSPHOR_HEIGHT);
 
 			if (vweight !=0.0 ) {
-					for ( i = -1.0; i<=1.0; i++ ) {
+					for (float i = -1.0; i<=1.0; i++ ) {
 							pixel = TEX2D(
 									texture_coords
 									+ i * onex

@@ -1,6 +1,6 @@
-extern float exposure = 0.7;
-extern float brightness = 1.0;
-extern vec3 lumacomponents = vec3(1.0, 1.0, 1.0);
+const float exposure = 0.7;
+const float brightness = 1.0;
+const vec3 lumacomponents = vec3(1.0, 1.0, 1.0);
 
 
 // luma 

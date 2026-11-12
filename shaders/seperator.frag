@@ -1,6 +1,6 @@
-extern vec2 redoffset = vec2(2.0, 0.0);
-extern vec2 greenoffset = vec2(0.0, 0.0);
-extern vec2 blueoffset = vec2(-2.0, 0.0);
+const vec2 redoffset = vec2(2.0, 0.0);
+const vec2 greenoffset = vec2(0.0, 0.0);
+const vec2 blueoffset = vec2(-2.0, 0.0);
 
 extern vec2 textureSize;
 
