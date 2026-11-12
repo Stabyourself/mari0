@@ -9,6 +9,17 @@ music = {
 
 music.stringlist = table.concat(music.toload, ";")
 
+-- same as what musicloader_thread.lua does, for when the thread can't do it
+local function loadsource(name)
+	local filename = name:match("%.[mo][pg][3g]$") and name or string.format("sounds/%s.ogg", name) -- mp3 or ogg
+	local info = love.filesystem.getInfo(filename)
+	if info and info.type == "file" then
+		return love.audio.newSource(love.sound.newDecoder(filename, 512 * 1024), "static")
+	else
+		print(string.format("can't load \"%s\": not a file!", filename))
+	end
+end
+
 function music:init()
 	self.thread:start()
 end
@@ -35,8 +46,17 @@ end
 function music:play(name)
 	if name and soundenabled then
 		if self.loaded[name] == false then
-			local source = self.thread:demand(name)
-			self:onLoad(name, source)
+			local source
+			if self.thread:isRunning() then
+				-- the loader thread is still busy, wait for it
+				source = love.thread.getChannel(name):demand(10)
+			else
+				-- no working threads (e.g. love.js), so load it right here
+				source = loadsource(name)
+			end
+			if source then
+				self:onLoad(name, source)
+			end
 		end
 		if self.loaded[name] then
 			self.loaded[name]:play()
