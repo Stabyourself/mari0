@@ -878,13 +878,15 @@ function menu_draw()
 			love.graphics.setColor(alpha, alpha, alpha)
 			love.graphics.draw(huebarmarkerimg, math.floor(28 + (portalhues[skinningplayer][2])*178)*scale, 190*scale, 0, scale, scale)
 		elseif optionstab == 3 then
-			if optionsselection == 2 then
-				love.graphics.setColor(1, 1, 1, 1)
-			else
-				love.graphics.setColor(0.4, 0.4, 0.4)
+			if not isweb then
+				if optionsselection == 2 then
+					love.graphics.setColor(1, 1, 1, 1)
+				else
+					love.graphics.setColor(0.4, 0.4, 0.4)
+				end
+				properprint("scale:", 30*scale, 40*scale)
+				properprint(scale, (180-string.len(scale)*8)*scale, 40*scale)
 			end
-			properprint("scale:", 30*scale, 40*scale)
-			properprint(scale, (180-string.len(scale)*8)*scale, 40*scale)
 
 
 			if optionsselection == 3 then
@@ -1629,6 +1631,9 @@ function menu_keypressed(key, unicode)
 				else
 					optionsselection = 1
 				end
+				if isweb and optionsselection == 2 then
+					optionsselection = 3
+				end
 			elseif optionstab == 4 and gamefinished then
 				if optionsselection < 10 then
 					optionsselection = optionsselection + 1
@@ -1639,6 +1644,9 @@ function menu_keypressed(key, unicode)
 		elseif (key == "up" or key == "w") then
 			if optionsselection > 1 then
 				optionsselection = optionsselection - 1
+				if isweb and optionstab == 3 and optionsselection == 2 then
+					optionsselection = 1
+				end
 			else
 				if optionstab == 1 then
 					if skinningplayer ~= mouseowner then

@@ -45,6 +45,9 @@ function love.load()
 	saveconfig()
 	width = 25
 	fullscreen = false
+	if isweb then
+		scale = webscale()
+	end
 	changescale(scale, fullscreen)
 	love.window.setTitle( "Mari0" )
 
@@ -763,6 +766,9 @@ function love.load()
 end
 
 function love.update(dt)
+	if isweb then
+		updatewebscale(dt)
+	end
 	if music then
 		music:update()
 	end
@@ -1247,6 +1253,35 @@ function changescale(s, fullscreen)
 
 	if shaders then
 		shaders:refresh()
+	end
+end
+
+--web: biggest whole scale that fits the browser window, so the shaders look right
+function webscale()
+	local size = love.js and love.js.eval and
+		love.js.eval("Math.floor(innerWidth*devicePixelRatio)+' '+Math.floor(innerHeight*devicePixelRatio)")
+	local w, h = string.match(size or "", "(%d+) (%d+)")
+	if not w then
+		return 2
+	end
+	return math.max(1, math.min(math.floor(tonumber(w)/(width*16)), math.floor(tonumber(h)/224)))
+end
+
+local webscaletimer = 0
+function updatewebscale(dt)
+	webscaletimer = webscaletimer + dt
+	if webscaletimer < 0.5 then
+		return
+	end
+	webscaletimer = 0
+	local s = webscale()
+	if s ~= scale then
+		changescale(s)
+		love.graphics.setPointSize(3*scale)
+		love.graphics.setLineWidth(3*scale)
+		if gamestate == "game" and smbspritebatch then
+			generatespritebatch()
+		end
 	end
 end
 
