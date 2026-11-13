@@ -383,11 +383,6 @@ function guielement:click(x, y, button)
 					self.draggingx = x-(self.x+self.xrange*self.value)*scale
 				end
 			end
-			if button == "wd" then
-				self.value = math.min(1, self.value+0.2)
-			elseif button == "wu" then
-				self.value = math.max(0, self.value-0.2)
-			end
 		elseif self.type == "input" then
 			if self:inhighlight(x, y) then
 				self.inputting = true
