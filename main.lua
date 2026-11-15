@@ -1421,6 +1421,9 @@ function love.joystickaxis(joystick, axis, value)
 	end
 
 	if found then
+		axisDeadZones[joystick] = axisDeadZones[joystick] or {}
+		axisDeadZones[joystick][axis] = axisDeadZones[joystick][axis] or {stick = true, shoulder = true}
+
 		local stickmoved = false
 		local shouldermoved = false
 
