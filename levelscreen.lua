@@ -147,7 +147,7 @@ function levelscreen_draw()
 				if mappack == "smb" and marioworld == 1 and mariolevel == 1 then
 					local s = "remember that you can run with "
 					for i = 1, #controls[1]["run"] do
-						s = s .. controls[1]["run"][i]
+						s = s .. controlentrytext(controls[1]["run"], i)
 						if i ~= #controls[1]["run"] then
 							s = s .. "-"
 						end
@@ -158,7 +158,7 @@ function levelscreen_draw()
 				if mappack == "portal" and marioworld == 1 and mariolevel == 1 then
 					local s = "you can remove your portals with "
 					for i = 1, #controls[1]["reload"] do
-						s = s .. controls[1]["reload"][i]
+						s = s .. controlentrytext(controls[1]["reload"], i)
 						if i ~= #controls[1]["reload"] then
 							s = s .. "-"
 						end
@@ -167,7 +167,7 @@ function levelscreen_draw()
 
 					local s = "you can grab cubes and push buttons with "
 					for i = 1, #controls[1]["use"] do
-						s = s .. controls[1]["use"][i]
+						s = s .. controlentrytext(controls[1]["use"], i)
 						if i ~= #controls[1]["use"] then
 							s = s .. "-"
 						end

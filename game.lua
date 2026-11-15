@@ -2599,12 +2599,12 @@ function generatespritebatch()
 	end
 end
 
-function game_keypressed(key, unicode)
+function game_keypressed(key, scancode)
 	if pausemenuopen then
 		if menuprompt then
-			if (key == "left" or key == "a") then
+			if (key == "left" or scancode == "a") then
 				pausemenuselected2 = 1
-			elseif (key == "right" or key == "d") then
+			elseif (key == "right" or scancode == "d") then
 				pausemenuselected2 = 2
 			elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				if pausemenuselected2 == 1 then
@@ -2620,9 +2620,9 @@ function game_keypressed(key, unicode)
 			end
 			return
 		elseif desktopprompt then
-			if (key == "left" or key == "a") then
+			if (key == "left" or scancode == "a") then
 				pausemenuselected2 = 1
-			elseif (key == "right" or key == "d") then
+			elseif (key == "right" or scancode == "d") then
 				pausemenuselected2 = 2
 			elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				if pausemenuselected2 == 1 then
@@ -2636,9 +2636,9 @@ function game_keypressed(key, unicode)
 			end
 			return
 		elseif suspendprompt then
-			if (key == "left" or key == "a") then
+			if (key == "left" or scancode == "a") then
 				pausemenuselected2 = 1
-			elseif (key == "right" or key == "d") then
+			elseif (key == "right" or scancode == "d") then
 				pausemenuselected2 = 2
 			elseif (key == "return" or key == "enter" or key == "kpenter" or key == "space") then
 				if pausemenuselected2 == 1 then
@@ -2654,11 +2654,11 @@ function game_keypressed(key, unicode)
 			end
 			return
 		end
-		if (key == "down" or key == "s") then
+		if (key == "down" or scancode == "s") then
 			if pausemenuselected < #pausemenuoptions then
 				pausemenuselected = pausemenuselected + 1
 			end
-		elseif (key == "up" or key == "w") then
+		elseif (key == "up" or scancode == "w") then
 			if pausemenuselected > 1 then
 				pausemenuselected = pausemenuselected - 1
 			end
@@ -2679,7 +2679,7 @@ function game_keypressed(key, unicode)
 		elseif key == "escape" then
 			pausemenuopen = false
 			playmusic()
-		elseif (key == "right" or key == "d") then
+		elseif (key == "right" or scancode == "d") then
 			if pausemenuoptions[pausemenuselected] == "volume" then
 				if volume < 1 then
 					volume = volume + 0.1
@@ -2689,7 +2689,7 @@ function game_keypressed(key, unicode)
 				end
 			end
 
-		elseif (key == "left" or key == "a") then
+		elseif (key == "left" or scancode == "a") then
 			if pausemenuoptions[pausemenuselected] == "volume" then
 				volume = math.max(volume - 0.1, 0)
 				love.audio.setVolume( volume )
@@ -2710,26 +2710,26 @@ function game_keypressed(key, unicode)
 	end
 
 	for i = 1, players do
-		if controls[i]["jump"][1] == key then
+		if controls[i]["jump"][1] == scancode then
 			objects["player"][i]:jump()
-		elseif controls[i]["run"][1] == key then
+		elseif controls[i]["run"][1] == scancode then
 			objects["player"][i]:fire()
-		elseif controls[i]["reload"][1] == key then
+		elseif controls[i]["reload"][1] == scancode then
 			objects["player"][i]:removeportals()
-		elseif controls[i]["use"][1] == key then
+		elseif controls[i]["use"][1] == scancode then
 			objects["player"][i]:use()
-		elseif controls[i]["left"][1] == key then
+		elseif controls[i]["left"][1] == scancode then
 			objects["player"][i]:leftkey()
-		elseif controls[i]["right"][1] == key then
+		elseif controls[i]["right"][1] == scancode then
 			objects["player"][i]:rightkey()
 		end
 
-		if controls[i]["portal1"][i] == key then
+		if controls[i]["portal1"][1] == scancode then
 			shootportal(i, 1, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
 			return
 		end
 
-		if controls[i]["portal2"][i] == key then
+		if controls[i]["portal2"][1] == scancode then
 			shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
 			return
 		end
@@ -2755,9 +2755,9 @@ function game_keypressed(key, unicode)
 	end
 end
 
-function game_keyreleased(key, unicode)
+function game_keyreleased(key, scancode)
 	for i = 1, players do
-		if controls[i]["jump"][1] == key then
+		if controls[i]["jump"][1] == scancode then
 			objects["player"][i]:stopjump()
 		end
 	end
@@ -3911,12 +3911,31 @@ function checkkey(s)
 			end
 		end
 	else
-		if love.keyboard.isDown(s[1]) then
+		if love.keyboard.isScancodeDown(s[1]) then
 			return true
 		else
 			return false
 		end
 	end
+end
+
+function controlentrytext(s, j)
+	if j == 1 and s[1] and s[1] ~= "joy" and s[1] ~= "" then
+		local ok, k = pcall(love.keyboard.getKeyFromScancode, s[1])
+		if ok and k ~= "unknown" then
+			local printable = true
+			for c = 1, string.len(k) do
+				if not fontquads[string.sub(k, c, c)] then
+					printable = false
+					break
+				end
+			end
+			if printable then
+				return k
+			end
+		end
+	end
+	return s[j]
 end
 
 function game_joystickpressed( joystick, button )

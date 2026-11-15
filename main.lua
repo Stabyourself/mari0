@@ -945,6 +945,17 @@ function saveconfig()
 	love.filesystem.write("options.txt", s)
 end
 
+function toscancode(v)
+	if pcall(love.keyboard.isScancodeDown, v) then
+		return v
+	end
+	local ok, sc = pcall(love.keyboard.getScancodeFromKey, v)
+	if ok then
+		return sc
+	end
+	return "unknown"
+end
+
 function loadconfig()
 	players = 1
 	defaultconfig()
@@ -968,13 +979,17 @@ function loadconfig()
 				s4 = s3[j]:split("-")
 				controls[tonumber(s2[2])][s4[1]] = {}
 				for k = 2, #s4 do
-					if tonumber(s4[k]) ~= nil then
+					if tonumber(s4[k]) ~= nil and s4[2] == "joy" then
 						controls[tonumber(s2[2])][s4[1]][k-1] = tonumber(s4[k])
 					elseif s4[k] == " " then
 						controls[tonumber(s2[2])][s4[1]][k-1] = "space" -- migrate pre 0.10.2 config
 					else
 						controls[tonumber(s2[2])][s4[1]][k-1] = s4[k]
 					end
+				end
+				local c = controls[tonumber(s2[2])][s4[1]]
+				if c[1] and c[1] ~= "joy" and c[1] ~= "" then
+					c[1] = toscancode(c[1])
 				end
 			end
 			players = math.max(players, tonumber(s2[2]))
@@ -1285,9 +1300,9 @@ function updatewebscale(dt)
 	end
 end
 
-function love.keypressed(key, unicode)
+function love.keypressed(key, scancode, isrepeat)
 	if keyprompt then
-		keypromptenter("key", key)
+		keypromptenter("key", scancode)
 		return
 	end
 
@@ -1303,7 +1318,7 @@ function love.keypressed(key, unicode)
 
 	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 		--konami code
-		if key == konami[konamii] then
+		if scancode == konami[konamii] then
 			konamii = konamii + 1
 			if konamii == #konami+1 then
 				playsound(konamisound)
@@ -1314,19 +1329,19 @@ function love.keypressed(key, unicode)
 		else
 			konamii = 1
 		end
-		menu_keypressed(key, unicode)
+		menu_keypressed(key, scancode)
 	elseif gamestate == "game" then
-		game_keypressed(key, unicode)
+		game_keypressed(key, scancode)
 	elseif gamestate == "intro" then
 		intro_keypressed()
 	end
 end
 
-function love.keyreleased(key, unicode)
+function love.keyreleased(key, scancode)
 	if gamestate == "menu" or gamestate == "options" then
-		menu_keyreleased(key, unicode)
+		menu_keyreleased(key, scancode)
 	elseif gamestate == "game" then
-		game_keyreleased(key, unicode)
+		game_keyreleased(key, scancode)
 	end
 end
 

@@ -668,7 +668,7 @@ function menu_draw()
 
 					if controls[skinningplayer][controlstable[i]] then
 						for j = 1, #controls[skinningplayer][controlstable[i]] do
-							s = s .. controls[skinningplayer][controlstable[i]][j]
+							s = s .. controlentrytext(controls[skinningplayer][controlstable[i]], j)
 						end
 					end
 					if s == " " then
@@ -1388,10 +1388,10 @@ function loadonlinemappacks()
 	onlinemappackscrollsmooth = onlinemappackscroll
 end
 
-function menu_keypressed(key, unicode)
+function menu_keypressed(key, scancode)
 	if gamestate == "menu" then
 		if selectworldopen then
-			if (key == "right" or key == "d") then
+			if (key == "right" or scancode == "d") then
 				local target = selectworldcursor+1
 				while target < 9 and not reachedworlds[mappack][target] do
 					target = target + 1
@@ -1399,7 +1399,7 @@ function menu_keypressed(key, unicode)
 				if target < 9 then
 					selectworldcursor = target
 				end
-			elseif (key == "left" or key == "a") then
+			elseif (key == "left" or scancode == "a") then
 				local target = selectworldcursor-1
 				while target > 0 and not reachedworlds[mappack][target] do
 					target = target - 1
@@ -1415,7 +1415,7 @@ function menu_keypressed(key, unicode)
 			end
 			return
 		end
-		if (key == "up" or key == "w") then
+		if (key == "up" or scancode == "w") then
 			if continueavailable then
 				if selection > 0 then
 					selection = selection - 1
@@ -1425,7 +1425,7 @@ function menu_keypressed(key, unicode)
 					selection = selection - 1
 				end
 			end
-		elseif (key == "down" or key == "s") then
+		elseif (key == "down" or scancode == "s") then
 			if selection < 4 then
 				selection = selection + 1
 			end
@@ -1456,18 +1456,18 @@ function menu_keypressed(key, unicode)
 			end
 		elseif key == "escape" then
 			love.event.quit()
-		elseif (key == "left" or key == "a") then
+		elseif (key == "left" or scancode == "a") then
 			if players > 1 then
 				players = players - 1
 			end
-		elseif (key == "right" or key == "d") then
+		elseif (key == "right" or scancode == "d") then
 			players = players + 1
 			if players > 4 then
 				players = 4
 			end
 		end
 	elseif gamestate == "mappackmenu" then
-		if (key == "up" or key == "w") then
+		if (key == "up" or scancode == "w") then
 			if mappacktype == "local" then
 				if mappackselection > 1 then
 					mappackselection = mappackselection - 1
@@ -1497,7 +1497,7 @@ function menu_keypressed(key, unicode)
 					onlineupdatescroll()
 				end
 			end
-		elseif (key == "down" or key == "s") then
+		elseif (key == "down" or scancode == "s") then
 			if mappacktype == "local" then
 				if mappackselection < #mappacklist then
 					mappackselection = mappackselection + 1
@@ -1533,10 +1533,10 @@ function menu_keypressed(key, unicode)
 			if mappack == "custom_mappack" then
 				createmappack()
 			end
-		elseif (key == "right" or key == "d") then
+		elseif (key == "right" or scancode == "d") then
 			loadonlinemappacks()
 			mappackhorscroll = 1
-		elseif (key == "left" or key == "a") then
+		elseif (key == "left" or scancode == "a") then
 			loadmappacks()
 			mappackhorscroll = 0
 		elseif key == "m" then
@@ -1558,23 +1558,23 @@ function menu_keypressed(key, unicode)
 		end
 	elseif gamestate == "options" then
 		if optionsselection == 1 then
-			if (key == "left" or key == "a") then
+			if (key == "left" or scancode == "a") then
 				if optionstab > 1 then
 					optionstab = optionstab - 1
 				end
-			elseif (key == "right" or key == "d") then
+			elseif (key == "right" or scancode == "d") then
 				if optionstab < 4 then
 					optionstab = optionstab + 1
 				end
 			end
 		elseif optionsselection == 2 then
-			if (key == "left" or key == "a") then
+			if (key == "left" or scancode == "a") then
 				if optionstab == 2 or optionstab == 1 then
 					if skinningplayer > 1 then
 						skinningplayer = skinningplayer - 1
 					end
 				end
-			elseif (key == "right" or key == "d") then
+			elseif (key == "right" or scancode == "d") then
 				if optionstab == 2 or optionstab == 1 then
 					if skinningplayer < 4 then
 						skinningplayer = skinningplayer + 1
@@ -1604,7 +1604,7 @@ function menu_keypressed(key, unicode)
 					resetconfig()
 				end
 			end
-		elseif (key == "down" or key == "s") then
+		elseif (key == "down" or scancode == "s") then
 			if optionstab == 1 then
 				if skinningplayer ~= mouseowner then
 					if optionsselection < 15 then
@@ -1641,7 +1641,7 @@ function menu_keypressed(key, unicode)
 					optionsselection = 1
 				end
 			end
-		elseif (key == "up" or key == "w") then
+		elseif (key == "up" or scancode == "w") then
 			if optionsselection > 1 then
 				optionsselection = optionsselection - 1
 				if isweb and optionstab == 3 and optionsselection == 2 then
@@ -1662,7 +1662,7 @@ function menu_keypressed(key, unicode)
 					optionsselection = 10
 				end
 			end
-		elseif (key == "right" or key == "d") then
+		elseif (key == "right" or scancode == "d") then
 			if optionstab == 2 then
 				if optionsselection == 3 then
 					if mariohats[skinningplayer][1] == nil then
@@ -1765,7 +1765,7 @@ function menu_keypressed(key, unicode)
 					infinitelives = not infinitelives
 				end
 			end
-		elseif (key == "left" or key == "a") then
+		elseif (key == "left" or scancode == "a") then
 			if optionstab == 2 then
 				if optionsselection == 3 then
 					if mariohats[skinningplayer][1] == 1 then
@@ -1876,7 +1876,7 @@ function menu_keypressed(key, unicode)
 	end
 end
 
-function menu_keyreleased(key, unicode)
+function menu_keyreleased(key, scancode)
 
 end
 
@@ -1906,7 +1906,7 @@ end
 
 function keypromptenter(t, ...)
 	local arg = {...}
-	if t == "key" and (arg[1] == ";" or arg[1] == "," or arg[1] == "," or arg[1] == "-") then
+	if t == "key" and string.find(arg[1], "[;,:%-]") then
 		return
 	end
 	buttonerror = false
