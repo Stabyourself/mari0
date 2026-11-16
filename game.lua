@@ -2735,7 +2735,7 @@ function game_keypressed(key, scancode)
 		end
 	end
 
-	if key == "escape" then
+	if key == "escape" or (key == "return" and not editormode) then
 		if not editormode and testlevel then
 			marioworld = testlevelworld
 			mariolevel = testlevellevel
