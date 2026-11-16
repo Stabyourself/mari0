@@ -128,12 +128,12 @@ function menu_update(dt)
 			local colornumber = math.floor((optionsselection-1)/3)
 			local colorRGB = math.fmod(optionsselection-4, 3)+1
 
-			if love.keyboard.isDown("right") and mariocolors[skinningplayer][colornumber][colorRGB] < 1 then
+			if (love.keyboard.isDown("right") or love.keyboard.isScancodeDown("d")) and mariocolors[skinningplayer][colornumber][colorRGB] < 1 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] + RGBchangespeed*dt
 				if mariocolors[skinningplayer][colornumber][colorRGB] > 1 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 1
 				end
-			elseif love.keyboard.isDown("left") and mariocolors[skinningplayer][colornumber][colorRGB] > 0 then
+			elseif (love.keyboard.isDown("left") or love.keyboard.isScancodeDown("a")) and mariocolors[skinningplayer][colornumber][colorRGB] > 0 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] - RGBchangespeed*dt
 				if mariocolors[skinningplayer][colornumber][colorRGB] < 0 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 0
@@ -141,14 +141,14 @@ function menu_update(dt)
 			end
 
 		elseif optionsselection == 13 then
-			if love.keyboard.isDown("right") and portalhues[skinningplayer][1] < 1 then
+			if (love.keyboard.isDown("right") or love.keyboard.isScancodeDown("d")) and portalhues[skinningplayer][1] < 1 then
 				portalhues[skinningplayer][1] = portalhues[skinningplayer][1] + huechangespeed*dt
 				if portalhues[skinningplayer][1] > 1 then
 					portalhues[skinningplayer][1] = 1
 				end
 				portalcolor[skinningplayer][1] = getrainbowcolor(portalhues[skinningplayer][1])
 
-			elseif love.keyboard.isDown("left") and portalhues[skinningplayer][1] > 0 then
+			elseif (love.keyboard.isDown("left") or love.keyboard.isScancodeDown("a")) and portalhues[skinningplayer][1] > 0 then
 				portalhues[skinningplayer][1] = portalhues[skinningplayer][1] - huechangespeed*dt
 				if portalhues[skinningplayer][1] < 0 then
 					portalhues[skinningplayer][1] = 0
@@ -157,14 +157,14 @@ function menu_update(dt)
 			end
 
 		elseif optionsselection == 14 then
-			if love.keyboard.isDown("right") and portalhues[skinningplayer][2] < 1 then
+			if (love.keyboard.isDown("right") or love.keyboard.isScancodeDown("d")) and portalhues[skinningplayer][2] < 1 then
 				portalhues[skinningplayer][2] = portalhues[skinningplayer][2] + huechangespeed*dt
 				if portalhues[skinningplayer][2] > 1 then
 					portalhues[skinningplayer][2] = 1
 				end
 				portalcolor[skinningplayer][2] = getrainbowcolor(portalhues[skinningplayer][2])
 
-			elseif love.keyboard.isDown("left") and portalhues[skinningplayer][2] > 0 then
+			elseif (love.keyboard.isDown("left") or love.keyboard.isScancodeDown("a")) and portalhues[skinningplayer][2] > 0 then
 				portalhues[skinningplayer][2] = portalhues[skinningplayer][2] - huechangespeed*dt
 				if portalhues[skinningplayer][2] < 0 then
 					portalhues[skinningplayer][2] = 0
