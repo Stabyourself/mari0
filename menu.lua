@@ -1962,19 +1962,27 @@ function keypromptstart()
 
 	for i, js in ipairs(love.joystick.getJoysticks()) do
 		prompt.joystick[i] = {}
-		prompt.joystick[i].hats = js:getHatCount()
-		prompt.joystick[i].axes = js:getAxisCount()
-
-		prompt.joystick[i].validhats = {}
-		for j = 1, prompt.joystick[i].hats do
-			if js:getHat(j) == "c" then
-				table.insert(prompt.joystick[i].validhats, j)
-			end
-		end
-
 		prompt.joystick[i].axisposition = {}
-		for j = 1, prompt.joystick[i].axes do
-			table.insert(prompt.joystick[i].axisposition, js:getAxis(j))
+
+		if js:isGamepad() then
+			prompt.joystick[i].gamepad = true
+			for _, j in pairs({"leftx", "lefty", "rightx", "righty", "triggerleft", "triggerright"}) do
+				prompt.joystick[i].axisposition[j] = js:getGamepadAxis(j)
+			end
+		else
+			prompt.joystick[i].hats = js:getHatCount()
+			prompt.joystick[i].axes = js:getAxisCount()
+
+			prompt.joystick[i].validhats = {}
+			for j = 1, prompt.joystick[i].hats do
+				if js:getHat(j) == "c" then
+					table.insert(prompt.joystick[i].validhats, j)
+				end
+			end
+
+			for j = 1, prompt.joystick[i].axes do
+				table.insert(prompt.joystick[i].axisposition, js:getAxis(j))
+			end
 		end
 	end
 end

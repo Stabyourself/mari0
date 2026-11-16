@@ -3890,24 +3890,12 @@ function checkkey(s)
 				return false
 			end
 		elseif s[3] == "but" then
-			if joysticks[s[2]]:isDown(s[4]) then
-				return true
-			else
-				return false
-			end
+			return joystickdown(joysticks[s[2]], s[4])
 		elseif s[3] == "axe" then
 			if s[5] == "pos" then
-				if joysticks[s[2]]:getAxis(s[4]) > joystickdeadzone then
-					return true
-				else
-					return false
-				end
+				return joystickvalue(joysticks[s[2]], s[4]) > joystickdeadzone
 			else
-				if joysticks[s[2]]:getAxis(s[4]) < -joystickdeadzone then
-					return true
-				else
-					return false
-				end
+				return joystickvalue(joysticks[s[2]], s[4]) < -joystickdeadzone
 			end
 		end
 	else
@@ -3955,7 +3943,7 @@ function game_joystickpressed( joystick, button )
 			local s4 = controls[i]["use"]
 			local s5 = controls[i]["left"]
 			local s6 = controls[i]["right"]
-			if s1[1] == "joy" and joystick == tonumber(s1[2]) and s1[3] == "but" and button == tonumber(s1[4]) then
+			if s1[1] == "joy" and joystick == s1[2] and s1[3] == "but" and button == s1[4] then
 				objects["player"][i]:jump()
 				return
 			elseif s2[1] == "joy" and joystick == s2[2] and s2[3] == "but" and button == s2[4] then
@@ -3988,7 +3976,7 @@ function game_joystickpressed( joystick, button )
 			local s = controls[i]["portal2"]
 			if s and s[1] == "joy" then
 				if s[3] == "but" then
-					if joystick == tonumber(s[2]) and button == tonumber(s[4]) then
+					if joystick == s[2] and button == s[4] then
 						shootportal(i, 2, objects["player"][i].x+6/16, objects["player"][i].y+6/16, objects["player"][i].pointingangle)
 						return
 					end
@@ -4003,7 +3991,7 @@ function game_joystickreleased( joystick, button )
 		local s = controls[i]["jump"]
 		if s[1] == "joy" then
 			if s[3] == "but" then
-				if joystick == tonumber(s[2]) and button == tonumber(s[4]) then
+				if joystick == s[2] and button == s[4] then
 					objects["player"][i]:stopjump()
 					return
 				end

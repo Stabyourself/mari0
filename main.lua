@@ -1084,10 +1084,45 @@ function loadconfig()
 		end
 	end
 
+	updatejoystickcontrols()
+
 	for i = 1, math.max(4, players) do
 		portalcolor[i] = {getrainbowcolor(portalhues[i][1]), getrainbowcolor(portalhues[i][2])}
 	end
 	players = 1
+end
+
+function defaultjoystickcontrols(joystick)
+	local c = {}
+	c["right"] = {"joy", joystick, "but", "dpright"}
+	c["left"] = {"joy", joystick, "but", "dpleft"}
+	c["down"] = {"joy", joystick, "but", "dpdown"}
+	c["up"] = {"joy", joystick, "but", "dpup"}
+	c["run"] = {"joy", joystick, "but", "x"}
+	c["jump"] = {"joy", joystick, "but", "a"}
+	c["aimx"] = {"joy", joystick, "axe", "rightx", "pos"}
+	c["aimy"] = {"joy", joystick, "axe", "righty", "pos"}
+	c["portal1"] = {"joy", joystick, "but", "leftshoulder"}
+	c["portal2"] = {"joy", joystick, "but", "rightshoulder"}
+	c["reload"] = {"joy", joystick, "but", "y"}
+	c["use"] = {"joy", joystick, "but", "b"}
+	return c
+end
+
+--the old defaults used raw hats and axes, which browsers don't have
+local oldjoystickcontrols = {right = "hat1r", left = "hat1l", down = "hat1d", up = "hat1u", run = "but3", jump = "but1",
+	aimx = "axe5neg", aimy = "axe4neg", portal1 = "but5", portal2 = "but6", reload = "but4", use = "but2"}
+
+function updatejoystickcontrols()
+	for i = 2, 4 do
+		local new = defaultjoystickcontrols(i-1)
+		for j, v in pairs(oldjoystickcontrols) do
+			local c = controls[i] and controls[i][j]
+			if c and c[1] == "joy" and c[2] == i-1 and table.concat(c, "", 3) == v then
+				controls[i][j] = new[j]
+			end
+		end
+	end
 end
 
 function defaultconfig()
@@ -1121,19 +1156,7 @@ function defaultconfig()
 	controls[i]["use"] = {"e"}
 
 	for i = 2, 4 do
-		controls[i] = {}
-		controls[i]["right"] = {"joy", i-1, "hat", 1, "r"}
-		controls[i]["left"] = {"joy", i-1, "hat", 1, "l"}
-		controls[i]["down"] = {"joy", i-1, "hat", 1, "d"}
-		controls[i]["up"] = {"joy", i-1, "hat", 1, "u"}
-		controls[i]["run"] = {"joy", i-1, "but", 3}
-		controls[i]["jump"] = {"joy", i-1, "but", 1}
-		controls[i]["aimx"] = {"joy", i-1, "axe", 5, "neg"}
-		controls[i]["aimy"] = {"joy", i-1, "axe", 4, "neg"}
-		controls[i]["portal1"] = {"joy", i-1, "but", 5}
-		controls[i]["portal2"] = {"joy", i-1, "but", 6}
-		controls[i]["reload"] = {"joy", i-1, "but", 4}
-		controls[i]["use"] = {"joy", i-1, "but", 2}
+		controls[i] = defaultjoystickcontrols(i-1)
 	end
 	-------------------
 	-- PORTAL COLORS --
@@ -1413,84 +1436,135 @@ function love.wheelmoved(x, y)
 	end
 end
 
+function joystickindex(joystick)
+	for i, v in ipairs(love.joystick.getJoysticks()) do
+		if v:getID() == joystick:getID() then
+			return i
+		end
+	end
+end
+
+function joystickdown(joystick, button)
+	if type(button) == "string" then
+		return joystick:isGamepad() and joystick:isGamepadDown(button)
+	end
+	return joystick:isDown(button)
+end
+
+function joystickvalue(joystick, axis)
+	if type(axis) == "string" then
+		return joystick:isGamepad() and joystick:getGamepadAxis(axis) or 0
+	end
+	return joystick:getAxis(axis)
+end
+
 function love.joystickpressed(joystick, button)
+	if keyprompt and joystick:isGamepad() then
+		return
+	end
+	joystickpressed(joystickindex(joystick), button)
+end
+
+function love.gamepadpressed(joystick, button)
+	joystickpressed(joystickindex(joystick), button)
+end
+
+function joystickpressed(joystick, button)
+	if not joystick then
+		return
+	end
+
 	if keyprompt then
-		keypromptenter("joybutton", joystick:getID(), button)
+		keypromptenter("joybutton", joystick, button)
 		return
 	end
 
 	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickpressed(joystick:getID(), button)
+		menu_joystickpressed(joystick, button)
 	elseif gamestate == "game" then
-		game_joystickpressed(joystick:getID(), button)
+		game_joystickpressed(joystick, button)
 	end
 end
 
 function love.joystickreleased(joystick, button)
+	joystickreleased(joystickindex(joystick), button)
+end
+
+function love.gamepadreleased(joystick, button)
+	joystickreleased(joystickindex(joystick), button)
+end
+
+function joystickreleased(joystick, button)
+	if not joystick then
+		return
+	end
+
 	if gamestate == "menu" or gamestate == "options" then
-		menu_joystickreleased(joystick:getID(), button)
+		menu_joystickreleased(joystick, button)
 	elseif gamestate == "game" then
-		game_joystickreleased(joystick:getID(), button)
+		game_joystickreleased(joystick, button)
 	end
 end
 
 function love.joystickaxis(joystick, axis, value)
-	local joysticks,found = love.joystick.getJoysticks(),false
-	for i,v in ipairs(joysticks) do
-		if v:getID() == joystick:getID() then
-			joystick,found = i,true
-			break
-		end
+	joystickaxis(joystickindex(joystick), axis, value)
+end
+
+function love.gamepadaxis(joystick, axis, value)
+	joystickaxis(joystickindex(joystick), axis, value)
+end
+
+function joystickaxis(joystick, axis, value)
+	if not joystick then
+		return
 	end
 
-	if found then
-		axisDeadZones[joystick] = axisDeadZones[joystick] or {}
-		axisDeadZones[joystick][axis] = axisDeadZones[joystick][axis] or {stick = true, shoulder = true}
+	axisDeadZones[joystick] = axisDeadZones[joystick] or {}
+	axisDeadZones[joystick][axis] = axisDeadZones[joystick][axis] or {stick = true, shoulder = true}
 
-		local stickmoved = false
-		local shouldermoved = false
+	local stickmoved = false
+	local shouldermoved = false
 
-		--If this axis is a stick, get whether it just moved out of its deadzone
-		if math.abs(value) > joystickaimdeadzone and axisDeadZones[joystick][axis]["stick"] then
-			stickmoved = true
-			axisDeadZones[joystick][axis]["stick"] = false
-		elseif math.abs(value) < joystickaimdeadzone and not axisDeadZones[joystick][axis]["stick"] then
-			axisDeadZones[joystick][axis]["stick"] = true
-		end
-		--If this axis is a shoulder, get whether it just moved out of its deadzone
-		if value > 0 and axisDeadZones[joystick][axis]["shoulder"] then
-			shouldermoved = true
-			axisDeadZones[joystick][axis]["shoulder"] = false
-		elseif value < 0 and not axisDeadZones[joystick][axis]["shoulder"] then
-			axisDeadZones[joystick][axis]["shoulder"] = true
-		end
-		if gamestate == "menu" or gamestate == "options" then
-			menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
-		elseif gamestate == "game" then
-			game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
-		end
+	--gamepad triggers go from 0 to 1, raw ones from -1 to 1
+	local shoulderrest = 0
+	if type(axis) == "string" then
+		shoulderrest = 0.5
+	end
+
+	--If this axis is a stick, get whether it just moved out of its deadzone
+	if math.abs(value) > joystickaimdeadzone and axisDeadZones[joystick][axis]["stick"] then
+		stickmoved = true
+		axisDeadZones[joystick][axis]["stick"] = false
+	elseif math.abs(value) < joystickaimdeadzone and not axisDeadZones[joystick][axis]["stick"] then
+		axisDeadZones[joystick][axis]["stick"] = true
+	end
+	--If this axis is a shoulder, get whether it just moved out of its deadzone
+	if value > shoulderrest and axisDeadZones[joystick][axis]["shoulder"] then
+		shouldermoved = true
+		axisDeadZones[joystick][axis]["shoulder"] = false
+	elseif value < shoulderrest and not axisDeadZones[joystick][axis]["shoulder"] then
+		axisDeadZones[joystick][axis]["shoulder"] = true
+	end
+
+	if gamestate == "menu" or gamestate == "options" then
+		menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
+	elseif gamestate == "game" then
+		game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
 	end
 end
+
 function love.joystickhat(joystick, hat, direction)
-	local joysticks,found = love.joystick.getJoysticks(),false
-	for i,v in ipairs(joysticks) do
-		if v:getID() == joystick:getID() then
-			joystick,found = i,true
-			break
-		end
+	local i = joystickindex(joystick)
+	if not i then
+		return
 	end
 
-	if found then
-		if gamestate == "menu" or gamestate == "options" then
-			menu_joystickhat(joystick, hat, direction)
-		elseif gamestate == "game" then
-			game_joystickhat(joystick, hat, direction)
-		end
+	if gamestate == "menu" or gamestate == "options" then
+		menu_joystickhat(i, hat, direction)
+	elseif gamestate == "game" then
+		game_joystickhat(i, hat, direction)
 	end
 end
--- love.gamepadpressed = love.joystickpressed
--- love.gamepadreleased = love.joystickreleased
--- love.gamepadaxis = love.joystickaxis
 
 function round(num, idp) --Not by me
 	local mult = 10^(idp or 0)
@@ -1607,22 +1681,35 @@ function keyprompt_update()
 				return
 			end
 
-			for j = 1, #prompt.joystick[i].validhats do
-				local dir = js:getHat(prompt.joystick[i].validhats[j])
-				if dir ~= "c" then
-					keypromptenter("joyhat", i, prompt.joystick[i].validhats[j], dir)
-					return
+			if prompt.joystick[i].gamepad then
+				for j, v in pairs(prompt.joystick[i].axisposition) do
+					local value = js:getGamepadAxis(j)
+					if value > v + joystickdeadzone then
+						keypromptenter("joyaxis", i, j, "pos")
+						return
+					elseif value < v - joystickdeadzone then
+						keypromptenter("joyaxis", i, j, "neg")
+						return
+					end
 				end
-			end
+			else
+				for j = 1, #prompt.joystick[i].validhats do
+					local dir = js:getHat(prompt.joystick[i].validhats[j])
+					if dir ~= "c" then
+						keypromptenter("joyhat", i, prompt.joystick[i].validhats[j], dir)
+						return
+					end
+				end
 
-			for j = 1, prompt.joystick[i].axes do
-				local value = js:getAxis(j)
-				if value > prompt.joystick[i].axisposition[j] + joystickdeadzone then
-					keypromptenter("joyaxis", i, j, "pos")
-					return
-				elseif value < prompt.joystick[i].axisposition[j] - joystickdeadzone then
-					keypromptenter("joyaxis", i, j, "neg")
-					return
+				for j = 1, prompt.joystick[i].axes do
+					local value = js:getAxis(j)
+					if value > prompt.joystick[i].axisposition[j] + joystickdeadzone then
+						keypromptenter("joyaxis", i, j, "pos")
+						return
+					elseif value < prompt.joystick[i].axisposition[j] - joystickdeadzone then
+						keypromptenter("joyaxis", i, j, "neg")
+						return
+					end
 				end
 			end
 		end
