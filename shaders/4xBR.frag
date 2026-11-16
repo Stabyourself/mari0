@@ -40,7 +40,7 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texture_coords, vec2 pixel_coords)
 
 	vec2 pixcoord = texture_coords/ps;
 	vec2 fp	= fract(pixcoord);
-	vec2 d11 = texture_coords - fp * ps;
+	vec2 d11 = (floor(pixcoord) + 0.5) * ps;
 
 	// Reading the texels
 
@@ -143,29 +143,29 @@ vec4 effect(vec4 vcolor, Image texture, vec2 texture_coords, vec2 pixel_coords)
 	if (fp.x < 0.25)
 	{ 
 		if (fp.y < 0.25) res = E0;
-		else if ((fp.y > 0.25) && (fp.y < 0.50)) res = E4;
-		else if ((fp.y > 0.50) && (fp.y < 0.75)) res = E8;
+		else if (fp.y < 0.50) res = E4;
+		else if (fp.y < 0.75) res = E8;
 		else res = E12;
 	}
-	else if ((fp.x > 0.25) && (fp.x < 0.50))
+	else if (fp.x < 0.50)
 	{
 		if (fp.y < 0.25) res = E1;
-		else if ((fp.y > 0.25) && (fp.y < 0.50)) res = E5;
-		else if ((fp.y > 0.50) && (fp.y < 0.75)) res = E9;
+		else if (fp.y < 0.50) res = E5;
+		else if (fp.y < 0.75) res = E9;
 		else res = E13;
 	}
-	else if ((fp.x > 0.50) && (fp.x < 0.75))
+	else if (fp.x < 0.75)
 	{
 		if (fp.y < 0.25) res = E2;
-		else if ((fp.y > 0.25) && (fp.y < 0.50)) res = E6;
-		else if ((fp.y > 0.50) && (fp.y < 0.75)) res = E10;
+		else if (fp.y < 0.50) res = E6;
+		else if (fp.y < 0.75) res = E10;
 		else res = E14;
 	}
 	else
 	{
 		if (fp.y < 0.25) res = E3;
-		else if ((fp.y > 0.25) && (fp.y < 0.50)) res = E7;
-		else if ((fp.y > 0.50) && (fp.y < 0.75)) res = E11;
+		else if (fp.y < 0.50) res = E7;
+		else if (fp.y < 0.75) res = E11;
 		else res = E15;
 	}
 
