@@ -1316,7 +1316,15 @@ function love.keypressed(key, scancode, isrepeat)
 		love.mouse.setGrabbed(not love.mouse.isGrabbed())
 	end
 
-	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
+	local inmenu = gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options"
+	if scancode == "e" and (inmenu or (gamestate == "game" and pausemenuopen)) then
+		if gamestate == "menu" and not selectworldopen then
+			return
+		end
+		key = "escape"
+	end
+
+	if inmenu then
 		--konami code
 		if scancode == konami[konamii] then
 			konamii = konamii + 1
