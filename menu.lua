@@ -588,7 +588,9 @@ function menu_draw()
 		else
 			love.graphics.setColor(0.4, 0.4, 0.4)
 		end
-		properprint("controls", 26*scale, 22*scale)
+		if not isweb then
+			properprint("controls", 26*scale, 22*scale)
+		end
 
 		--Skins tab head
 		if optionstab == 2 then
@@ -1559,7 +1561,7 @@ function menu_keypressed(key, scancode)
 	elseif gamestate == "options" then
 		if optionsselection == 1 then
 			if (key == "left" or scancode == "a") then
-				if optionstab > 1 then
+				if optionstab > 1 and not (isweb and optionstab == 2) then
 					optionstab = optionstab - 1
 				end
 			elseif (key == "right" or scancode == "d") then
