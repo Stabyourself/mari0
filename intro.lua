@@ -33,7 +33,9 @@ end
 
 function intro_draw()
 	local scale = scale
-	if scale <= 1 then
+	if isweb then
+		scale = scale/2
+	elseif scale <= 1 then
 		scale = 0.5
 	else
 		scale = 1
