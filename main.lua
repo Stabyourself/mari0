@@ -503,10 +503,6 @@ function love.load()
 
 	logo = love.graphics.newImage("graphics/stabyourself.png")
 	logoblood = love.graphics.newImage("graphics/stabyourselfblood.png")
-	if isweb then
-		logo:setFilter("linear", "linear")
-		logoblood:setFilter("linear", "linear")
-	end
 
 	--GUI
 	checkboximg = love.graphics.newImage("graphics/GUI/checkbox.png")

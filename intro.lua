@@ -52,6 +52,9 @@ function intro_draw()
 
 		if introprogress > introfadetime+0.3 and introprogress < introduration - introfadetime then
 			local y = (introprogress-0.2-introfadetime) / (introduration-2*introfadetime) * 206 * 5
+			if isweb then
+				y = y*scale
+			end
 			love.graphics.draw(logo, screenwidth/2, screenheight/2, 0, scale, scale, 142, 150)
 			love.graphics.setScissor(0, screenheight/2+150*scale - y, screenwidth, y)
 			love.graphics.draw(logoblood, screenwidth/2, screenheight/2, 0, scale, scale, 142, 150)
